@@ -6,7 +6,11 @@
 
 # Want to help us make this template better? Share your feedback here: https://forms.gle/ybq9Krt8jtBL3iCk7
 
+<<<<<<< HEAD
 ARG NODE_VERSION=20.9.0
+=======
+ARG NODE_VERSION=18.19.1
+>>>>>>> 3a79d1fc6d8ba2cace29bc8f15e3615d5743c555
 
 FROM node:${NODE_VERSION}-alpine
 
@@ -25,12 +29,11 @@ RUN --mount=type=bind,source=package.json,target=package.json \
     --mount=type=cache,target=/root/.npm \
     npm ci --omit=dev
 
-# Copying and installing all necessary imports
-COPY package*.json ./
-RUN npm install
+COPY ./package*.json .
 
-# Run the application as a non-root user.
-USER node
+RUN npm install --production
+
+RUN npm install -g nodemon@dev
 
 # Copy the rest of the source files into the image.
 COPY . .
