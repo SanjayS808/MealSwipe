@@ -1,10 +1,31 @@
 import React, { useEffect, useState } from "react";
 import Restaurant from "./Restaurant";
-import TinderCard from 'react-tinder-card'
+import Navigation from "./Navigation";
+
+
+import "./App.css";
+
+
+
 
 function App() {
   const [backendData, setBackendData] = useState([]);
+  const [likedRestaurants, setLikedRestaurants] = useState([]);
+  const [trashedRestaurants, setTrashedRestaurants] = useState([]);
+  
+  const handleSwipe = (direction, restaurant) => {
+    console.log(`You swiped ${direction} on ${restaurant.name}`);
 
+    if (direction === 'right') {
+      setLikedRestaurants((prev) => [...prev, restaurant]);
+    } else if (direction === 'left') {
+      setTrashedRestaurants((prev) => [...prev, restaurant]);
+    }
+  };
+
+  
+
+  
   useEffect(() => {
     fetch("http://localhost:5001/api/serve/get-all-restaurants")
       .then(response => {
@@ -35,20 +56,12 @@ function App() {
   }, []);
 
   return (
-    <div>
-      <h2>Restaurant List</h2>
-      <ul>
-        {backendData.length > 0 ? (
-          backendData.map(restaurant => (
-            <li key={restaurant.id}>
-              {restaurant.name} - {restaurant.rating}⭐ - Price Level: {restaurant.priceLevel} - Rating: {restaurant.rating}
-            </li>
-          ))
-        ) : (
-          <p>Loading...</p>
-        )}
-      </ul>
-    </div>
+    <Navigation 
+      backendData={backendData}
+      handleSwipe={handleSwipe}
+      likedRestaurants={likedRestaurants}
+      trashedRestaurants={trashedRestaurants}
+    />
   );
 }
 
