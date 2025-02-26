@@ -42,4 +42,14 @@ app.get("/api", (req, res) => {
     res.json({"restaurants" : ["resOne", "resTwo"]});
 });
 
-app.listen(5001, () => console.log("Server started on port 5001"));
+// Used to test CI/CD functionality.
+app.get("/", (req, res) => {
+    res.json({"connection-status" : "valid"});
+});
+
+app.get("/health", (req, res) => {
+    res.json({"health-check-status": "working"});
+    res.status(200).send('OK');
+})
+
+app.listen(5000, () => console.log("Server started on port 5000"));

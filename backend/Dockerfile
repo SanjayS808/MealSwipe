@@ -35,7 +35,7 @@ RUN npm install -g nodemon@dev
 COPY . .
 
 # Expose the port that the application listens on.
-EXPOSE 5001
+EXPOSE 5000
 
 # Run the application.
 CMD npm start

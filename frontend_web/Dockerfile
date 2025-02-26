@@ -23,7 +23,7 @@ RUN npm install --production
 
 COPY --from=build /app/build /app/build
 
-EXPOSE 3000 8080
+EXPOSE 3000 80
 
 # Set environment variables for production or development
 ARG NODE_ENV=production
