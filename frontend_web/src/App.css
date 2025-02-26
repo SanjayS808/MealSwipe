@@ -11,7 +11,10 @@
   * {
     user-select: none;
   }
-  
+  .Main_div{
+    display: flex;
+    flex-direction: column;
+  }
   #root>div {
     display: flex;
     flex-direction: column;

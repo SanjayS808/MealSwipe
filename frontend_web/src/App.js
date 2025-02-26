@@ -1,38 +1,19 @@
 import React, { useEffect, useState } from "react";
 import Restaurant from "./Restaurant";
-import TinderCard from 'react-tinder-card'
+import Navigation from "./Navigation";
+
+
 import "./App.css";
 
-const db = [
-  {
-    name: 'Richard Hendricks',
-    url: './img/richard.jpg'
-  },
-  {
-    name: 'Erlich Bachman',
-    url: './img/erlich.jpg'
-  },
-  {
-    name: 'Monica Hall',
-    url: './img/monica.jpg'
-  },
-  {
-    name: 'Jared Dunn',
-    url: './img/jared.jpg'
-  },
-  {
-    name: 'Dinesh Chugtai',
-    url: './img/dinesh.jpg'
-  }
-]
+
 
 
 function App() {
   const [backendData, setBackendData] = useState([]);
   const [likedRestaurants, setLikedRestaurants] = useState([]);
   const [trashedRestaurants, setTrashedRestaurants] = useState([]);
-
-  const onSwipe = (direction, restaurant) => {
+  
+  const handleSwipe = (direction, restaurant) => {
     console.log(`You swiped ${direction} on ${restaurant.name}`);
 
     if (direction === 'right') {
@@ -75,53 +56,12 @@ function App() {
   }, []);
 
   return (
-    <div>
-
-    
-      <h2>Restaurant List</h2>
-      
-    
-        <br></br>
-        <div className="cardContainer">
-          {backendData.map((restaurant) => (
-            <TinderCard
-              className="swipe"
-              key={restaurant.id}
-              onSwipe={(dir) => onSwipe(dir, restaurant)}
-              
-            >
-              <div
-                style={{
-                  backgroundImage:
-                    "url(https://images.unsplash.com/photo-1504674900247-0877df9cc836?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1470&q=80)",
-                }}
-                className="card"
-              >
-                <h3 className="text-lg font-bold">{restaurant.name}</h3>
-                <p className="text-sm">{restaurant.rating}⭐ • Price Level: {restaurant.priceLevel}</p>
-              </div>
-            </TinderCard>
-          ))}
-        </div>
-
-        <div className="liked-restaurants">
-          <h3>Liked Restaurants:</h3>
-          <ul>
-            {likedRestaurants.map((restaurant, index) => (
-              <li key={index}>{restaurant.name}</li>
-            ))}
-          </ul> 
-          </div>
-          <div className="trashed-restaurants">
-          <h3>Trashed Restaurants:</h3>
-          <ul>
-            {trashedRestaurants.map((restaurant, index) => (
-              <li key={index}>{restaurant.name}</li>
-            ))}
-          </ul>
-          </div>
-
-    </div>
+    <Navigation 
+      backendData={backendData}
+      handleSwipe={handleSwipe}
+      likedRestaurants={likedRestaurants}
+      trashedRestaurants={trashedRestaurants}
+    />
   );
 }
 
