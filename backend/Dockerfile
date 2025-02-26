@@ -6,11 +6,7 @@
 
 # Want to help us make this template better? Share your feedback here: https://forms.gle/ybq9Krt8jtBL3iCk7
 
-<<<<<<< HEAD
-ARG NODE_VERSION=20.9.0
-=======
 ARG NODE_VERSION=18.19.1
->>>>>>> 3a79d1fc6d8ba2cace29bc8f15e3615d5743c555
 
 FROM node:${NODE_VERSION}-alpine
 
