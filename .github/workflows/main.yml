@@ -4,7 +4,6 @@ on:
   push:
     branches:
       - main
-      - dev-david-ci-cd
 
 permissions:
   id-token: write
