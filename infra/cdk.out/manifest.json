@@ -1,0 +1,1406 @@
+{
+  "version": "39.0.0",
+  "artifacts": {
+    "MealSwipeAppService.assets": {
+      "type": "cdk:asset-manifest",
+      "properties": {
+        "file": "MealSwipeAppService.assets.json",
+        "requiresBootstrapStackVersion": 6,
+        "bootstrapStackVersionSsmParameter": "/cdk-bootstrap/hnb659fds/version"
+      }
+    },
+    "MealSwipeAppService": {
+      "type": "aws:cloudformation:stack",
+      "environment": "aws://unknown-account/unknown-region",
+      "properties": {
+        "templateFile": "MealSwipeAppService.template.json",
+        "terminationProtection": false,
+        "validateOnSynth": false,
+        "assumeRoleArn": "arn:${AWS::Partition}:iam::${AWS::AccountId}:role/cdk-hnb659fds-deploy-role-${AWS::AccountId}-${AWS::Region}",
+        "cloudFormationExecutionRoleArn": "arn:${AWS::Partition}:iam::${AWS::AccountId}:role/cdk-hnb659fds-cfn-exec-role-${AWS::AccountId}-${AWS::Region}",
+        "stackTemplateAssetObjectUrl": "s3://cdk-hnb659fds-assets-${AWS::AccountId}-${AWS::Region}/10e54825153660b382c7ddececc8d842ef072371adf686dc5eeb8ab9bed5d922.json",
+        "requiresBootstrapStackVersion": 6,
+        "bootstrapStackVersionSsmParameter": "/cdk-bootstrap/hnb659fds/version",
+        "additionalDependencies": [
+          "MealSwipeAppService.assets"
+        ],
+        "lookupRole": {
+          "arn": "arn:${AWS::Partition}:iam::${AWS::AccountId}:role/cdk-hnb659fds-lookup-role-${AWS::AccountId}-${AWS::Region}",
+          "requiresBootstrapStackVersion": 8,
+          "bootstrapStackVersionSsmParameter": "/cdk-bootstrap/hnb659fds/version"
+        }
+      },
+      "dependencies": [
+        "MealSwipeAppService.assets"
+      ],
+      "metadata": {
+        "/MealSwipeAppService/MealSwipeVPC": [
+          {
+            "type": "aws:cdk:analytics:construct",
+            "data": {
+              "maxAzs": "*"
+            }
+          }
+        ],
+        "/MealSwipeAppService/MealSwipeVPC/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "MealSwipeVPC697170DB"
+          }
+        ],
+        "/MealSwipeAppService/MealSwipeVPC/PublicSubnet1": [
+          {
+            "type": "aws:cdk:analytics:construct",
+            "data": {
+              "availabilityZone": "*",
+              "vpcId": "*",
+              "cidrBlock": "*",
+              "mapPublicIpOnLaunch": true,
+              "ipv6CidrBlock": "*",
+              "assignIpv6AddressOnCreation": "*"
+            }
+          },
+          {
+            "type": "aws:cdk:analytics:construct",
+            "data": {
+              "availabilityZone": "*",
+              "vpcId": "*",
+              "cidrBlock": "*",
+              "mapPublicIpOnLaunch": true,
+              "ipv6CidrBlock": "*",
+              "assignIpv6AddressOnCreation": "*"
+            }
+          },
+          {
+            "type": "aws:cdk:analytics:method",
+            "data": {}
+          },
+          {
+            "type": "aws:cdk:analytics:method",
+            "data": {
+              "addNatGateway": [
+                "*"
+              ]
+            }
+          }
+        ],
+        "/MealSwipeAppService/MealSwipeVPC/PublicSubnet1/Subnet": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "MealSwipeVPCPublicSubnet1Subnet80DE1A31"
+          }
+        ],
+        "/MealSwipeAppService/MealSwipeVPC/PublicSubnet1/RouteTable": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "MealSwipeVPCPublicSubnet1RouteTableC54300D4"
+          }
+        ],
+        "/MealSwipeAppService/MealSwipeVPC/PublicSubnet1/RouteTableAssociation": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "MealSwipeVPCPublicSubnet1RouteTableAssociation07BE09C0"
+          }
+        ],
+        "/MealSwipeAppService/MealSwipeVPC/PublicSubnet1/DefaultRoute": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "MealSwipeVPCPublicSubnet1DefaultRouteA9724350"
+          }
+        ],
+        "/MealSwipeAppService/MealSwipeVPC/PublicSubnet1/EIP": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "MealSwipeVPCPublicSubnet1EIP94699FC5"
+          }
+        ],
+        "/MealSwipeAppService/MealSwipeVPC/PublicSubnet1/NATGateway": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "MealSwipeVPCPublicSubnet1NATGateway34AA6E34"
+          }
+        ],
+        "/MealSwipeAppService/MealSwipeVPC/PublicSubnet2": [
+          {
+            "type": "aws:cdk:analytics:construct",
+            "data": {
+              "availabilityZone": "*",
+              "vpcId": "*",
+              "cidrBlock": "*",
+              "mapPublicIpOnLaunch": true,
+              "ipv6CidrBlock": "*",
+              "assignIpv6AddressOnCreation": "*"
+            }
+          },
+          {
+            "type": "aws:cdk:analytics:construct",
+            "data": {
+              "availabilityZone": "*",
+              "vpcId": "*",
+              "cidrBlock": "*",
+              "mapPublicIpOnLaunch": true,
+              "ipv6CidrBlock": "*",
+              "assignIpv6AddressOnCreation": "*"
+            }
+          },
+          {
+            "type": "aws:cdk:analytics:method",
+            "data": {}
+          },
+          {
+            "type": "aws:cdk:analytics:method",
+            "data": {
+              "addNatGateway": [
+                "*"
+              ]
+            }
+          }
+        ],
+        "/MealSwipeAppService/MealSwipeVPC/PublicSubnet2/Subnet": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "MealSwipeVPCPublicSubnet2Subnet5C105B00"
+          }
+        ],
+        "/MealSwipeAppService/MealSwipeVPC/PublicSubnet2/RouteTable": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "MealSwipeVPCPublicSubnet2RouteTable48D33274"
+          }
+        ],
+        "/MealSwipeAppService/MealSwipeVPC/PublicSubnet2/RouteTableAssociation": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "MealSwipeVPCPublicSubnet2RouteTableAssociationC77E4970"
+          }
+        ],
+        "/MealSwipeAppService/MealSwipeVPC/PublicSubnet2/DefaultRoute": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "MealSwipeVPCPublicSubnet2DefaultRoute32E6B12A"
+          }
+        ],
+        "/MealSwipeAppService/MealSwipeVPC/PublicSubnet2/EIP": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "MealSwipeVPCPublicSubnet2EIPEC2EDDCC"
+          }
+        ],
+        "/MealSwipeAppService/MealSwipeVPC/PublicSubnet2/NATGateway": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "MealSwipeVPCPublicSubnet2NATGateway60680DE2"
+          }
+        ],
+        "/MealSwipeAppService/MealSwipeVPC/PrivateSubnet1": [
+          {
+            "type": "aws:cdk:analytics:construct",
+            "data": {
+              "availabilityZone": "*",
+              "vpcId": "*",
+              "cidrBlock": "*",
+              "mapPublicIpOnLaunch": false,
+              "ipv6CidrBlock": "*",
+              "assignIpv6AddressOnCreation": "*"
+            }
+          },
+          {
+            "type": "aws:cdk:analytics:construct",
+            "data": {
+              "availabilityZone": "*",
+              "vpcId": "*",
+              "cidrBlock": "*",
+              "mapPublicIpOnLaunch": false,
+              "ipv6CidrBlock": "*",
+              "assignIpv6AddressOnCreation": "*"
+            }
+          },
+          {
+            "type": "aws:cdk:analytics:method",
+            "data": {}
+          }
+        ],
+        "/MealSwipeAppService/MealSwipeVPC/PrivateSubnet1/Subnet": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "MealSwipeVPCPrivateSubnet1SubnetD5200481"
+          }
+        ],
+        "/MealSwipeAppService/MealSwipeVPC/PrivateSubnet1/RouteTable": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "MealSwipeVPCPrivateSubnet1RouteTable7BD70FA7"
+          }
+        ],
+        "/MealSwipeAppService/MealSwipeVPC/PrivateSubnet1/RouteTableAssociation": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "MealSwipeVPCPrivateSubnet1RouteTableAssociation8F189F41"
+          }
+        ],
+        "/MealSwipeAppService/MealSwipeVPC/PrivateSubnet1/DefaultRoute": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "MealSwipeVPCPrivateSubnet1DefaultRouteAAC9CD68"
+          }
+        ],
+        "/MealSwipeAppService/MealSwipeVPC/PrivateSubnet2": [
+          {
+            "type": "aws:cdk:analytics:construct",
+            "data": {
+              "availabilityZone": "*",
+              "vpcId": "*",
+              "cidrBlock": "*",
+              "mapPublicIpOnLaunch": false,
+              "ipv6CidrBlock": "*",
+              "assignIpv6AddressOnCreation": "*"
+            }
+          },
+          {
+            "type": "aws:cdk:analytics:construct",
+            "data": {
+              "availabilityZone": "*",
+              "vpcId": "*",
+              "cidrBlock": "*",
+              "mapPublicIpOnLaunch": false,
+              "ipv6CidrBlock": "*",
+              "assignIpv6AddressOnCreation": "*"
+            }
+          },
+          {
+            "type": "aws:cdk:analytics:method",
+            "data": {}
+          }
+        ],
+        "/MealSwipeAppService/MealSwipeVPC/PrivateSubnet2/Subnet": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "MealSwipeVPCPrivateSubnet2Subnet752B7DE2"
+          }
+        ],
+        "/MealSwipeAppService/MealSwipeVPC/PrivateSubnet2/RouteTable": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "MealSwipeVPCPrivateSubnet2RouteTable8E49375C"
+          }
+        ],
+        "/MealSwipeAppService/MealSwipeVPC/PrivateSubnet2/RouteTableAssociation": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "MealSwipeVPCPrivateSubnet2RouteTableAssociation9D8BC186"
+          }
+        ],
+        "/MealSwipeAppService/MealSwipeVPC/PrivateSubnet2/DefaultRoute": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "MealSwipeVPCPrivateSubnet2DefaultRoute088AA018"
+          }
+        ],
+        "/MealSwipeAppService/MealSwipeVPC/IGW": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "MealSwipeVPCIGWC2608A26"
+          }
+        ],
+        "/MealSwipeAppService/MealSwipeVPC/VPCGW": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "MealSwipeVPCVPCGWC8A0A270"
+          }
+        ],
+        "/MealSwipeAppService/MealSwipeVPC/RestrictDefaultSecurityGroupCustomResource": [
+          {
+            "type": "aws:cdk:analytics:construct",
+            "data": "*"
+          }
+        ],
+        "/MealSwipeAppService/MealSwipeVPC/RestrictDefaultSecurityGroupCustomResource/Default": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "MealSwipeVPCRestrictDefaultSecurityGroupCustomResource241BC134"
+          }
+        ],
+        "/MealSwipeAppService/Custom::VpcRestrictDefaultSGCustomResourceProvider": [
+          {
+            "type": "aws:cdk:is-custom-resource-handler-customResourceProvider",
+            "data": true
+          }
+        ],
+        "/MealSwipeAppService/Custom::VpcRestrictDefaultSGCustomResourceProvider/Role": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "CustomVpcRestrictDefaultSGCustomResourceProviderRole26592FE0"
+          }
+        ],
+        "/MealSwipeAppService/Custom::VpcRestrictDefaultSGCustomResourceProvider/Handler": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "CustomVpcRestrictDefaultSGCustomResourceProviderHandlerDC833E5E"
+          }
+        ],
+        "/MealSwipeAppService/MealSwipeCluster": [
+          {
+            "type": "aws:cdk:analytics:construct",
+            "data": {
+              "vpc": "*"
+            }
+          },
+          {
+            "type": "aws:cdk:analytics:method",
+            "data": {
+              "addCapacity": [
+                "*",
+                {
+                  "instanceType": "*",
+                  "desiredCapacity": "*"
+                }
+              ]
+            }
+          },
+          {
+            "type": "aws:cdk:analytics:method",
+            "data": {
+              "addAutoScalingGroup": [
+                "*",
+                {
+                  "machineImageType": 0
+                }
+              ]
+            }
+          }
+        ],
+        "/MealSwipeAppService/MealSwipeCluster/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "MealSwipeCluster4434DE30"
+          }
+        ],
+        "/MealSwipeAppService/MealSwipeCluster/DefaultAutoScalingGroup": [
+          {
+            "type": "aws:cdk:analytics:construct",
+            "data": {
+              "vpc": "*",
+              "machineImage": "*",
+              "updateType": "Replace",
+              "instanceType": "*",
+              "desiredCapacity": "*"
+            }
+          },
+          {
+            "type": "aws:cdk:warning",
+            "data": "desiredCapacity has been configured. Be aware this will reset the size of your AutoScalingGroup on every deployment. See https://github.com/aws/aws-cdk/issues/5215 [ack: @aws-cdk/aws-autoscaling:desiredCapacitySet]",
+            "trace": [
+              "Annotations.addMessage (/mnt/c/Users/David/OneDrive/Desktop/School_related/Spring2025/CI-CD/infra/node_modules/aws-cdk-lib/core/lib/annotations.js:1:1608)",
+              "Annotations.addWarningV2 (/mnt/c/Users/David/OneDrive/Desktop/School_related/Spring2025/CI-CD/infra/node_modules/aws-cdk-lib/core/lib/annotations.js:1:825)",
+              "new AutoScalingGroup (/mnt/c/Users/David/OneDrive/Desktop/School_related/Spring2025/CI-CD/infra/node_modules/aws-cdk-lib/aws-autoscaling/lib/auto-scaling-group.js:1:17777)",
+              "Cluster.addCapacity (/mnt/c/Users/David/OneDrive/Desktop/School_related/Spring2025/CI-CD/infra/node_modules/aws-cdk-lib/aws-ecs/lib/cluster.js:1:11828)",
+              "descriptor.value (/mnt/c/Users/David/OneDrive/Desktop/School_related/Spring2025/CI-CD/infra/node_modules/aws-cdk-lib/core/lib/metadata-resource.js:1:2296)",
+              "new MealSwipeAppService (/mnt/c/Users/David/OneDrive/Desktop/School_related/Spring2025/CI-CD/infra/lib/infra-stack.js:20:13)",
+              "Object.<anonymous> (/mnt/c/Users/David/OneDrive/Desktop/School_related/Spring2025/CI-CD/infra/bin/infra.js:7:1)",
+              "Module._compile (node:internal/modules/cjs/loader:1356:14)",
+              "Module._extensions..js (node:internal/modules/cjs/loader:1414:10)",
+              "Module.load (node:internal/modules/cjs/loader:1197:32)",
+              "Module._load (node:internal/modules/cjs/loader:1013:12)",
+              "Function.executeUserEntryPoint [as runMain] (node:internal/modules/run_main:128:12)",
+              "node:internal/main/run_main_module:28:49"
+            ]
+          },
+          {
+            "type": "aws:cdk:analytics:method",
+            "data": {
+              "addUserData": [
+                "*"
+              ]
+            }
+          },
+          {
+            "type": "aws:cdk:analytics:method",
+            "data": {
+              "addToRolePolicy": [
+                {}
+              ]
+            }
+          },
+          {
+            "type": "aws:cdk:analytics:method",
+            "data": {
+              "addToRolePolicy": [
+                {}
+              ]
+            }
+          },
+          {
+            "type": "aws:cdk:analytics:method",
+            "data": {
+              "addToRolePolicy": [
+                {}
+              ]
+            }
+          }
+        ],
+        "/MealSwipeAppService/MealSwipeCluster/DefaultAutoScalingGroup/InstanceSecurityGroup": [
+          {
+            "type": "aws:cdk:analytics:construct",
+            "data": {
+              "vpc": "*",
+              "allowAllOutbound": true
+            }
+          },
+          {
+            "type": "aws:cdk:analytics:method",
+            "data": {
+              "addIngressRule": [
+                "*",
+                {},
+                "*",
+                false
+              ]
+            }
+          }
+        ],
+        "/MealSwipeAppService/MealSwipeCluster/DefaultAutoScalingGroup/InstanceSecurityGroup/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "MealSwipeClusterDefaultAutoScalingGroupInstanceSecurityGroupB9A98066"
+          }
+        ],
+        "/MealSwipeAppService/MealSwipeCluster/DefaultAutoScalingGroup/InstanceSecurityGroup/from MealSwipeAppServiceLBSecurityGroup7E2BBC53:32768-65535": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "MealSwipeClusterDefaultAutoScalingGroupInstanceSecurityGroupfromMealSwipeAppServiceLBSecurityGroup7E2BBC533276865535609F8B6A"
+          }
+        ],
+        "/MealSwipeAppService/MealSwipeCluster/DefaultAutoScalingGroup/InstanceRole": [
+          {
+            "type": "aws:cdk:analytics:construct",
+            "data": {
+              "roleName": "*",
+              "assumedBy": {
+                "principalAccount": "*",
+                "assumeRoleAction": "*"
+              }
+            }
+          },
+          {
+            "type": "aws:cdk:analytics:method",
+            "data": {
+              "addToPrincipalPolicy": [
+                {}
+              ]
+            }
+          },
+          {
+            "type": "aws:cdk:analytics:method",
+            "data": {
+              "attachInlinePolicy": [
+                "*"
+              ]
+            }
+          },
+          {
+            "type": "aws:cdk:analytics:method",
+            "data": {
+              "attachInlinePolicy": [
+                "*"
+              ]
+            }
+          },
+          {
+            "type": "aws:cdk:analytics:method",
+            "data": {
+              "addToPrincipalPolicy": [
+                {}
+              ]
+            }
+          },
+          {
+            "type": "aws:cdk:analytics:method",
+            "data": {
+              "addToPrincipalPolicy": [
+                {}
+              ]
+            }
+          }
+        ],
+        "/MealSwipeAppService/MealSwipeCluster/DefaultAutoScalingGroup/InstanceRole/ImportInstanceRole": [
+          {
+            "type": "aws:cdk:analytics:construct",
+            "data": "*"
+          }
+        ],
+        "/MealSwipeAppService/MealSwipeCluster/DefaultAutoScalingGroup/InstanceRole/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "MealSwipeClusterDefaultAutoScalingGroupInstanceRoleA12A08C1"
+          }
+        ],
+        "/MealSwipeAppService/MealSwipeCluster/DefaultAutoScalingGroup/InstanceRole/DefaultPolicy": [
+          {
+            "type": "aws:cdk:analytics:construct",
+            "data": "*"
+          },
+          {
+            "type": "aws:cdk:analytics:method",
+            "data": {
+              "attachToRole": [
+                "*"
+              ]
+            }
+          },
+          {
+            "type": "aws:cdk:analytics:method",
+            "data": {
+              "attachToRole": [
+                "*"
+              ]
+            }
+          },
+          {
+            "type": "aws:cdk:analytics:method",
+            "data": {
+              "addStatements": [
+                {}
+              ]
+            }
+          },
+          {
+            "type": "aws:cdk:analytics:method",
+            "data": {
+              "addStatements": [
+                {}
+              ]
+            }
+          },
+          {
+            "type": "aws:cdk:analytics:method",
+            "data": {
+              "addStatements": [
+                {}
+              ]
+            }
+          }
+        ],
+        "/MealSwipeAppService/MealSwipeCluster/DefaultAutoScalingGroup/InstanceRole/DefaultPolicy/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "MealSwipeClusterDefaultAutoScalingGroupInstanceRoleDefaultPolicy302F6ED3"
+          }
+        ],
+        "/MealSwipeAppService/MealSwipeCluster/DefaultAutoScalingGroup/InstanceProfile": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "MealSwipeClusterDefaultAutoScalingGroupInstanceProfile54746C6F"
+          }
+        ],
+        "/MealSwipeAppService/MealSwipeCluster/DefaultAutoScalingGroup/LaunchTemplate": [
+          {
+            "type": "aws:cdk:analytics:construct",
+            "data": {
+              "machineImage": "*",
+              "instanceType": "*",
+              "detailedMonitoring": false,
+              "securityGroup": "*",
+              "userData": "*",
+              "associatePublicIpAddress": "*",
+              "spotOptions": "*",
+              "blockDevices": "*",
+              "instanceProfile": "*",
+              "keyPair": "*"
+            }
+          }
+        ],
+        "/MealSwipeAppService/MealSwipeCluster/DefaultAutoScalingGroup/LaunchTemplate/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "MealSwipeClusterDefaultAutoScalingGroupLaunchTemplate3E5CDEF0"
+          }
+        ],
+        "/MealSwipeAppService/MealSwipeCluster/DefaultAutoScalingGroup/ASG": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "MealSwipeClusterDefaultAutoScalingGroupASGC21801CC"
+          }
+        ],
+        "/MealSwipeAppService/MealSwipeCluster/DefaultAutoScalingGroup/DrainECSHook/Function": [
+          {
+            "type": "aws:cdk:analytics:construct",
+            "data": {
+              "code": "*",
+              "handler": "*",
+              "runtime": "*",
+              "timeout": "*",
+              "environment": "*"
+            }
+          },
+          {
+            "type": "aws:cdk:analytics:method",
+            "data": {
+              "addEnvironment": [
+                "*",
+                "*"
+              ]
+            }
+          }
+        ],
+        "/MealSwipeAppService/MealSwipeCluster/DefaultAutoScalingGroup/DrainECSHook/Function/ServiceRole": [
+          {
+            "type": "aws:cdk:analytics:construct",
+            "data": {
+              "assumedBy": {
+                "principalAccount": "*",
+                "assumeRoleAction": "*"
+              },
+              "managedPolicies": [
+                {
+                  "managedPolicyArn": "*"
+                }
+              ]
+            }
+          },
+          {
+            "type": "aws:cdk:analytics:method",
+            "data": {
+              "addToPrincipalPolicy": [
+                {}
+              ]
+            }
+          },
+          {
+            "type": "aws:cdk:analytics:method",
+            "data": {
+              "attachInlinePolicy": [
+                "*"
+              ]
+            }
+          },
+          {
+            "type": "aws:cdk:analytics:method",
+            "data": {
+              "attachInlinePolicy": [
+                "*"
+              ]
+            }
+          },
+          {
+            "type": "aws:cdk:analytics:method",
+            "data": {
+              "addToPrincipalPolicy": [
+                {}
+              ]
+            }
+          },
+          {
+            "type": "aws:cdk:analytics:method",
+            "data": {
+              "addToPrincipalPolicy": [
+                {}
+              ]
+            }
+          },
+          {
+            "type": "aws:cdk:analytics:method",
+            "data": {
+              "addToPrincipalPolicy": [
+                {}
+              ]
+            }
+          },
+          {
+            "type": "aws:cdk:analytics:method",
+            "data": {
+              "addToPrincipalPolicy": [
+                {}
+              ]
+            }
+          }
+        ],
+        "/MealSwipeAppService/MealSwipeCluster/DefaultAutoScalingGroup/DrainECSHook/Function/ServiceRole/ImportServiceRole": [
+          {
+            "type": "aws:cdk:analytics:construct",
+            "data": "*"
+          }
+        ],
+        "/MealSwipeAppService/MealSwipeCluster/DefaultAutoScalingGroup/DrainECSHook/Function/ServiceRole/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "MealSwipeClusterDefaultAutoScalingGroupDrainECSHookFunctionServiceRoleBE6EF729"
+          }
+        ],
+        "/MealSwipeAppService/MealSwipeCluster/DefaultAutoScalingGroup/DrainECSHook/Function/ServiceRole/DefaultPolicy": [
+          {
+            "type": "aws:cdk:analytics:construct",
+            "data": "*"
+          },
+          {
+            "type": "aws:cdk:analytics:method",
+            "data": {
+              "attachToRole": [
+                "*"
+              ]
+            }
+          },
+          {
+            "type": "aws:cdk:analytics:method",
+            "data": {
+              "attachToRole": [
+                "*"
+              ]
+            }
+          },
+          {
+            "type": "aws:cdk:analytics:method",
+            "data": {
+              "addStatements": [
+                {}
+              ]
+            }
+          },
+          {
+            "type": "aws:cdk:analytics:method",
+            "data": {
+              "addStatements": [
+                {}
+              ]
+            }
+          },
+          {
+            "type": "aws:cdk:analytics:method",
+            "data": {
+              "addStatements": [
+                {}
+              ]
+            }
+          },
+          {
+            "type": "aws:cdk:analytics:method",
+            "data": {
+              "addStatements": [
+                {}
+              ]
+            }
+          },
+          {
+            "type": "aws:cdk:analytics:method",
+            "data": {
+              "addStatements": [
+                {}
+              ]
+            }
+          }
+        ],
+        "/MealSwipeAppService/MealSwipeCluster/DefaultAutoScalingGroup/DrainECSHook/Function/ServiceRole/DefaultPolicy/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "MealSwipeClusterDefaultAutoScalingGroupDrainECSHookFunctionServiceRoleDefaultPolicy5BCE9AD8"
+          }
+        ],
+        "/MealSwipeAppService/MealSwipeCluster/DefaultAutoScalingGroup/DrainECSHook/Function/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "MealSwipeClusterDefaultAutoScalingGroupDrainECSHookFunction05A5F8FC"
+          }
+        ],
+        "/MealSwipeAppService/MealSwipeCluster/DefaultAutoScalingGroup/DrainECSHook/Function/AllowInvoke:MealSwipeAppServiceMealSwipeClusterDefaultAutoScalingGroupLifecycleHookDrainHookTopicC923201C": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "MealSwipeClusterDefaultAutoScalingGroupDrainECSHookFunctionAllowInvokeMealSwipeAppServiceMealSwipeClusterDefaultAutoScalingGroupLifecycleHookDrainHookTopicC923201C51285F7E"
+          }
+        ],
+        "/MealSwipeAppService/MealSwipeCluster/DefaultAutoScalingGroup/DrainECSHook/Function/Topic": [
+          {
+            "type": "aws:cdk:analytics:construct",
+            "data": {
+              "topic": "*",
+              "endpoint": "*",
+              "protocol": "lambda",
+              "filterPolicy": "*",
+              "filterPolicyWithMessageBody": "*",
+              "region": "*",
+              "deadLetterQueue": "*"
+            }
+          }
+        ],
+        "/MealSwipeAppService/MealSwipeCluster/DefaultAutoScalingGroup/DrainECSHook/Function/Topic/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "MealSwipeClusterDefaultAutoScalingGroupDrainECSHookFunctionTopic773BA514"
+          }
+        ],
+        "/MealSwipeAppService/MealSwipeCluster/DefaultAutoScalingGroup/LifecycleHookDrainHook": [
+          {
+            "type": "aws:cdk:analytics:construct",
+            "data": {
+              "autoScalingGroup": "*",
+              "lifecycleTransition": "autoscaling:EC2_INSTANCE_TERMINATING",
+              "defaultResult": "CONTINUE",
+              "notificationTarget": "*",
+              "heartbeatTimeout": "*"
+            }
+          }
+        ],
+        "/MealSwipeAppService/MealSwipeCluster/DefaultAutoScalingGroup/LifecycleHookDrainHook/Topic": [
+          {
+            "type": "aws:cdk:analytics:construct",
+            "data": {
+              "masterKey": "*"
+            }
+          }
+        ],
+        "/MealSwipeAppService/MealSwipeCluster/DefaultAutoScalingGroup/LifecycleHookDrainHook/Topic/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "MealSwipeClusterDefaultAutoScalingGroupLifecycleHookDrainHookTopic200CC71F"
+          }
+        ],
+        "/MealSwipeAppService/MealSwipeCluster/DefaultAutoScalingGroup/LifecycleHookDrainHook/Role": [
+          {
+            "type": "aws:cdk:analytics:construct",
+            "data": {
+              "assumedBy": {
+                "principalAccount": "*",
+                "assumeRoleAction": "*"
+              }
+            }
+          },
+          {
+            "type": "aws:cdk:analytics:method",
+            "data": {
+              "addToPrincipalPolicy": [
+                {}
+              ]
+            }
+          },
+          {
+            "type": "aws:cdk:analytics:method",
+            "data": {
+              "attachInlinePolicy": [
+                "*"
+              ]
+            }
+          },
+          {
+            "type": "aws:cdk:analytics:method",
+            "data": {
+              "attachInlinePolicy": [
+                "*"
+              ]
+            }
+          }
+        ],
+        "/MealSwipeAppService/MealSwipeCluster/DefaultAutoScalingGroup/LifecycleHookDrainHook/Role/ImportRole": [
+          {
+            "type": "aws:cdk:analytics:construct",
+            "data": "*"
+          }
+        ],
+        "/MealSwipeAppService/MealSwipeCluster/DefaultAutoScalingGroup/LifecycleHookDrainHook/Role/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "MealSwipeClusterDefaultAutoScalingGroupLifecycleHookDrainHookRoleD831B6D3"
+          }
+        ],
+        "/MealSwipeAppService/MealSwipeCluster/DefaultAutoScalingGroup/LifecycleHookDrainHook/Role/DefaultPolicy": [
+          {
+            "type": "aws:cdk:analytics:construct",
+            "data": "*"
+          },
+          {
+            "type": "aws:cdk:analytics:method",
+            "data": {
+              "attachToRole": [
+                "*"
+              ]
+            }
+          },
+          {
+            "type": "aws:cdk:analytics:method",
+            "data": {
+              "attachToRole": [
+                "*"
+              ]
+            }
+          },
+          {
+            "type": "aws:cdk:analytics:method",
+            "data": {
+              "addStatements": [
+                {}
+              ]
+            }
+          }
+        ],
+        "/MealSwipeAppService/MealSwipeCluster/DefaultAutoScalingGroup/LifecycleHookDrainHook/Role/DefaultPolicy/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "MealSwipeClusterDefaultAutoScalingGroupLifecycleHookDrainHookRoleDefaultPolicy32E513EA"
+          }
+        ],
+        "/MealSwipeAppService/MealSwipeCluster/DefaultAutoScalingGroup/LifecycleHookDrainHook/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "MealSwipeClusterDefaultAutoScalingGroupLifecycleHookDrainHookBC4D9CC0"
+          }
+        ],
+        "/MealSwipeAppService/SsmParameterValue:--aws--service--ecs--optimized-ami--amazon-linux-2--recommended--image_id:C96584B6-F00A-464E-AD19-53AFF4B05118.Parameter": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "SsmParameterValueawsserviceecsoptimizedamiamazonlinux2recommendedimageidC96584B6F00A464EAD1953AFF4B05118Parameter"
+          }
+        ],
+        "/MealSwipeAppService/BackendRepo": [
+          {
+            "type": "aws:cdk:analytics:construct",
+            "data": "*"
+          }
+        ],
+        "/MealSwipeAppService/BackendRepo/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "BackendRepo7FFBAD06"
+          }
+        ],
+        "/MealSwipeAppService/FrontendRepo": [
+          {
+            "type": "aws:cdk:analytics:construct",
+            "data": "*"
+          }
+        ],
+        "/MealSwipeAppService/FrontendRepo/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "FrontendRepoF80FCC01"
+          }
+        ],
+        "/MealSwipeAppService/MealSwipeAppService/LB": [
+          {
+            "type": "aws:cdk:analytics:construct",
+            "data": "*"
+          },
+          {
+            "type": "aws:cdk:analytics:method",
+            "data": "*"
+          }
+        ],
+        "/MealSwipeAppService/MealSwipeAppService/LB/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "MealSwipeAppServiceLB60C3886E"
+          }
+        ],
+        "/MealSwipeAppService/MealSwipeAppService/LB/SecurityGroup": [
+          {
+            "type": "aws:cdk:analytics:construct",
+            "data": {
+              "vpc": "*",
+              "description": "*",
+              "allowAllOutbound": false
+            }
+          },
+          {
+            "type": "aws:cdk:analytics:method",
+            "data": {
+              "addIngressRule": [
+                {
+                  "canInlineRule": true,
+                  "connections": "*",
+                  "uniqueId": "*"
+                },
+                {},
+                "*",
+                false
+              ]
+            }
+          },
+          {
+            "type": "aws:cdk:analytics:method",
+            "data": {
+              "addEgressRule": [
+                "*",
+                {},
+                "*",
+                true
+              ]
+            }
+          }
+        ],
+        "/MealSwipeAppService/MealSwipeAppService/LB/SecurityGroup/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "MealSwipeAppServiceLBSecurityGroup37BCE77C"
+          }
+        ],
+        "/MealSwipeAppService/MealSwipeAppService/LB/SecurityGroup/to MealSwipeAppServiceMealSwipeClusterDefaultAutoScalingGroupInstanceSecurityGroupB94FEAA6:32768-65535": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "MealSwipeAppServiceLBSecurityGrouptoMealSwipeAppServiceMealSwipeClusterDefaultAutoScalingGroupInstanceSecurityGroupB94FEAA632768655357B371344"
+          }
+        ],
+        "/MealSwipeAppService/MealSwipeAppService/LB/PublicListener": [
+          {
+            "type": "aws:cdk:analytics:construct",
+            "data": "*"
+          },
+          {
+            "type": "aws:cdk:analytics:method",
+            "data": "*"
+          },
+          {
+            "type": "aws:cdk:analytics:method",
+            "data": "*"
+          },
+          {
+            "type": "aws:cdk:analytics:method",
+            "data": "*"
+          }
+        ],
+        "/MealSwipeAppService/MealSwipeAppService/LB/PublicListener/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "MealSwipeAppServiceLBPublicListenerC57D3302"
+          }
+        ],
+        "/MealSwipeAppService/MealSwipeAppService/LB/PublicListener/ECSGroup/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "MealSwipeAppServiceLBPublicListenerECSGroup7FC61536"
+          }
+        ],
+        "/MealSwipeAppService/MealSwipeAppService/LoadBalancerDNS": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "MealSwipeAppServiceLoadBalancerDNS4F4CB737"
+          }
+        ],
+        "/MealSwipeAppService/MealSwipeAppService/ServiceURL": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "MealSwipeAppServiceServiceURL22A5AD44"
+          }
+        ],
+        "/MealSwipeAppService/MealSwipeAppService/TaskDef": [
+          {
+            "type": "aws:cdk:analytics:construct",
+            "data": "*"
+          },
+          {
+            "type": "aws:cdk:analytics:construct",
+            "data": "*"
+          },
+          {
+            "type": "aws:cdk:analytics:method",
+            "data": "*"
+          },
+          {
+            "type": "aws:cdk:analytics:method",
+            "data": "*"
+          },
+          {
+            "type": "aws:cdk:analytics:method",
+            "data": "*"
+          }
+        ],
+        "/MealSwipeAppService/MealSwipeAppService/TaskDef/TaskRole": [
+          {
+            "type": "aws:cdk:analytics:construct",
+            "data": {
+              "assumedBy": {
+                "principalAccount": "*",
+                "assumeRoleAction": "*"
+              }
+            }
+          },
+          {
+            "type": "aws:cdk:analytics:method",
+            "data": {
+              "addToPrincipalPolicy": [
+                {}
+              ]
+            }
+          },
+          {
+            "type": "aws:cdk:analytics:method",
+            "data": {
+              "attachInlinePolicy": [
+                "*"
+              ]
+            }
+          },
+          {
+            "type": "aws:cdk:analytics:method",
+            "data": {
+              "attachInlinePolicy": [
+                "*"
+              ]
+            }
+          },
+          {
+            "type": "aws:cdk:analytics:method",
+            "data": {
+              "addToPrincipalPolicy": [
+                {}
+              ]
+            }
+          },
+          {
+            "type": "aws:cdk:analytics:method",
+            "data": {
+              "addToPrincipalPolicy": [
+                {}
+              ]
+            }
+          },
+          {
+            "type": "aws:cdk:analytics:method",
+            "data": {
+              "addToPrincipalPolicy": [
+                {}
+              ]
+            }
+          }
+        ],
+        "/MealSwipeAppService/MealSwipeAppService/TaskDef/TaskRole/ImportTaskRole": [
+          {
+            "type": "aws:cdk:analytics:construct",
+            "data": "*"
+          }
+        ],
+        "/MealSwipeAppService/MealSwipeAppService/TaskDef/TaskRole/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "MealSwipeAppServiceTaskDefTaskRole752C89C2"
+          }
+        ],
+        "/MealSwipeAppService/MealSwipeAppService/TaskDef/TaskRole/DefaultPolicy": [
+          {
+            "type": "aws:cdk:analytics:construct",
+            "data": "*"
+          },
+          {
+            "type": "aws:cdk:analytics:method",
+            "data": {
+              "attachToRole": [
+                "*"
+              ]
+            }
+          },
+          {
+            "type": "aws:cdk:analytics:method",
+            "data": {
+              "attachToRole": [
+                "*"
+              ]
+            }
+          },
+          {
+            "type": "aws:cdk:analytics:method",
+            "data": {
+              "addStatements": [
+                {}
+              ]
+            }
+          },
+          {
+            "type": "aws:cdk:analytics:method",
+            "data": {
+              "addStatements": [
+                {}
+              ]
+            }
+          },
+          {
+            "type": "aws:cdk:analytics:method",
+            "data": {
+              "addStatements": [
+                {}
+              ]
+            }
+          },
+          {
+            "type": "aws:cdk:analytics:method",
+            "data": {
+              "addStatements": [
+                {}
+              ]
+            }
+          }
+        ],
+        "/MealSwipeAppService/MealSwipeAppService/TaskDef/TaskRole/DefaultPolicy/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "MealSwipeAppServiceTaskDefTaskRoleDefaultPolicyBBCD94D5"
+          }
+        ],
+        "/MealSwipeAppService/MealSwipeAppService/TaskDef/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "MealSwipeAppServiceTaskDef86331B1A"
+          }
+        ],
+        "/MealSwipeAppService/MealSwipeAppService/TaskDef/web/LogGroup": [
+          {
+            "type": "aws:cdk:analytics:construct",
+            "data": {
+              "retention": "*"
+            }
+          }
+        ],
+        "/MealSwipeAppService/MealSwipeAppService/TaskDef/web/LogGroup/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "MealSwipeAppServiceTaskDefwebLogGroup49B58D08"
+          }
+        ],
+        "/MealSwipeAppService/MealSwipeAppService/TaskDef/ExecutionRole": [
+          {
+            "type": "aws:cdk:analytics:construct",
+            "data": {
+              "assumedBy": {
+                "principalAccount": "*",
+                "assumeRoleAction": "*"
+              },
+              "roleName": "*"
+            }
+          },
+          {
+            "type": "aws:cdk:analytics:method",
+            "data": {
+              "addToPrincipalPolicy": [
+                {}
+              ]
+            }
+          },
+          {
+            "type": "aws:cdk:analytics:method",
+            "data": {
+              "attachInlinePolicy": [
+                "*"
+              ]
+            }
+          },
+          {
+            "type": "aws:cdk:analytics:method",
+            "data": {
+              "attachInlinePolicy": [
+                "*"
+              ]
+            }
+          }
+        ],
+        "/MealSwipeAppService/MealSwipeAppService/TaskDef/ExecutionRole/ImportExecutionRole": [
+          {
+            "type": "aws:cdk:analytics:construct",
+            "data": "*"
+          }
+        ],
+        "/MealSwipeAppService/MealSwipeAppService/TaskDef/ExecutionRole/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "MealSwipeAppServiceTaskDefExecutionRole92952644"
+          }
+        ],
+        "/MealSwipeAppService/MealSwipeAppService/TaskDef/ExecutionRole/DefaultPolicy": [
+          {
+            "type": "aws:cdk:analytics:construct",
+            "data": "*"
+          },
+          {
+            "type": "aws:cdk:analytics:method",
+            "data": {
+              "attachToRole": [
+                "*"
+              ]
+            }
+          },
+          {
+            "type": "aws:cdk:analytics:method",
+            "data": {
+              "attachToRole": [
+                "*"
+              ]
+            }
+          },
+          {
+            "type": "aws:cdk:analytics:method",
+            "data": {
+              "addStatements": [
+                {}
+              ]
+            }
+          }
+        ],
+        "/MealSwipeAppService/MealSwipeAppService/TaskDef/ExecutionRole/DefaultPolicy/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "MealSwipeAppServiceTaskDefExecutionRoleDefaultPolicy0D048F63"
+          }
+        ],
+        "/MealSwipeAppService/MealSwipeAppService/Service": [
+          {
+            "type": "aws:cdk:warning",
+            "data": "minHealthyPercent has not been configured so the default value of 50% is used. The number of running tasks will decrease below the desired count during deployments etc. See https://github.com/aws/aws-cdk/issues/31705 [ack: @aws-cdk/aws-ecs:minHealthyPercent]",
+            "trace": [
+              "Annotations.addMessage (/mnt/c/Users/David/OneDrive/Desktop/School_related/Spring2025/CI-CD/infra/node_modules/aws-cdk-lib/core/lib/annotations.js:1:1608)",
+              "Annotations.addWarningV2 (/mnt/c/Users/David/OneDrive/Desktop/School_related/Spring2025/CI-CD/infra/node_modules/aws-cdk-lib/core/lib/annotations.js:1:825)",
+              "new BaseService (/mnt/c/Users/David/OneDrive/Desktop/School_related/Spring2025/CI-CD/infra/node_modules/aws-cdk-lib/aws-ecs/lib/base/base-service.js:1:8100)",
+              "new Ec2Service (/mnt/c/Users/David/OneDrive/Desktop/School_related/Spring2025/CI-CD/infra/node_modules/aws-cdk-lib/aws-ecs/lib/ec2/ec2-service.js:1:3563)",
+              "new ApplicationLoadBalancedEc2Service (/mnt/c/Users/David/OneDrive/Desktop/School_related/Spring2025/CI-CD/infra/node_modules/aws-cdk-lib/aws-ecs-patterns/lib/ecs/application-load-balanced-ecs-service.js:1:2492)",
+              "new MealSwipeAppService (/mnt/c/Users/David/OneDrive/Desktop/School_related/Spring2025/CI-CD/infra/lib/infra-stack.js:30:33)",
+              "Object.<anonymous> (/mnt/c/Users/David/OneDrive/Desktop/School_related/Spring2025/CI-CD/infra/bin/infra.js:7:1)",
+              "Module._compile (node:internal/modules/cjs/loader:1356:14)",
+              "Module._extensions..js (node:internal/modules/cjs/loader:1414:10)",
+              "Module.load (node:internal/modules/cjs/loader:1197:32)",
+              "Module._load (node:internal/modules/cjs/loader:1013:12)",
+              "Function.executeUserEntryPoint [as runMain] (node:internal/modules/run_main:128:12)",
+              "node:internal/main/run_main_module:28:49"
+            ]
+          },
+          {
+            "type": "aws:cdk:analytics:construct",
+            "data": "*"
+          },
+          {
+            "type": "aws:cdk:analytics:method",
+            "data": "*"
+          }
+        ],
+        "/MealSwipeAppService/MealSwipeAppService/Service/Service": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "MealSwipeAppService4327B002"
+          }
+        ],
+        "/MealSwipeAppService/CDKMetadata/Default": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "CDKMetadata"
+          }
+        ],
+        "/MealSwipeAppService/CDKMetadata/Condition": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "CDKMetadataAvailable"
+          }
+        ],
+        "/MealSwipeAppService/BootstrapVersion": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "BootstrapVersion"
+          }
+        ],
+        "/MealSwipeAppService/CheckBootstrapVersion": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "CheckBootstrapVersion"
+          }
+        ]
+      },
+      "displayName": "MealSwipeAppService"
+    },
+    "Tree": {
+      "type": "cdk:tree",
+      "properties": {
+        "file": "tree.json"
+      }
+    }
+  }
+}
