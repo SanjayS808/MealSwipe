@@ -23,10 +23,10 @@ class MealSwipeAppService extends cdk.Stack {
 
     // Add EC2 capacity to the cluster
     cluster.addCapacity('DefaultAutoScalingGroup', {
-      instanceType: new ec2.InstanceType('t3.small'),
-      desiredCapacity: 2,
+      instanceType: new ec2.InstanceType('t3.nano'),
+      desiredCapacity: 1,
       minCapacity: 1,
-      maxCapacity: 4
+      maxCapacity: 2
     });
 
     // Reference existing ECR repository for backend instead of creating it
@@ -39,8 +39,8 @@ class MealSwipeAppService extends cdk.Stack {
     // Backend service with load balancer
     const backendService = new ecsPatterns.ApplicationLoadBalancedEc2Service(this, 'BackendService', {
       cluster,
-      memoryLimitMiB: 1024,
-      cpu: 512,
+      memoryLimitMiB: 512,
+      cpu: 256,
       taskImageOptions: {
         image: ecs.ContainerImage.fromEcrRepository(backendRepo, 'latest'),
         containerPort: 5000,
@@ -77,7 +77,7 @@ class MealSwipeAppService extends cdk.Stack {
     // Add scaling policies for the backend service
     const scalableTarget = backendService.service.autoScaleTaskCount({
       minCapacity: 1,
-      maxCapacity: 10,
+      maxCapacity: 5,
     });
 
     scalableTarget.scaleOnCpuUtilization('CpuScaling', {
