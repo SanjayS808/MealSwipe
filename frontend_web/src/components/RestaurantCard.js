@@ -7,7 +7,7 @@ import TinderCard from "react-tinder-card";
 
 function RestaurantCard({ restaurant, onSwipe }) {
   return (
-    <TinderCard className="swipe" key={restaurant.id} onSwipe={(dir) => onSwipe(dir, restaurant)}>
+    <TinderCard className="swipe" key={restaurant.id} onSwipe={(dir) => onSwipe(dir, restaurant) } >
       <div
         style={{
           backgroundImage:

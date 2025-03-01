@@ -1,6 +1,6 @@
 import React from "react";
 
-function TrashedPage({ trashedRestaurants }) {
+function TrashedPage({ trashedRestaurants , clearTrashed}) {
   return (
     <div>
       <h2>Trashed Restaurants</h2>
@@ -13,6 +13,7 @@ function TrashedPage({ trashedRestaurants }) {
           ))
         )}
       </ul>
+      <button onClick={() => clearTrashed()}>Clear Trashed</button>
     </div>
   );
 }
