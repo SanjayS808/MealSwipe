@@ -15,7 +15,7 @@ class MealSwipeAppService extends cdk.Stack {
 
     // Create a new VPC with default settings (2 AZs for high availability)
     const vpc = new ec2.Vpc(this, 'MealSwipeVPC', {
-      maxAzs: 2,
+      maxAzs: 1,
     });
 
     // Create an ECS cluster within the VPC
@@ -23,10 +23,10 @@ class MealSwipeAppService extends cdk.Stack {
 
     // Add EC2 capacity to the cluster
     cluster.addCapacity('DefaultAutoScalingGroup', {
-      instanceType: new ec2.InstanceType('t3.nano'),
+      instanceType: new ec2.InstanceType('t2.nano'),
       desiredCapacity: 1,
       minCapacity: 1,
-      maxCapacity: 2
+      maxCapacity: 1
     });
 
     // Reference existing ECR repository for backend instead of creating it
@@ -77,7 +77,7 @@ class MealSwipeAppService extends cdk.Stack {
     // Add scaling policies for the backend service
     const scalableTarget = backendService.service.autoScaleTaskCount({
       minCapacity: 1,
-      maxCapacity: 5,
+      maxCapacity: 1,
     });
 
     scalableTarget.scaleOnCpuUtilization('CpuScaling', {
