@@ -15,7 +15,7 @@ class MealSwipeAppService extends cdk.Stack {
 
     // Create a new VPC with default settings (2 AZs for high availability)
     const vpc = new ec2.Vpc(this, 'MealSwipeVPC', {
-      maxAzs: 1,
+      maxAzs: 2,
     });
 
     // Create an ECS cluster within the VPC
