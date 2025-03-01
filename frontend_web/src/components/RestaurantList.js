@@ -3,13 +3,22 @@
 import React from "react";
 import RestaurantCard from "./RestaurantCard";
 
-function RestaurantList({ restaurants, onSwipe }) {
+
+function RestaurantList({ restaurants, onSwipe ,resetBackendData}) {
   return (
     <div className="cardContainer">
-      {restaurants.map((restaurant) => (
-        <RestaurantCard key={restaurant.id} restaurant={restaurant} onSwipe={onSwipe} />
-      ))}
+        {restaurants.length === 0 ? (
+          <div className="noRestaurants">
+            <p>No restaurants available.</p>
+            <button onClick={resetBackendData}>Refresh</button>
+          </div>
+        ) : (
+          restaurants.map((restaurant) => (
+            <RestaurantCard key={restaurant.id} restaurant={restaurant} onSwipe={onSwipe} />
+          ))
+        )}
     </div>
+
   );
 }
 

@@ -1,6 +1,8 @@
 import React from "react";
 
-function FavoritesPage({ likedRestaurants }) {
+
+
+function FavoritesPage({ likedRestaurants, clearFavorites }) {
   return (
     <div>
       <h2>Liked Restaurants</h2>
@@ -13,6 +15,7 @@ function FavoritesPage({ likedRestaurants }) {
           ))
         )}
       </ul>
+      <button onClick={() => clearFavorites()}>Clear Favorites</button>
     </div>
   );
 }
