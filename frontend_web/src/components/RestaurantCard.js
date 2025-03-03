@@ -1,7 +1,6 @@
 // This Component is used to display a restaurant card in the Tinder-like interface.
 
 import React from "react";
-import TinderCard from "react-tinder-card";
 
 
 

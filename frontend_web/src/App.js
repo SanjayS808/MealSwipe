@@ -8,7 +8,7 @@ import "./App.css";
 // import TinderCard from 'react-tinder-card'
 
 const DEV_MODE = false
-const backendURL = (DEV_MODE) ? "http://localhost:5000/"  : "http://MealSw-Backe-k0cJtOkGFP3i-29432626.us-west-1.elb.amazonaws.com";
+const backendURL = (DEV_MODE) ? "http://localhost:5000/"  : "http://MealSw-Backe-k0cJtOkGFP3i-29432626.us-west-1.elb.amazonaws.com/";
 
 function App() {
   const [backendData, setBackendData] = useState([]);
@@ -42,7 +42,7 @@ function App() {
   
   // Fetch data from the backend when the component mounts
   const fetchRestaurants = () => {
-    fetch("http://localhost:5001/api/serve/get-all-restaurants")
+    fetch(backendURL + "/api/serve/get-all-restaurants")
       .then(response => {
         if (!response.ok) {
           throw new Error("Network response was not ok");
@@ -88,7 +88,7 @@ function App() {
     loadFavorites();
     loadTrashed();
 
-  }, []);
+  }, [backendData.length]);
 
   const resetBackendData = () => {
     //call the useffect fetch again
