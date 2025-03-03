@@ -1,6 +1,6 @@
 # Team Weekly Report - (Week 8)
 
-**Team**:
+**Team**: MealSwipe
 
 **Week**:
 
