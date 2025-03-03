@@ -8,6 +8,7 @@ function App() {
   const [favoriteRestaurants, setFavoriteRestaurants] = useState([]);
   const [trashedRestaurants, setTrashedRestaurants] = useState([]);
   const [maxDistance, setMaxDistance] = useState(20); // Default to 20 km
+  const [minRating, setMinRating] = useState(0); // Default to 0 stars
   const [showFilter, setShowFilter] = useState(false); // State to toggle filter visibility
 
   const loadFavorites = () => {
@@ -32,7 +33,7 @@ function App() {
   };
 
   const fetchRestaurants = () => {
-    fetch(`http://localhost:5001/api/serve/get-all-restaurants?maxDistance=${maxDistance}`)
+    fetch(`http://localhost:5001/api/serve/get-all-restaurants?maxDistance=${maxDistance}&minRating=${minRating}`)
       .then(response => {
         if (!response.ok) {
           throw new Error("Network response was not ok");
@@ -59,7 +60,7 @@ function App() {
     fetchRestaurants();
     loadFavorites();
     loadTrashed();
-  }, [maxDistance]);
+  }, [maxDistance, minRating]);
 
   const toggleFavorite = (restaurant) => {
     const isAlreadyFavorite = favoriteRestaurants.some(fav => fav.id === restaurant.id);
@@ -90,17 +91,43 @@ function App() {
         likedRestaurants={favoriteRestaurants}
         trashedRestaurants={trashedRestaurants}
       />
-      <button style={{ position: 'absolute', top: '10px', right: '10px', zIndex: 1000 }} onClick={() => setShowFilter(!showFilter)}>Toggle Filter</button>
+      <button 
+        style={{ 
+          position: 'absolute', 
+          top: '10px', 
+          right: '10px', 
+          zIndex: 1000, 
+          background: `url(${process.env.PUBLIC_URL + '/filter.png'}) no-repeat center center`, 
+          backgroundSize: 'cover',
+          border: 'none',
+          width: '50px', 
+          height: '50px' 
+        }} 
+        onClick={() => setShowFilter(!showFilter)}
+      />
       {showFilter && (
-        <div style={{ padding: "10px" }}>
-          <label>Max Distance: {maxDistance} km</label>
-          <input
-            type="range"
-            min="1"
-            max="100"
-            value={maxDistance}
-            onChange={e => setMaxDistance(e.target.value)}
-          />
+        <div style={{ position: 'absolute', top: '50px', right: '10px', padding: "10px", backgroundColor: "white", borderRadius: "8px" }}>
+          <div>
+            <label>Max Distance: {maxDistance} km</label>
+            <input
+              type="range"
+              min="1"
+              max="100"
+              value={maxDistance}
+              onChange={e => setMaxDistance(e.target.value)}
+            />
+          </div>
+          <div>
+            <label>Min Rating: {minRating} Stars</label>
+            <input
+              type="range"
+              min="0"
+              max="5"
+              step="0.5"
+              value={minRating}
+              onChange={e => setMinRating(parseFloat(e.target.value))}
+            />
+          </div>
         </div>
       )}
     </div>
