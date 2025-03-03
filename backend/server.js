@@ -9,16 +9,16 @@ const API_uri = "https://mealswipe-flask-service.75ct69eg04jk6.us-west-2.cs.amaz
 app.use(cors());  // Enable CORS
 
 app.get("/api/serve/get-all-restaurants", (req, res) => {
-    // Setup and serve API option.
     var data = {
         "includedTypes": ["restaurant"],
         "maxResultCount": 20,
         "locationRestriction": {
             "circle": {
                 "center": {
-                "latitude": 30.627977,
-                "longitude": -96.334404},
-                "radius": 100.0
+                    "latitude": 30.627977,
+                    "longitude": -96.334404
+                },
+                "radius": parseFloat(req.query.maxDistance) || 100.0  // <-- max distance
             }
         }
     };
@@ -27,16 +27,19 @@ app.get("/api/serve/get-all-restaurants", (req, res) => {
         body: JSON.stringify(data),
         method: 'POST',
         headers: {
-            'Content-Type': 'application/json',
-            'X-Goog-Api-Key': 'None',
-            'X-Goog-FieldMask': '*'
+            'Content-Type': 'application/json'
         }
-        
     };
     request(clientServerOptions, function (error, response) {
-        return res.json(response.body);
+        if (error) {
+            console.error("Backend API error:", error);
+            res.status(500).send("Internal Server Error");
+        } else {
+            res.json(JSON.parse(response.body));
+        }
     });
 });
+
 
 app.get("/api", (req, res) => {
     res.json({"restaurants" : ["resOne", "resTwo"]});
