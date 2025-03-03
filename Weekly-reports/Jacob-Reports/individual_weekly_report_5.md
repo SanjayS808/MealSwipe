@@ -1,6 +1,6 @@
 # Individual Weekly Report
 
-Henry Chibib:
+Jacob Miller:
 
 MealSwipe:
 
@@ -12,20 +12,21 @@ MealSwipe:
 
 | Task | Status | Time Spent |
 | :---- | :---- | :---- |
-| Filter update | complete | 2.5 hrs |
+| Create Pull Request for Sprint 1 Changes | complete | 15 min |
 |  |  |  |
 |  |  |  |
 
 *Include screenshots/diagrams/figures/etc. to illustrate what you did this past week.*  
 *![][image1]*
+![PullRequest](https://github.com/user-attachments/assets/b95500e3-94d4-4d30-8c89-9c6d79a9fec3)
 
 ### What problems did you run into? What is your plan for them?
 
-I was having problems with the star ratings logic, but ultimately got it resolved. I had to look at the json to figure out exactly what type of data I was receiving.
+None.
 
 ### What is the current overall project status from your perspective?
 
-I think we are on track to have a complete project by the end of the semester.
+We need to start assigning tasks for Sprint 2.
 
 ### How is your team functioning from your perspective?
 
@@ -33,11 +34,11 @@ We are working well together and communicating well.
 
 ### What new ideas did you have or skills did you develop this week?
 
-I worked on my react skills by working on the filter.
+I worked on my skills with GitHub by creating a pull request.
 
 ### Who was your most awesome team member this week and why?
 
-David because he handled the CI/CD pipeline.
+Sanjay, because he was able to create the card view.
 
 ## Plans for Next Week
 
