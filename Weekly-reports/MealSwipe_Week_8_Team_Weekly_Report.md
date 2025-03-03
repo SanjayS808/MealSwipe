@@ -2,10 +2,13 @@
 
 **Team**: MealSwipe
 
-**Week**:
+**Week**: 8
 
 **Members**:
-
+Sanjay Sugumar
+David Rodriguez
+Jacob Miller
+Henry Chibib
 *
 
 ## Status Report
