@@ -27,7 +27,7 @@ Henry Chibib
 
 | Task | Task Lead | Status | Notes |
 | ---- | --------- | ------ | ----- |
-|      |           |        |       |
+|    Filter update  |    Henry       |      complete  |    Update filter to work with deck style and work for distance and star rating   |
 |      |           |        |       |
 |      |           |        |       |
 |      |           |        |       |
