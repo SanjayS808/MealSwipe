@@ -1,11 +1,24 @@
 // This component takes the list of restaurants and generates the restaurant cards to be displayed in the Tinder-like interface.
 
-import React from "react";
-import RestaurantCard from "./RestaurantCard";
 
+import React, { useState, useMemo, useRef } from 'react'
+import RestaurantCard from "./RestaurantCard";
+import TinderCard from "react-tinder-card";
+
+//fucntions for button swiping
+
+const swipe = async (dir) => {
+  
+}
 
 function RestaurantList({ restaurants, onSwipe ,resetBackendData}) {
+  
+
+
+
+  
   return (
+    <div>
     <div className="cardContainer">
         {restaurants.length === 0 ? (
           <div className="noRestaurants">
@@ -13,10 +26,16 @@ function RestaurantList({ restaurants, onSwipe ,resetBackendData}) {
             <button onClick={resetBackendData}>Refresh</button>
           </div>
         ) : (
+          
           restaurants.map((restaurant) => (
-            <RestaurantCard key={restaurant.id} restaurant={restaurant} onSwipe={onSwipe} />
+            <TinderCard className="swipe"  key={restaurant.id} onSwipe={(dir) => onSwipe(dir, restaurant) } >
+              <RestaurantCard restaurant={restaurant} />
+            </TinderCard>
           ))
         )}
+    </div>
+    
+
     </div>
 
   );
