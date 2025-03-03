@@ -23,7 +23,7 @@ class MealSwipeAppService extends cdk.Stack {
 
     // Add EC2 capacity to the cluster
     cluster.addCapacity('DefaultAutoScalingGroup', {
-      instanceType: new ec2.InstanceType('t2.nano'),
+      instanceType: new ec2.InstanceType('t2.small'),
       desiredCapacity: 1,
       minCapacity: 1,
       maxCapacity: 1
