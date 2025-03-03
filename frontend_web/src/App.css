@@ -144,3 +144,31 @@
     64%  { transform: scale(1,1) }
     100% { transform: scale(1,1) }
   }
+
+  /* Header adjustments */
+.header {
+    padding-top: 10px; /* Adjust padding to ensure title is fully visible */
+    height: 60px; /* Adjust height as needed */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Filter button adjustments for mobile */
+.filter-button {
+    position: fixed;
+    top: 70px; /* Adjust to move it below the header */
+    right: 10px; /* Keep it to the right but with some margin */
+    z-index: 1000; /* Make sure it's above other elements */
+}
+
+/* Responsive adjustments */
+@media (max-width: 480px) {
+    .header {
+        font-size: 20px; /* Smaller text for smaller screens */
+    }
+
+    .filter-button {
+        top: 60px; /* Adjust based on header size on mobile */
+    }
+}
