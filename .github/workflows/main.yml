@@ -1,0 +1,106 @@
+name: Build and Deploy
+
+on:
+  push:
+    branches:
+      - main
+
+permissions:
+  id-token: write
+  contents: read
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    env:
+      AWS_REGION: us-west-1
+      CDK_STACK: MealSwipeAppService
+      ECR_BACKEND_REPO: mealswipe/backend-repo
+      S3_FRONTEND_BUCKET: mealswipe-frontend
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v3
+
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v3
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ env.AWS_REGION }}
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+
+      - name: Build Backend Docker Image
+        run: |
+          docker build -t $ECR_BACKEND_REPO:latest ./backend
+
+      - name: Build Frontend
+        working-directory: frontend_web
+        run: |
+          npm ci
+          npm run build
+
+      - name: Login to Amazon ECR
+        run: |
+          aws ecr get-login-password --region $AWS_REGION | docker login --username AWS --password-stdin $(aws sts get-caller-identity --query Account --output text).dkr.ecr.$AWS_REGION.amazonaws.com
+
+      - name: Tag and Push Backend Docker Image
+        run: |
+          ACCOUNT_ID=$(aws sts get-caller-identity --query Account --output text)
+          docker tag $ECR_BACKEND_REPO:latest $ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com/$ECR_BACKEND_REPO:latest
+          docker push $ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com/$ECR_BACKEND_REPO:latest
+
+      - name: Install AWS CDK CLI
+        run: npm install -g aws-cdk
+
+      - name: Install CDK Dependencies
+
+        working-directory: infra
+        run: npm install
+
+      - name: Check CDK stack status
+        id: check-stack
+        run: |
+          STATUS=$(aws cloudformation describe-stacks --stack-name $CDK_STACK --query "Stacks[0].StackStatus" --output text || echo "STACK_NOT_FOUND")
+          echo "STACK_STATUS=$STATUS" >> $GITHUB_ENV
+          
+      - name: Delete CDK stack if in rollback state
+        if: env.STACK_STATUS == 'ROLLBACK_COMPLETE'
+        run: |
+          aws cloudformation delete-stack --stack-name $CDK_STACK
+          aws cloudformation wait stack-delete-complete --stack-name $CDK_STACK
+
+      - name: Get existing CloudFront distribution ID
+        id: get-distribution
+        run: |
+          DIST_ID=$(aws cloudformation describe-stacks --stack-name $CDK_STACK --query "Stacks[0].Outputs[?OutputKey=='FrontendDistributionId'].OutputValue" --output text 2>/dev/null || echo "")
+          echo "DISTRIBUTION_ID=$DIST_ID" >> $GITHUB_ENV
+
+      - name: Deploy CDK Stack
+        working-directory: infra
+        run: |
+          ACCOUNT_ID=$(aws sts get-caller-identity --query Account --output text)
+          npx cdk bootstrap aws://$ACCOUNT_ID/$AWS_REGION
+          npx cdk deploy $CDK_STACK --require-approval never --context retainResources=true --context frontendDistributionId=${{ env.DISTRIBUTION_ID }}
+
+      - name: Deploy Frontend to S3
+        run: |
+          # Get the API URL from CloudFormation outputs
+          API_URL=$(aws cloudformation describe-stacks --stack-name $CDK_STACK --query "Stacks[0].Outputs[?OutputKey=='BackendURL'].OutputValue" --output text)
+          
+          # Replace API URL placeholder in the frontend build if needed
+          # This depends on how your frontend handles API connections
+          # For example, you might create a config.js file:
+          echo "window.API_URL = '$API_URL';" > frontend_web/build/config.js
+          
+          # Sync frontend build to S3
+          aws s3 sync frontend_web/build/ s3://$S3_FRONTEND_BUCKET/ --delete
+          
+          # Invalidate CloudFront cache (if CloudFront distribution exists)
+          CLOUDFRONT_DISTRIBUTION_ID=$(aws cloudformation describe-stacks --stack-name $CDK_STACK --query "Stacks[0].Outputs[?OutputKey=='CloudFrontDistributionId'].OutputValue" --output text)
+          if [ ! -z "$CLOUDFRONT_DISTRIBUTION_ID" ]; then
+            aws cloudfront create-invalidation --distribution-id $CLOUDFRONT_DISTRIBUTION_ID --paths "/*"
+          fi

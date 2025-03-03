@@ -1,0 +1,1865 @@
+{
+ "Resources": {
+  "MealSwipeVPC697170DB": {
+   "Type": "AWS::EC2::VPC",
+   "Properties": {
+    "CidrBlock": "10.0.0.0/16",
+    "EnableDnsHostnames": true,
+    "EnableDnsSupport": true,
+    "InstanceTenancy": "default",
+    "Tags": [
+     {
+      "Key": "Name",
+      "Value": "MealSwipeAppService/MealSwipeVPC"
+     }
+    ]
+   },
+   "Metadata": {
+    "aws:cdk:path": "MealSwipeAppService/MealSwipeVPC/Resource"
+   }
+  },
+  "MealSwipeVPCPublicSubnet1Subnet80DE1A31": {
+   "Type": "AWS::EC2::Subnet",
+   "Properties": {
+    "AvailabilityZone": {
+     "Fn::Select": [
+      0,
+      {
+       "Fn::GetAZs": ""
+      }
+     ]
+    },
+    "CidrBlock": "10.0.0.0/18",
+    "MapPublicIpOnLaunch": true,
+    "Tags": [
+     {
+      "Key": "aws-cdk:subnet-name",
+      "Value": "Public"
+     },
+     {
+      "Key": "aws-cdk:subnet-type",
+      "Value": "Public"
+     },
+     {
+      "Key": "Name",
+      "Value": "MealSwipeAppService/MealSwipeVPC/PublicSubnet1"
+     }
+    ],
+    "VpcId": {
+     "Ref": "MealSwipeVPC697170DB"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "MealSwipeAppService/MealSwipeVPC/PublicSubnet1/Subnet"
+   }
+  },
+  "MealSwipeVPCPublicSubnet1RouteTableC54300D4": {
+   "Type": "AWS::EC2::RouteTable",
+   "Properties": {
+    "Tags": [
+     {
+      "Key": "Name",
+      "Value": "MealSwipeAppService/MealSwipeVPC/PublicSubnet1"
+     }
+    ],
+    "VpcId": {
+     "Ref": "MealSwipeVPC697170DB"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "MealSwipeAppService/MealSwipeVPC/PublicSubnet1/RouteTable"
+   }
+  },
+  "MealSwipeVPCPublicSubnet1RouteTableAssociation07BE09C0": {
+   "Type": "AWS::EC2::SubnetRouteTableAssociation",
+   "Properties": {
+    "RouteTableId": {
+     "Ref": "MealSwipeVPCPublicSubnet1RouteTableC54300D4"
+    },
+    "SubnetId": {
+     "Ref": "MealSwipeVPCPublicSubnet1Subnet80DE1A31"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "MealSwipeAppService/MealSwipeVPC/PublicSubnet1/RouteTableAssociation"
+   }
+  },
+  "MealSwipeVPCPublicSubnet1DefaultRouteA9724350": {
+   "Type": "AWS::EC2::Route",
+   "Properties": {
+    "DestinationCidrBlock": "0.0.0.0/0",
+    "GatewayId": {
+     "Ref": "MealSwipeVPCIGWC2608A26"
+    },
+    "RouteTableId": {
+     "Ref": "MealSwipeVPCPublicSubnet1RouteTableC54300D4"
+    }
+   },
+   "DependsOn": [
+    "MealSwipeVPCVPCGWC8A0A270"
+   ],
+   "Metadata": {
+    "aws:cdk:path": "MealSwipeAppService/MealSwipeVPC/PublicSubnet1/DefaultRoute"
+   }
+  },
+  "MealSwipeVPCPublicSubnet1EIP94699FC5": {
+   "Type": "AWS::EC2::EIP",
+   "Properties": {
+    "Domain": "vpc",
+    "Tags": [
+     {
+      "Key": "Name",
+      "Value": "MealSwipeAppService/MealSwipeVPC/PublicSubnet1"
+     }
+    ]
+   },
+   "Metadata": {
+    "aws:cdk:path": "MealSwipeAppService/MealSwipeVPC/PublicSubnet1/EIP"
+   }
+  },
+  "MealSwipeVPCPublicSubnet1NATGateway34AA6E34": {
+   "Type": "AWS::EC2::NatGateway",
+   "Properties": {
+    "AllocationId": {
+     "Fn::GetAtt": [
+      "MealSwipeVPCPublicSubnet1EIP94699FC5",
+      "AllocationId"
+     ]
+    },
+    "SubnetId": {
+     "Ref": "MealSwipeVPCPublicSubnet1Subnet80DE1A31"
+    },
+    "Tags": [
+     {
+      "Key": "Name",
+      "Value": "MealSwipeAppService/MealSwipeVPC/PublicSubnet1"
+     }
+    ]
+   },
+   "DependsOn": [
+    "MealSwipeVPCPublicSubnet1DefaultRouteA9724350",
+    "MealSwipeVPCPublicSubnet1RouteTableAssociation07BE09C0"
+   ],
+   "Metadata": {
+    "aws:cdk:path": "MealSwipeAppService/MealSwipeVPC/PublicSubnet1/NATGateway"
+   }
+  },
+  "MealSwipeVPCPublicSubnet2Subnet5C105B00": {
+   "Type": "AWS::EC2::Subnet",
+   "Properties": {
+    "AvailabilityZone": {
+     "Fn::Select": [
+      1,
+      {
+       "Fn::GetAZs": ""
+      }
+     ]
+    },
+    "CidrBlock": "10.0.64.0/18",
+    "MapPublicIpOnLaunch": true,
+    "Tags": [
+     {
+      "Key": "aws-cdk:subnet-name",
+      "Value": "Public"
+     },
+     {
+      "Key": "aws-cdk:subnet-type",
+      "Value": "Public"
+     },
+     {
+      "Key": "Name",
+      "Value": "MealSwipeAppService/MealSwipeVPC/PublicSubnet2"
+     }
+    ],
+    "VpcId": {
+     "Ref": "MealSwipeVPC697170DB"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "MealSwipeAppService/MealSwipeVPC/PublicSubnet2/Subnet"
+   }
+  },
+  "MealSwipeVPCPublicSubnet2RouteTable48D33274": {
+   "Type": "AWS::EC2::RouteTable",
+   "Properties": {
+    "Tags": [
+     {
+      "Key": "Name",
+      "Value": "MealSwipeAppService/MealSwipeVPC/PublicSubnet2"
+     }
+    ],
+    "VpcId": {
+     "Ref": "MealSwipeVPC697170DB"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "MealSwipeAppService/MealSwipeVPC/PublicSubnet2/RouteTable"
+   }
+  },
+  "MealSwipeVPCPublicSubnet2RouteTableAssociationC77E4970": {
+   "Type": "AWS::EC2::SubnetRouteTableAssociation",
+   "Properties": {
+    "RouteTableId": {
+     "Ref": "MealSwipeVPCPublicSubnet2RouteTable48D33274"
+    },
+    "SubnetId": {
+     "Ref": "MealSwipeVPCPublicSubnet2Subnet5C105B00"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "MealSwipeAppService/MealSwipeVPC/PublicSubnet2/RouteTableAssociation"
+   }
+  },
+  "MealSwipeVPCPublicSubnet2DefaultRoute32E6B12A": {
+   "Type": "AWS::EC2::Route",
+   "Properties": {
+    "DestinationCidrBlock": "0.0.0.0/0",
+    "GatewayId": {
+     "Ref": "MealSwipeVPCIGWC2608A26"
+    },
+    "RouteTableId": {
+     "Ref": "MealSwipeVPCPublicSubnet2RouteTable48D33274"
+    }
+   },
+   "DependsOn": [
+    "MealSwipeVPCVPCGWC8A0A270"
+   ],
+   "Metadata": {
+    "aws:cdk:path": "MealSwipeAppService/MealSwipeVPC/PublicSubnet2/DefaultRoute"
+   }
+  },
+  "MealSwipeVPCPublicSubnet2EIPEC2EDDCC": {
+   "Type": "AWS::EC2::EIP",
+   "Properties": {
+    "Domain": "vpc",
+    "Tags": [
+     {
+      "Key": "Name",
+      "Value": "MealSwipeAppService/MealSwipeVPC/PublicSubnet2"
+     }
+    ]
+   },
+   "Metadata": {
+    "aws:cdk:path": "MealSwipeAppService/MealSwipeVPC/PublicSubnet2/EIP"
+   }
+  },
+  "MealSwipeVPCPublicSubnet2NATGateway60680DE2": {
+   "Type": "AWS::EC2::NatGateway",
+   "Properties": {
+    "AllocationId": {
+     "Fn::GetAtt": [
+      "MealSwipeVPCPublicSubnet2EIPEC2EDDCC",
+      "AllocationId"
+     ]
+    },
+    "SubnetId": {
+     "Ref": "MealSwipeVPCPublicSubnet2Subnet5C105B00"
+    },
+    "Tags": [
+     {
+      "Key": "Name",
+      "Value": "MealSwipeAppService/MealSwipeVPC/PublicSubnet2"
+     }
+    ]
+   },
+   "DependsOn": [
+    "MealSwipeVPCPublicSubnet2DefaultRoute32E6B12A",
+    "MealSwipeVPCPublicSubnet2RouteTableAssociationC77E4970"
+   ],
+   "Metadata": {
+    "aws:cdk:path": "MealSwipeAppService/MealSwipeVPC/PublicSubnet2/NATGateway"
+   }
+  },
+  "MealSwipeVPCPrivateSubnet1SubnetD5200481": {
+   "Type": "AWS::EC2::Subnet",
+   "Properties": {
+    "AvailabilityZone": {
+     "Fn::Select": [
+      0,
+      {
+       "Fn::GetAZs": ""
+      }
+     ]
+    },
+    "CidrBlock": "10.0.128.0/18",
+    "MapPublicIpOnLaunch": false,
+    "Tags": [
+     {
+      "Key": "aws-cdk:subnet-name",
+      "Value": "Private"
+     },
+     {
+      "Key": "aws-cdk:subnet-type",
+      "Value": "Private"
+     },
+     {
+      "Key": "Name",
+      "Value": "MealSwipeAppService/MealSwipeVPC/PrivateSubnet1"
+     }
+    ],
+    "VpcId": {
+     "Ref": "MealSwipeVPC697170DB"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "MealSwipeAppService/MealSwipeVPC/PrivateSubnet1/Subnet"
+   }
+  },
+  "MealSwipeVPCPrivateSubnet1RouteTable7BD70FA7": {
+   "Type": "AWS::EC2::RouteTable",
+   "Properties": {
+    "Tags": [
+     {
+      "Key": "Name",
+      "Value": "MealSwipeAppService/MealSwipeVPC/PrivateSubnet1"
+     }
+    ],
+    "VpcId": {
+     "Ref": "MealSwipeVPC697170DB"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "MealSwipeAppService/MealSwipeVPC/PrivateSubnet1/RouteTable"
+   }
+  },
+  "MealSwipeVPCPrivateSubnet1RouteTableAssociation8F189F41": {
+   "Type": "AWS::EC2::SubnetRouteTableAssociation",
+   "Properties": {
+    "RouteTableId": {
+     "Ref": "MealSwipeVPCPrivateSubnet1RouteTable7BD70FA7"
+    },
+    "SubnetId": {
+     "Ref": "MealSwipeVPCPrivateSubnet1SubnetD5200481"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "MealSwipeAppService/MealSwipeVPC/PrivateSubnet1/RouteTableAssociation"
+   }
+  },
+  "MealSwipeVPCPrivateSubnet1DefaultRouteAAC9CD68": {
+   "Type": "AWS::EC2::Route",
+   "Properties": {
+    "DestinationCidrBlock": "0.0.0.0/0",
+    "NatGatewayId": {
+     "Ref": "MealSwipeVPCPublicSubnet1NATGateway34AA6E34"
+    },
+    "RouteTableId": {
+     "Ref": "MealSwipeVPCPrivateSubnet1RouteTable7BD70FA7"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "MealSwipeAppService/MealSwipeVPC/PrivateSubnet1/DefaultRoute"
+   }
+  },
+  "MealSwipeVPCPrivateSubnet2Subnet752B7DE2": {
+   "Type": "AWS::EC2::Subnet",
+   "Properties": {
+    "AvailabilityZone": {
+     "Fn::Select": [
+      1,
+      {
+       "Fn::GetAZs": ""
+      }
+     ]
+    },
+    "CidrBlock": "10.0.192.0/18",
+    "MapPublicIpOnLaunch": false,
+    "Tags": [
+     {
+      "Key": "aws-cdk:subnet-name",
+      "Value": "Private"
+     },
+     {
+      "Key": "aws-cdk:subnet-type",
+      "Value": "Private"
+     },
+     {
+      "Key": "Name",
+      "Value": "MealSwipeAppService/MealSwipeVPC/PrivateSubnet2"
+     }
+    ],
+    "VpcId": {
+     "Ref": "MealSwipeVPC697170DB"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "MealSwipeAppService/MealSwipeVPC/PrivateSubnet2/Subnet"
+   }
+  },
+  "MealSwipeVPCPrivateSubnet2RouteTable8E49375C": {
+   "Type": "AWS::EC2::RouteTable",
+   "Properties": {
+    "Tags": [
+     {
+      "Key": "Name",
+      "Value": "MealSwipeAppService/MealSwipeVPC/PrivateSubnet2"
+     }
+    ],
+    "VpcId": {
+     "Ref": "MealSwipeVPC697170DB"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "MealSwipeAppService/MealSwipeVPC/PrivateSubnet2/RouteTable"
+   }
+  },
+  "MealSwipeVPCPrivateSubnet2RouteTableAssociation9D8BC186": {
+   "Type": "AWS::EC2::SubnetRouteTableAssociation",
+   "Properties": {
+    "RouteTableId": {
+     "Ref": "MealSwipeVPCPrivateSubnet2RouteTable8E49375C"
+    },
+    "SubnetId": {
+     "Ref": "MealSwipeVPCPrivateSubnet2Subnet752B7DE2"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "MealSwipeAppService/MealSwipeVPC/PrivateSubnet2/RouteTableAssociation"
+   }
+  },
+  "MealSwipeVPCPrivateSubnet2DefaultRoute088AA018": {
+   "Type": "AWS::EC2::Route",
+   "Properties": {
+    "DestinationCidrBlock": "0.0.0.0/0",
+    "NatGatewayId": {
+     "Ref": "MealSwipeVPCPublicSubnet2NATGateway60680DE2"
+    },
+    "RouteTableId": {
+     "Ref": "MealSwipeVPCPrivateSubnet2RouteTable8E49375C"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "MealSwipeAppService/MealSwipeVPC/PrivateSubnet2/DefaultRoute"
+   }
+  },
+  "MealSwipeVPCIGWC2608A26": {
+   "Type": "AWS::EC2::InternetGateway",
+   "Properties": {
+    "Tags": [
+     {
+      "Key": "Name",
+      "Value": "MealSwipeAppService/MealSwipeVPC"
+     }
+    ]
+   },
+   "Metadata": {
+    "aws:cdk:path": "MealSwipeAppService/MealSwipeVPC/IGW"
+   }
+  },
+  "MealSwipeVPCVPCGWC8A0A270": {
+   "Type": "AWS::EC2::VPCGatewayAttachment",
+   "Properties": {
+    "InternetGatewayId": {
+     "Ref": "MealSwipeVPCIGWC2608A26"
+    },
+    "VpcId": {
+     "Ref": "MealSwipeVPC697170DB"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "MealSwipeAppService/MealSwipeVPC/VPCGW"
+   }
+  },
+  "MealSwipeVPCRestrictDefaultSecurityGroupCustomResource241BC134": {
+   "Type": "Custom::VpcRestrictDefaultSG",
+   "Properties": {
+    "ServiceToken": {
+     "Fn::GetAtt": [
+      "CustomVpcRestrictDefaultSGCustomResourceProviderHandlerDC833E5E",
+      "Arn"
+     ]
+    },
+    "DefaultSecurityGroupId": {
+     "Fn::GetAtt": [
+      "MealSwipeVPC697170DB",
+      "DefaultSecurityGroup"
+     ]
+    },
+    "Account": {
+     "Ref": "AWS::AccountId"
+    }
+   },
+   "UpdateReplacePolicy": "Delete",
+   "DeletionPolicy": "Delete",
+   "Metadata": {
+    "aws:cdk:path": "MealSwipeAppService/MealSwipeVPC/RestrictDefaultSecurityGroupCustomResource/Default"
+   }
+  },
+  "CustomVpcRestrictDefaultSGCustomResourceProviderRole26592FE0": {
+   "Type": "AWS::IAM::Role",
+   "Properties": {
+    "AssumeRolePolicyDocument": {
+     "Version": "2012-10-17",
+     "Statement": [
+      {
+       "Action": "sts:AssumeRole",
+       "Effect": "Allow",
+       "Principal": {
+        "Service": "lambda.amazonaws.com"
+       }
+      }
+     ]
+    },
+    "ManagedPolicyArns": [
+     {
+      "Fn::Sub": "arn:${AWS::Partition}:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole"
+     }
+    ],
+    "Policies": [
+     {
+      "PolicyName": "Inline",
+      "PolicyDocument": {
+       "Version": "2012-10-17",
+       "Statement": [
+        {
+         "Effect": "Allow",
+         "Action": [
+          "ec2:AuthorizeSecurityGroupIngress",
+          "ec2:AuthorizeSecurityGroupEgress",
+          "ec2:RevokeSecurityGroupIngress",
+          "ec2:RevokeSecurityGroupEgress"
+         ],
+         "Resource": [
+          {
+           "Fn::Join": [
+            "",
+            [
+             "arn:",
+             {
+              "Ref": "AWS::Partition"
+             },
+             ":ec2:",
+             {
+              "Ref": "AWS::Region"
+             },
+             ":",
+             {
+              "Ref": "AWS::AccountId"
+             },
+             ":security-group/",
+             {
+              "Fn::GetAtt": [
+               "MealSwipeVPC697170DB",
+               "DefaultSecurityGroup"
+              ]
+             }
+            ]
+           ]
+          }
+         ]
+        }
+       ]
+      }
+     }
+    ]
+   },
+   "Metadata": {
+    "aws:cdk:path": "MealSwipeAppService/Custom::VpcRestrictDefaultSGCustomResourceProvider/Role"
+   }
+  },
+  "CustomVpcRestrictDefaultSGCustomResourceProviderHandlerDC833E5E": {
+   "Type": "AWS::Lambda::Function",
+   "Properties": {
+    "Code": {
+     "S3Bucket": {
+      "Fn::Sub": "cdk-hnb659fds-assets-${AWS::AccountId}-${AWS::Region}"
+     },
+     "S3Key": "7fa1e366ee8a9ded01fc355f704cff92bfd179574e6f9cfee800a3541df1b200.zip"
+    },
+    "Timeout": 900,
+    "MemorySize": 128,
+    "Handler": "__entrypoint__.handler",
+    "Role": {
+     "Fn::GetAtt": [
+      "CustomVpcRestrictDefaultSGCustomResourceProviderRole26592FE0",
+      "Arn"
+     ]
+    },
+    "Runtime": "nodejs20.x",
+    "Description": "Lambda function for removing all inbound/outbound rules from the VPC default security group"
+   },
+   "DependsOn": [
+    "CustomVpcRestrictDefaultSGCustomResourceProviderRole26592FE0"
+   ],
+   "Metadata": {
+    "aws:cdk:path": "MealSwipeAppService/Custom::VpcRestrictDefaultSGCustomResourceProvider/Handler",
+    "aws:asset:path": "asset.7fa1e366ee8a9ded01fc355f704cff92bfd179574e6f9cfee800a3541df1b200",
+    "aws:asset:property": "Code"
+   }
+  },
+  "MealSwipeCluster4434DE30": {
+   "Type": "AWS::ECS::Cluster",
+   "Metadata": {
+    "aws:cdk:path": "MealSwipeAppService/MealSwipeCluster/Resource"
+   }
+  },
+  "MealSwipeClusterDefaultAutoScalingGroupInstanceSecurityGroupB9A98066": {
+   "Type": "AWS::EC2::SecurityGroup",
+   "Properties": {
+    "GroupDescription": "MealSwipeAppService/MealSwipeCluster/DefaultAutoScalingGroup/InstanceSecurityGroup",
+    "SecurityGroupEgress": [
+     {
+      "CidrIp": "0.0.0.0/0",
+      "Description": "Allow all outbound traffic by default",
+      "IpProtocol": "-1"
+     }
+    ],
+    "Tags": [
+     {
+      "Key": "Name",
+      "Value": "MealSwipeAppService/MealSwipeCluster/DefaultAutoScalingGroup"
+     }
+    ],
+    "VpcId": {
+     "Ref": "MealSwipeVPC697170DB"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "MealSwipeAppService/MealSwipeCluster/DefaultAutoScalingGroup/InstanceSecurityGroup/Resource"
+   }
+  },
+  "MealSwipeClusterDefaultAutoScalingGroupInstanceSecurityGroupfromMealSwipeAppServiceLBSecurityGroup7E2BBC533276865535609F8B6A": {
+   "Type": "AWS::EC2::SecurityGroupIngress",
+   "Properties": {
+    "Description": "Load balancer to target",
+    "FromPort": 32768,
+    "GroupId": {
+     "Fn::GetAtt": [
+      "MealSwipeClusterDefaultAutoScalingGroupInstanceSecurityGroupB9A98066",
+      "GroupId"
+     ]
+    },
+    "IpProtocol": "tcp",
+    "SourceSecurityGroupId": {
+     "Fn::GetAtt": [
+      "MealSwipeAppServiceLBSecurityGroup37BCE77C",
+      "GroupId"
+     ]
+    },
+    "ToPort": 65535
+   },
+   "Metadata": {
+    "aws:cdk:path": "MealSwipeAppService/MealSwipeCluster/DefaultAutoScalingGroup/InstanceSecurityGroup/from MealSwipeAppServiceLBSecurityGroup7E2BBC53:32768-65535"
+   }
+  },
+  "MealSwipeClusterDefaultAutoScalingGroupInstanceRoleA12A08C1": {
+   "Type": "AWS::IAM::Role",
+   "Properties": {
+    "AssumeRolePolicyDocument": {
+     "Statement": [
+      {
+       "Action": "sts:AssumeRole",
+       "Effect": "Allow",
+       "Principal": {
+        "Service": "ec2.amazonaws.com"
+       }
+      }
+     ],
+     "Version": "2012-10-17"
+    },
+    "Tags": [
+     {
+      "Key": "Name",
+      "Value": "MealSwipeAppService/MealSwipeCluster/DefaultAutoScalingGroup"
+     }
+    ]
+   },
+   "Metadata": {
+    "aws:cdk:path": "MealSwipeAppService/MealSwipeCluster/DefaultAutoScalingGroup/InstanceRole/Resource"
+   }
+  },
+  "MealSwipeClusterDefaultAutoScalingGroupInstanceRoleDefaultPolicy302F6ED3": {
+   "Type": "AWS::IAM::Policy",
+   "Properties": {
+    "PolicyDocument": {
+     "Statement": [
+      {
+       "Action": [
+        "ecs:DeregisterContainerInstance",
+        "ecs:RegisterContainerInstance",
+        "ecs:Submit*"
+       ],
+       "Effect": "Allow",
+       "Resource": {
+        "Fn::GetAtt": [
+         "MealSwipeCluster4434DE30",
+         "Arn"
+        ]
+       }
+      },
+      {
+       "Action": [
+        "ecs:Poll",
+        "ecs:StartTelemetrySession"
+       ],
+       "Condition": {
+        "ArnEquals": {
+         "ecs:cluster": {
+          "Fn::GetAtt": [
+           "MealSwipeCluster4434DE30",
+           "Arn"
+          ]
+         }
+        }
+       },
+       "Effect": "Allow",
+       "Resource": "*"
+      },
+      {
+       "Action": [
+        "ecr:GetAuthorizationToken",
+        "ecs:DiscoverPollEndpoint",
+        "logs:CreateLogStream",
+        "logs:PutLogEvents"
+       ],
+       "Effect": "Allow",
+       "Resource": "*"
+      }
+     ],
+     "Version": "2012-10-17"
+    },
+    "PolicyName": "MealSwipeClusterDefaultAutoScalingGroupInstanceRoleDefaultPolicy302F6ED3",
+    "Roles": [
+     {
+      "Ref": "MealSwipeClusterDefaultAutoScalingGroupInstanceRoleA12A08C1"
+     }
+    ]
+   },
+   "Metadata": {
+    "aws:cdk:path": "MealSwipeAppService/MealSwipeCluster/DefaultAutoScalingGroup/InstanceRole/DefaultPolicy/Resource"
+   }
+  },
+  "MealSwipeClusterDefaultAutoScalingGroupInstanceProfile54746C6F": {
+   "Type": "AWS::IAM::InstanceProfile",
+   "Properties": {
+    "Roles": [
+     {
+      "Ref": "MealSwipeClusterDefaultAutoScalingGroupInstanceRoleA12A08C1"
+     }
+    ]
+   },
+   "Metadata": {
+    "aws:cdk:path": "MealSwipeAppService/MealSwipeCluster/DefaultAutoScalingGroup/InstanceProfile"
+   }
+  },
+  "MealSwipeClusterDefaultAutoScalingGroupLaunchTemplate3E5CDEF0": {
+   "Type": "AWS::EC2::LaunchTemplate",
+   "Properties": {
+    "LaunchTemplateData": {
+     "IamInstanceProfile": {
+      "Arn": {
+       "Fn::GetAtt": [
+        "MealSwipeClusterDefaultAutoScalingGroupInstanceProfile54746C6F",
+        "Arn"
+       ]
+      }
+     },
+     "ImageId": {
+      "Ref": "SsmParameterValueawsserviceecsoptimizedamiamazonlinux2recommendedimageidC96584B6F00A464EAD1953AFF4B05118Parameter"
+     },
+     "InstanceType": "t3.nano",
+     "Monitoring": {
+      "Enabled": false
+     },
+     "SecurityGroupIds": [
+      {
+       "Fn::GetAtt": [
+        "MealSwipeClusterDefaultAutoScalingGroupInstanceSecurityGroupB9A98066",
+        "GroupId"
+       ]
+      }
+     ],
+     "TagSpecifications": [
+      {
+       "ResourceType": "instance",
+       "Tags": [
+        {
+         "Key": "Name",
+         "Value": "MealSwipeAppService/MealSwipeCluster/DefaultAutoScalingGroup/LaunchTemplate"
+        }
+       ]
+      },
+      {
+       "ResourceType": "volume",
+       "Tags": [
+        {
+         "Key": "Name",
+         "Value": "MealSwipeAppService/MealSwipeCluster/DefaultAutoScalingGroup/LaunchTemplate"
+        }
+       ]
+      }
+     ],
+     "UserData": {
+      "Fn::Base64": {
+       "Fn::Join": [
+        "",
+        [
+         "#!/bin/bash\necho ECS_CLUSTER=",
+         {
+          "Ref": "MealSwipeCluster4434DE30"
+         },
+         " >> /etc/ecs/ecs.config"
+        ]
+       ]
+      }
+     }
+    },
+    "TagSpecifications": [
+     {
+      "ResourceType": "launch-template",
+      "Tags": [
+       {
+        "Key": "Name",
+        "Value": "MealSwipeAppService/MealSwipeCluster/DefaultAutoScalingGroup/LaunchTemplate"
+       }
+      ]
+     }
+    ]
+   },
+   "DependsOn": [
+    "MealSwipeClusterDefaultAutoScalingGroupInstanceRoleDefaultPolicy302F6ED3",
+    "MealSwipeClusterDefaultAutoScalingGroupInstanceRoleA12A08C1"
+   ],
+   "Metadata": {
+    "aws:cdk:path": "MealSwipeAppService/MealSwipeCluster/DefaultAutoScalingGroup/LaunchTemplate/Resource"
+   }
+  },
+  "MealSwipeClusterDefaultAutoScalingGroupASGC21801CC": {
+   "Type": "AWS::AutoScaling::AutoScalingGroup",
+   "Properties": {
+    "DesiredCapacity": "2",
+    "LaunchTemplate": {
+     "LaunchTemplateId": {
+      "Ref": "MealSwipeClusterDefaultAutoScalingGroupLaunchTemplate3E5CDEF0"
+     },
+     "Version": {
+      "Fn::GetAtt": [
+       "MealSwipeClusterDefaultAutoScalingGroupLaunchTemplate3E5CDEF0",
+       "LatestVersionNumber"
+      ]
+     }
+    },
+    "MaxSize": "2",
+    "MinSize": "1",
+    "Tags": [
+     {
+      "Key": "Name",
+      "PropagateAtLaunch": true,
+      "Value": "MealSwipeAppService/MealSwipeCluster/DefaultAutoScalingGroup"
+     }
+    ],
+    "VPCZoneIdentifier": [
+     {
+      "Ref": "MealSwipeVPCPrivateSubnet1SubnetD5200481"
+     },
+     {
+      "Ref": "MealSwipeVPCPrivateSubnet2Subnet752B7DE2"
+     }
+    ]
+   },
+   "UpdatePolicy": {
+    "AutoScalingReplacingUpdate": {
+     "WillReplace": true
+    },
+    "AutoScalingScheduledAction": {
+     "IgnoreUnmodifiedGroupSizeProperties": true
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "MealSwipeAppService/MealSwipeCluster/DefaultAutoScalingGroup/ASG"
+   }
+  },
+  "MealSwipeClusterDefaultAutoScalingGroupDrainECSHookFunctionServiceRoleBE6EF729": {
+   "Type": "AWS::IAM::Role",
+   "Properties": {
+    "AssumeRolePolicyDocument": {
+     "Statement": [
+      {
+       "Action": "sts:AssumeRole",
+       "Effect": "Allow",
+       "Principal": {
+        "Service": "lambda.amazonaws.com"
+       }
+      }
+     ],
+     "Version": "2012-10-17"
+    },
+    "ManagedPolicyArns": [
+     {
+      "Fn::Join": [
+       "",
+       [
+        "arn:",
+        {
+         "Ref": "AWS::Partition"
+        },
+        ":iam::aws:policy/service-role/AWSLambdaBasicExecutionRole"
+       ]
+      ]
+     }
+    ],
+    "Tags": [
+     {
+      "Key": "Name",
+      "Value": "MealSwipeAppService/MealSwipeCluster/DefaultAutoScalingGroup"
+     }
+    ]
+   },
+   "Metadata": {
+    "aws:cdk:path": "MealSwipeAppService/MealSwipeCluster/DefaultAutoScalingGroup/DrainECSHook/Function/ServiceRole/Resource"
+   }
+  },
+  "MealSwipeClusterDefaultAutoScalingGroupDrainECSHookFunctionServiceRoleDefaultPolicy5BCE9AD8": {
+   "Type": "AWS::IAM::Policy",
+   "Properties": {
+    "PolicyDocument": {
+     "Statement": [
+      {
+       "Action": [
+        "ec2:DescribeHosts",
+        "ec2:DescribeInstanceAttribute",
+        "ec2:DescribeInstanceStatus",
+        "ec2:DescribeInstances"
+       ],
+       "Effect": "Allow",
+       "Resource": "*"
+      },
+      {
+       "Action": "autoscaling:CompleteLifecycleAction",
+       "Effect": "Allow",
+       "Resource": {
+        "Fn::Join": [
+         "",
+         [
+          "arn:",
+          {
+           "Ref": "AWS::Partition"
+          },
+          ":autoscaling:",
+          {
+           "Ref": "AWS::Region"
+          },
+          ":",
+          {
+           "Ref": "AWS::AccountId"
+          },
+          ":autoScalingGroup:*:autoScalingGroupName/",
+          {
+           "Ref": "MealSwipeClusterDefaultAutoScalingGroupASGC21801CC"
+          }
+         ]
+        ]
+       }
+      },
+      {
+       "Action": [
+        "ecs:DescribeContainerInstances",
+        "ecs:DescribeTasks",
+        "ecs:ListTasks",
+        "ecs:UpdateContainerInstancesState"
+       ],
+       "Condition": {
+        "ArnEquals": {
+         "ecs:cluster": {
+          "Fn::GetAtt": [
+           "MealSwipeCluster4434DE30",
+           "Arn"
+          ]
+         }
+        }
+       },
+       "Effect": "Allow",
+       "Resource": "*"
+      },
+      {
+       "Action": [
+        "ecs:ListContainerInstances",
+        "ecs:SubmitContainerStateChange",
+        "ecs:SubmitTaskStateChange"
+       ],
+       "Effect": "Allow",
+       "Resource": {
+        "Fn::GetAtt": [
+         "MealSwipeCluster4434DE30",
+         "Arn"
+        ]
+       }
+      }
+     ],
+     "Version": "2012-10-17"
+    },
+    "PolicyName": "MealSwipeClusterDefaultAutoScalingGroupDrainECSHookFunctionServiceRoleDefaultPolicy5BCE9AD8",
+    "Roles": [
+     {
+      "Ref": "MealSwipeClusterDefaultAutoScalingGroupDrainECSHookFunctionServiceRoleBE6EF729"
+     }
+    ]
+   },
+   "Metadata": {
+    "aws:cdk:path": "MealSwipeAppService/MealSwipeCluster/DefaultAutoScalingGroup/DrainECSHook/Function/ServiceRole/DefaultPolicy/Resource"
+   }
+  },
+  "MealSwipeClusterDefaultAutoScalingGroupDrainECSHookFunction05A5F8FC": {
+   "Type": "AWS::Lambda::Function",
+   "Properties": {
+    "Code": {
+     "ZipFile": "import boto3, json, os, time\n\necs = boto3.client('ecs')\nautoscaling = boto3.client('autoscaling')\n\n\ndef lambda_handler(event, context):\n  print(json.dumps(dict(event, ResponseURL='...')))\n  cluster = os.environ['CLUSTER']\n  snsTopicArn = event['Records'][0]['Sns']['TopicArn']\n  lifecycle_event = json.loads(event['Records'][0]['Sns']['Message'])\n  instance_id = lifecycle_event.get('EC2InstanceId')\n  if not instance_id:\n    print('Got event without EC2InstanceId: %s', json.dumps(dict(event, ResponseURL='...')))\n    return\n\n  instance_arn = container_instance_arn(cluster, instance_id)\n  print('Instance %s has container instance ARN %s' % (lifecycle_event['EC2InstanceId'], instance_arn))\n\n  if not instance_arn:\n    return\n\n  task_arns = container_instance_task_arns(cluster, instance_arn)\n\n  if task_arns:\n    print('Instance ARN %s has task ARNs %s' % (instance_arn, ', '.join(task_arns)))\n\n  while has_tasks(cluster, instance_arn, task_arns):\n    time.sleep(10)\n\n  try:\n    print('Terminating instance %s' % instance_id)\n    autoscaling.complete_lifecycle_action(\n        LifecycleActionResult='CONTINUE',\n        **pick(lifecycle_event, 'LifecycleHookName', 'LifecycleActionToken', 'AutoScalingGroupName'))\n  except Exception as e:\n    # Lifecycle action may have already completed.\n    print(str(e))\n\n\ndef container_instance_arn(cluster, instance_id):\n  \"\"\"Turn an instance ID into a container instance ARN.\"\"\"\n  arns = ecs.list_container_instances(cluster=cluster, filter='ec2InstanceId==' + instance_id)['containerInstanceArns']\n  if not arns:\n    return None\n  return arns[0]\n\ndef container_instance_task_arns(cluster, instance_arn):\n  \"\"\"Fetch tasks for a container instance ARN.\"\"\"\n  arns = ecs.list_tasks(cluster=cluster, containerInstance=instance_arn)['taskArns']\n  return arns\n\ndef has_tasks(cluster, instance_arn, task_arns):\n  \"\"\"Return True if the instance is running tasks for the given cluster.\"\"\"\n  instances = ecs.describe_container_instances(cluster=cluster, containerInstances=[instance_arn])['containerInstances']\n  if not instances:\n    return False\n  instance = instances[0]\n\n  if instance['status'] == 'ACTIVE':\n    # Start draining, then try again later\n    set_container_instance_to_draining(cluster, instance_arn)\n    return True\n\n  task_count = None\n\n  if task_arns:\n    # Fetch details for tasks running on the container instance\n    tasks = ecs.describe_tasks(cluster=cluster, tasks=task_arns)['tasks']\n    if tasks:\n      # Consider any non-stopped tasks as running\n      task_count = sum(task['lastStatus'] != 'STOPPED' for task in tasks) + instance['pendingTasksCount']\n\n  if not task_count:\n    # Fallback to instance task counts if detailed task information is unavailable\n    task_count = instance['runningTasksCount'] + instance['pendingTasksCount']\n\n  print('Instance %s has %s tasks' % (instance_arn, task_count))\n\n  return task_count > 0\n\ndef set_container_instance_to_draining(cluster, instance_arn):\n  ecs.update_container_instances_state(\n      cluster=cluster,\n      containerInstances=[instance_arn], status='DRAINING')\n\n\ndef pick(dct, *keys):\n  \"\"\"Pick a subset of a dict.\"\"\"\n  return {k: v for k, v in dct.items() if k in keys}\n"
+    },
+    "Environment": {
+     "Variables": {
+      "CLUSTER": {
+       "Ref": "MealSwipeCluster4434DE30"
+      }
+     }
+    },
+    "Handler": "index.lambda_handler",
+    "Role": {
+     "Fn::GetAtt": [
+      "MealSwipeClusterDefaultAutoScalingGroupDrainECSHookFunctionServiceRoleBE6EF729",
+      "Arn"
+     ]
+    },
+    "Runtime": "python3.9",
+    "Tags": [
+     {
+      "Key": "Name",
+      "Value": "MealSwipeAppService/MealSwipeCluster/DefaultAutoScalingGroup"
+     }
+    ],
+    "Timeout": 310
+   },
+   "DependsOn": [
+    "MealSwipeClusterDefaultAutoScalingGroupDrainECSHookFunctionServiceRoleDefaultPolicy5BCE9AD8",
+    "MealSwipeClusterDefaultAutoScalingGroupDrainECSHookFunctionServiceRoleBE6EF729"
+   ],
+   "Metadata": {
+    "aws:cdk:path": "MealSwipeAppService/MealSwipeCluster/DefaultAutoScalingGroup/DrainECSHook/Function/Resource"
+   }
+  },
+  "MealSwipeClusterDefaultAutoScalingGroupDrainECSHookFunctionAllowInvokeMealSwipeAppServiceMealSwipeClusterDefaultAutoScalingGroupLifecycleHookDrainHookTopicC923201C51285F7E": {
+   "Type": "AWS::Lambda::Permission",
+   "Properties": {
+    "Action": "lambda:InvokeFunction",
+    "FunctionName": {
+     "Fn::GetAtt": [
+      "MealSwipeClusterDefaultAutoScalingGroupDrainECSHookFunction05A5F8FC",
+      "Arn"
+     ]
+    },
+    "Principal": "sns.amazonaws.com",
+    "SourceArn": {
+     "Ref": "MealSwipeClusterDefaultAutoScalingGroupLifecycleHookDrainHookTopic200CC71F"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "MealSwipeAppService/MealSwipeCluster/DefaultAutoScalingGroup/DrainECSHook/Function/AllowInvoke:MealSwipeAppServiceMealSwipeClusterDefaultAutoScalingGroupLifecycleHookDrainHookTopicC923201C"
+   }
+  },
+  "MealSwipeClusterDefaultAutoScalingGroupDrainECSHookFunctionTopic773BA514": {
+   "Type": "AWS::SNS::Subscription",
+   "Properties": {
+    "Endpoint": {
+     "Fn::GetAtt": [
+      "MealSwipeClusterDefaultAutoScalingGroupDrainECSHookFunction05A5F8FC",
+      "Arn"
+     ]
+    },
+    "Protocol": "lambda",
+    "TopicArn": {
+     "Ref": "MealSwipeClusterDefaultAutoScalingGroupLifecycleHookDrainHookTopic200CC71F"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "MealSwipeAppService/MealSwipeCluster/DefaultAutoScalingGroup/DrainECSHook/Function/Topic/Resource"
+   }
+  },
+  "MealSwipeClusterDefaultAutoScalingGroupLifecycleHookDrainHookTopic200CC71F": {
+   "Type": "AWS::SNS::Topic",
+   "Properties": {
+    "Tags": [
+     {
+      "Key": "Name",
+      "Value": "MealSwipeAppService/MealSwipeCluster/DefaultAutoScalingGroup"
+     }
+    ]
+   },
+   "Metadata": {
+    "aws:cdk:path": "MealSwipeAppService/MealSwipeCluster/DefaultAutoScalingGroup/LifecycleHookDrainHook/Topic/Resource"
+   }
+  },
+  "MealSwipeClusterDefaultAutoScalingGroupLifecycleHookDrainHookRoleD831B6D3": {
+   "Type": "AWS::IAM::Role",
+   "Properties": {
+    "AssumeRolePolicyDocument": {
+     "Statement": [
+      {
+       "Action": "sts:AssumeRole",
+       "Effect": "Allow",
+       "Principal": {
+        "Service": "autoscaling.amazonaws.com"
+       }
+      }
+     ],
+     "Version": "2012-10-17"
+    },
+    "Tags": [
+     {
+      "Key": "Name",
+      "Value": "MealSwipeAppService/MealSwipeCluster/DefaultAutoScalingGroup"
+     }
+    ]
+   },
+   "Metadata": {
+    "aws:cdk:path": "MealSwipeAppService/MealSwipeCluster/DefaultAutoScalingGroup/LifecycleHookDrainHook/Role/Resource"
+   }
+  },
+  "MealSwipeClusterDefaultAutoScalingGroupLifecycleHookDrainHookRoleDefaultPolicy32E513EA": {
+   "Type": "AWS::IAM::Policy",
+   "Properties": {
+    "PolicyDocument": {
+     "Statement": [
+      {
+       "Action": "sns:Publish",
+       "Effect": "Allow",
+       "Resource": {
+        "Ref": "MealSwipeClusterDefaultAutoScalingGroupLifecycleHookDrainHookTopic200CC71F"
+       }
+      }
+     ],
+     "Version": "2012-10-17"
+    },
+    "PolicyName": "MealSwipeClusterDefaultAutoScalingGroupLifecycleHookDrainHookRoleDefaultPolicy32E513EA",
+    "Roles": [
+     {
+      "Ref": "MealSwipeClusterDefaultAutoScalingGroupLifecycleHookDrainHookRoleD831B6D3"
+     }
+    ]
+   },
+   "Metadata": {
+    "aws:cdk:path": "MealSwipeAppService/MealSwipeCluster/DefaultAutoScalingGroup/LifecycleHookDrainHook/Role/DefaultPolicy/Resource"
+   }
+  },
+  "MealSwipeClusterDefaultAutoScalingGroupLifecycleHookDrainHookBC4D9CC0": {
+   "Type": "AWS::AutoScaling::LifecycleHook",
+   "Properties": {
+    "AutoScalingGroupName": {
+     "Ref": "MealSwipeClusterDefaultAutoScalingGroupASGC21801CC"
+    },
+    "DefaultResult": "CONTINUE",
+    "HeartbeatTimeout": 300,
+    "LifecycleTransition": "autoscaling:EC2_INSTANCE_TERMINATING",
+    "NotificationTargetARN": {
+     "Ref": "MealSwipeClusterDefaultAutoScalingGroupLifecycleHookDrainHookTopic200CC71F"
+    },
+    "RoleARN": {
+     "Fn::GetAtt": [
+      "MealSwipeClusterDefaultAutoScalingGroupLifecycleHookDrainHookRoleD831B6D3",
+      "Arn"
+     ]
+    }
+   },
+   "DependsOn": [
+    "MealSwipeClusterDefaultAutoScalingGroupLifecycleHookDrainHookRoleDefaultPolicy32E513EA",
+    "MealSwipeClusterDefaultAutoScalingGroupLifecycleHookDrainHookRoleD831B6D3"
+   ],
+   "Metadata": {
+    "aws:cdk:path": "MealSwipeAppService/MealSwipeCluster/DefaultAutoScalingGroup/LifecycleHookDrainHook/Resource"
+   }
+  },
+  "BackendRepo7FFBAD06": {
+   "Type": "AWS::ECR::Repository",
+   "UpdateReplacePolicy": "Retain",
+   "DeletionPolicy": "Retain",
+   "Metadata": {
+    "aws:cdk:path": "MealSwipeAppService/BackendRepo/Resource"
+   }
+  },
+  "FrontendRepoF80FCC01": {
+   "Type": "AWS::ECR::Repository",
+   "UpdateReplacePolicy": "Retain",
+   "DeletionPolicy": "Retain",
+   "Metadata": {
+    "aws:cdk:path": "MealSwipeAppService/FrontendRepo/Resource"
+   }
+  },
+  "MealSwipeAppServiceLB60C3886E": {
+   "Type": "AWS::ElasticLoadBalancingV2::LoadBalancer",
+   "Properties": {
+    "LoadBalancerAttributes": [
+     {
+      "Key": "deletion_protection.enabled",
+      "Value": "false"
+     }
+    ],
+    "Scheme": "internet-facing",
+    "SecurityGroups": [
+     {
+      "Fn::GetAtt": [
+       "MealSwipeAppServiceLBSecurityGroup37BCE77C",
+       "GroupId"
+      ]
+     }
+    ],
+    "Subnets": [
+     {
+      "Ref": "MealSwipeVPCPublicSubnet1Subnet80DE1A31"
+     },
+     {
+      "Ref": "MealSwipeVPCPublicSubnet2Subnet5C105B00"
+     }
+    ],
+    "Type": "application"
+   },
+   "DependsOn": [
+    "MealSwipeVPCPublicSubnet1DefaultRouteA9724350",
+    "MealSwipeVPCPublicSubnet1RouteTableAssociation07BE09C0",
+    "MealSwipeVPCPublicSubnet2DefaultRoute32E6B12A",
+    "MealSwipeVPCPublicSubnet2RouteTableAssociationC77E4970"
+   ],
+   "Metadata": {
+    "aws:cdk:path": "MealSwipeAppService/MealSwipeAppService/LB/Resource"
+   }
+  },
+  "MealSwipeAppServiceLBSecurityGroup37BCE77C": {
+   "Type": "AWS::EC2::SecurityGroup",
+   "Properties": {
+    "GroupDescription": "Automatically created Security Group for ELB MealSwipeAppServiceLB557624D2",
+    "SecurityGroupIngress": [
+     {
+      "CidrIp": "0.0.0.0/0",
+      "Description": "Allow from anyone on port 80",
+      "FromPort": 80,
+      "IpProtocol": "tcp",
+      "ToPort": 80
+     }
+    ],
+    "VpcId": {
+     "Ref": "MealSwipeVPC697170DB"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "MealSwipeAppService/MealSwipeAppService/LB/SecurityGroup/Resource"
+   }
+  },
+  "MealSwipeAppServiceLBSecurityGrouptoMealSwipeAppServiceMealSwipeClusterDefaultAutoScalingGroupInstanceSecurityGroupB94FEAA632768655357B371344": {
+   "Type": "AWS::EC2::SecurityGroupEgress",
+   "Properties": {
+    "Description": "Load balancer to target",
+    "DestinationSecurityGroupId": {
+     "Fn::GetAtt": [
+      "MealSwipeClusterDefaultAutoScalingGroupInstanceSecurityGroupB9A98066",
+      "GroupId"
+     ]
+    },
+    "FromPort": 32768,
+    "GroupId": {
+     "Fn::GetAtt": [
+      "MealSwipeAppServiceLBSecurityGroup37BCE77C",
+      "GroupId"
+     ]
+    },
+    "IpProtocol": "tcp",
+    "ToPort": 65535
+   },
+   "Metadata": {
+    "aws:cdk:path": "MealSwipeAppService/MealSwipeAppService/LB/SecurityGroup/to MealSwipeAppServiceMealSwipeClusterDefaultAutoScalingGroupInstanceSecurityGroupB94FEAA6:32768-65535"
+   }
+  },
+  "MealSwipeAppServiceLBPublicListenerC57D3302": {
+   "Type": "AWS::ElasticLoadBalancingV2::Listener",
+   "Properties": {
+    "DefaultActions": [
+     {
+      "TargetGroupArn": {
+       "Ref": "MealSwipeAppServiceLBPublicListenerECSGroup7FC61536"
+      },
+      "Type": "forward"
+     }
+    ],
+    "LoadBalancerArn": {
+     "Ref": "MealSwipeAppServiceLB60C3886E"
+    },
+    "Port": 80,
+    "Protocol": "HTTP"
+   },
+   "Metadata": {
+    "aws:cdk:path": "MealSwipeAppService/MealSwipeAppService/LB/PublicListener/Resource"
+   }
+  },
+  "MealSwipeAppServiceLBPublicListenerECSGroup7FC61536": {
+   "Type": "AWS::ElasticLoadBalancingV2::TargetGroup",
+   "Properties": {
+    "Port": 80,
+    "Protocol": "HTTP",
+    "TargetGroupAttributes": [
+     {
+      "Key": "stickiness.enabled",
+      "Value": "false"
+     }
+    ],
+    "TargetType": "instance",
+    "VpcId": {
+     "Ref": "MealSwipeVPC697170DB"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "MealSwipeAppService/MealSwipeAppService/LB/PublicListener/ECSGroup/Resource"
+   }
+  },
+  "MealSwipeAppServiceTaskDefTaskRole752C89C2": {
+   "Type": "AWS::IAM::Role",
+   "Properties": {
+    "AssumeRolePolicyDocument": {
+     "Statement": [
+      {
+       "Action": "sts:AssumeRole",
+       "Effect": "Allow",
+       "Principal": {
+        "Service": "ecs-tasks.amazonaws.com"
+       }
+      }
+     ],
+     "Version": "2012-10-17"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "MealSwipeAppService/MealSwipeAppService/TaskDef/TaskRole/Resource"
+   }
+  },
+  "MealSwipeAppServiceTaskDefTaskRoleDefaultPolicyBBCD94D5": {
+   "Type": "AWS::IAM::Policy",
+   "Properties": {
+    "PolicyDocument": {
+     "Statement": [
+      {
+       "Action": [
+        "ecr:BatchCheckLayerAvailability",
+        "ecr:BatchGetImage",
+        "ecr:GetDownloadUrlForLayer"
+       ],
+       "Effect": "Allow",
+       "Resource": [
+        {
+         "Fn::GetAtt": [
+          "BackendRepo7FFBAD06",
+          "Arn"
+         ]
+        },
+        {
+         "Fn::GetAtt": [
+          "FrontendRepoF80FCC01",
+          "Arn"
+         ]
+        }
+       ]
+      },
+      {
+       "Action": "ecr:GetAuthorizationToken",
+       "Effect": "Allow",
+       "Resource": "*"
+      }
+     ],
+     "Version": "2012-10-17"
+    },
+    "PolicyName": "MealSwipeAppServiceTaskDefTaskRoleDefaultPolicyBBCD94D5",
+    "Roles": [
+     {
+      "Ref": "MealSwipeAppServiceTaskDefTaskRole752C89C2"
+     }
+    ]
+   },
+   "Metadata": {
+    "aws:cdk:path": "MealSwipeAppService/MealSwipeAppService/TaskDef/TaskRole/DefaultPolicy/Resource"
+   }
+  },
+  "MealSwipeAppServiceTaskDef86331B1A": {
+   "Type": "AWS::ECS::TaskDefinition",
+   "Properties": {
+    "ContainerDefinitions": [
+     {
+      "Essential": true,
+      "Image": "amazon/amazon-ecs-sample",
+      "LogConfiguration": {
+       "LogDriver": "awslogs",
+       "Options": {
+        "awslogs-group": {
+         "Ref": "MealSwipeAppServiceTaskDefwebLogGroup49B58D08"
+        },
+        "awslogs-stream-prefix": "MealSwipeAppService",
+        "awslogs-region": {
+         "Ref": "AWS::Region"
+        }
+       }
+      },
+      "Memory": 512,
+      "Name": "web",
+      "PortMappings": [
+       {
+        "ContainerPort": 3000,
+        "HostPort": 0,
+        "Protocol": "tcp"
+       }
+      ]
+     }
+    ],
+    "ExecutionRoleArn": {
+     "Fn::GetAtt": [
+      "MealSwipeAppServiceTaskDefExecutionRole92952644",
+      "Arn"
+     ]
+    },
+    "Family": "MealSwipeAppServiceTaskDefFD499017",
+    "NetworkMode": "bridge",
+    "RequiresCompatibilities": [
+     "EC2"
+    ],
+    "TaskRoleArn": {
+     "Fn::GetAtt": [
+      "MealSwipeAppServiceTaskDefTaskRole752C89C2",
+      "Arn"
+     ]
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "MealSwipeAppService/MealSwipeAppService/TaskDef/Resource"
+   }
+  },
+  "MealSwipeAppServiceTaskDefwebLogGroup49B58D08": {
+   "Type": "AWS::Logs::LogGroup",
+   "UpdateReplacePolicy": "Retain",
+   "DeletionPolicy": "Retain",
+   "Metadata": {
+    "aws:cdk:path": "MealSwipeAppService/MealSwipeAppService/TaskDef/web/LogGroup/Resource"
+   }
+  },
+  "MealSwipeAppServiceTaskDefExecutionRole92952644": {
+   "Type": "AWS::IAM::Role",
+   "Properties": {
+    "AssumeRolePolicyDocument": {
+     "Statement": [
+      {
+       "Action": "sts:AssumeRole",
+       "Effect": "Allow",
+       "Principal": {
+        "Service": "ecs-tasks.amazonaws.com"
+       }
+      }
+     ],
+     "Version": "2012-10-17"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "MealSwipeAppService/MealSwipeAppService/TaskDef/ExecutionRole/Resource"
+   }
+  },
+  "MealSwipeAppServiceTaskDefExecutionRoleDefaultPolicy0D048F63": {
+   "Type": "AWS::IAM::Policy",
+   "Properties": {
+    "PolicyDocument": {
+     "Statement": [
+      {
+       "Action": [
+        "logs:CreateLogStream",
+        "logs:PutLogEvents"
+       ],
+       "Effect": "Allow",
+       "Resource": {
+        "Fn::GetAtt": [
+         "MealSwipeAppServiceTaskDefwebLogGroup49B58D08",
+         "Arn"
+        ]
+       }
+      }
+     ],
+     "Version": "2012-10-17"
+    },
+    "PolicyName": "MealSwipeAppServiceTaskDefExecutionRoleDefaultPolicy0D048F63",
+    "Roles": [
+     {
+      "Ref": "MealSwipeAppServiceTaskDefExecutionRole92952644"
+     }
+    ]
+   },
+   "Metadata": {
+    "aws:cdk:path": "MealSwipeAppService/MealSwipeAppService/TaskDef/ExecutionRole/DefaultPolicy/Resource"
+   }
+  },
+  "MealSwipeAppService4327B002": {
+   "Type": "AWS::ECS::Service",
+   "Properties": {
+    "Cluster": {
+     "Ref": "MealSwipeCluster4434DE30"
+    },
+    "DeploymentConfiguration": {
+     "MaximumPercent": 200,
+     "MinimumHealthyPercent": 50
+    },
+    "EnableECSManagedTags": false,
+    "HealthCheckGracePeriodSeconds": 60,
+    "LaunchType": "EC2",
+    "LoadBalancers": [
+     {
+      "ContainerName": "web",
+      "ContainerPort": 3000,
+      "TargetGroupArn": {
+       "Ref": "MealSwipeAppServiceLBPublicListenerECSGroup7FC61536"
+      }
+     }
+    ],
+    "SchedulingStrategy": "REPLICA",
+    "TaskDefinition": {
+     "Ref": "MealSwipeAppServiceTaskDef86331B1A"
+    }
+   },
+   "DependsOn": [
+    "MealSwipeAppServiceLBPublicListenerECSGroup7FC61536",
+    "MealSwipeAppServiceLBPublicListenerC57D3302",
+    "MealSwipeAppServiceTaskDefTaskRoleDefaultPolicyBBCD94D5",
+    "MealSwipeAppServiceTaskDefTaskRole752C89C2"
+   ],
+   "Metadata": {
+    "aws:cdk:path": "MealSwipeAppService/MealSwipeAppService/Service/Service"
+   }
+  },
+  "CDKMetadata": {
+   "Type": "AWS::CDK::Metadata",
+   "Properties": {
+    "Analytics": "v2:deflate64:H4sIAAAAAAAA/81X23LbNhD9luixQ7OxH9rGb7Siuprasiox6Uw9Hg8ErCTEIMACoBxVo3/v4sKLLvF00mSsB1vkLrA4e7BYHF6k5z+/S9++Ic/mjLKnM8Fn6WZqCX1K0PS4AXqRbj6W9H7TK8jn7B/Tu+z90Ns+JP25/DjuJ+NqJjidVjMJFseQFeGCzLjgdv2XkuBHJ71VSYcsPlPO9JVQ9Cm+F6QMQYblnbwhlaTL3qXVFSQ9Xq5+6u8NJ8bwhRyiJ2NMgzF3sq+BWK5kgJacCAoPhLERsdfEwjNZ9y7v0fNwMgBPA8UXafIlFgrLPU1UZSEnMwGtvbVlxijKfeBmsHsYDMfup42ejDVf4eM3r9g5EeYE9uL/wTgdJCcCI1ThUFrQWC51DYXeF98yi91yWYC0yRRopRHvtVZVibWFYOulhFDPmRB3lZ2pSrJwaGLtD+XCrT6pBITidxvhfjx23zDaSAwM1bxsQB6L7ecdDb7pUYLpCC4hWMLZpUpKoC6miUEryf+uIFK9PQSEkQdfQO1C1se3S8iBIUJLwlblUJQCKfU3DV0iwmFBFvW+c2kskRTydQkNExZLBNitktwqzeWi2W3TXabOyIB+TyxpN993DKhLJtZAdJtS2buyy8jMVc57WHEKZg/UWKs5FzWuJ1iPCdedi3I3wQMeApHbBKhJN31RGay2TvVEuvukJBSn1GQfp8RwDZ2hHkIMkFVWTSnBvV9EXmKgLt0h2Ntt3MCIJhnQi5wYTH/OkWxkxU/d+/MzdoclfSVxlyRS39ow2BS0I/K+OzPatglBoCYATTf7qHeO1ZFCqUqGHEdOJoCMU/hS/RwhK1D1oamV9spmLFcTJWCssFzcLmy2X+Pwqe4nldzwOdA1FfCbUk/uVjrYKw9Z1MNyTaThsQl0+Loc9C8eh6Npno36g8d8MLkdjrJ8OLr2+c5JJewEDP7Haf27EXo+DNAlleVzTn3ry4legI0LLoFoO8OemPMC8FLtFnUX8jbhpEg3LltEr/FnRApoj1pVALtCCja9Eg8q5SURGaXYrezOGDc/o20Dbmgc17MOSPbdN3S0xtfs2YvOl+O+7P3qjFzNSqxW5kNy10p8w2tt60zL3YN7eum/CnXflY3TRHWCu5Dsnu7vlv5D0PEo94M93lVhQuirB3EOzYzht6wFp87MDjf/2fxKy74SyNPK9luh8bUUyijI+R3Ztk0EKWaMpJtfUaZ5cYMyWbH6+loSyQTo+KbxgPDmarOdazHpgVxxraRbuns4Bl1zI3kCqnpJjxB0wfGbRMltYiRqQfxIbcQ+YrKq5LRZipWKN2e11MoqqgS+hmTQhrmhdKtPlR/WNf3J7fIWdSdePFeK1SM0LNovCwaE3YDFKX9UUEHn8u8iS3KHy99iTiv+DuvOQO9z0lajOoBSGSfV1zu6rzV7CfxYErci5p+VpYii5EYRdkWE2zXWyscEBC7JqUDvzHtRAq0uUDQenal3lu06ku4EjlnIdvCOuq2d3QlBMDWfOJ1XrCy1wH28UY121YDz224akQQ33iUozlSlW2G8BwDFuCq6YyKBwbDnx/JecQb6iuAnUWYMWDwYC2TI1xrR2MKdtMcX/HIsK7tNJBZ9+sn8uDr/JT1/l56/+WQ4P4sVn07C7793Lzd2MhQAAA=="
+   },
+   "Metadata": {
+    "aws:cdk:path": "MealSwipeAppService/CDKMetadata/Default"
+   },
+   "Condition": "CDKMetadataAvailable"
+  }
+ },
+ "Parameters": {
+  "SsmParameterValueawsserviceecsoptimizedamiamazonlinux2recommendedimageidC96584B6F00A464EAD1953AFF4B05118Parameter": {
+   "Type": "AWS::SSM::Parameter::Value<AWS::EC2::Image::Id>",
+   "Default": "/aws/service/ecs/optimized-ami/amazon-linux-2/recommended/image_id"
+  },
+  "BootstrapVersion": {
+   "Type": "AWS::SSM::Parameter::Value<String>",
+   "Default": "/cdk-bootstrap/hnb659fds/version",
+   "Description": "Version of the CDK Bootstrap resources in this environment, automatically retrieved from SSM Parameter Store. [cdk:skip]"
+  }
+ },
+ "Outputs": {
+  "MealSwipeAppServiceLoadBalancerDNS4F4CB737": {
+   "Value": {
+    "Fn::GetAtt": [
+     "MealSwipeAppServiceLB60C3886E",
+     "DNSName"
+    ]
+   }
+  },
+  "MealSwipeAppServiceServiceURL22A5AD44": {
+   "Value": {
+    "Fn::Join": [
+     "",
+     [
+      "http://",
+      {
+       "Fn::GetAtt": [
+        "MealSwipeAppServiceLB60C3886E",
+        "DNSName"
+       ]
+      }
+     ]
+    ]
+   }
+  }
+ },
+ "Conditions": {
+  "CDKMetadataAvailable": {
+   "Fn::Or": [
+    {
+     "Fn::Or": [
+      {
+       "Fn::Equals": [
+        {
+         "Ref": "AWS::Region"
+        },
+        "af-south-1"
+       ]
+      },
+      {
+       "Fn::Equals": [
+        {
+         "Ref": "AWS::Region"
+        },
+        "ap-east-1"
+       ]
+      },
+      {
+       "Fn::Equals": [
+        {
+         "Ref": "AWS::Region"
+        },
+        "ap-northeast-1"
+       ]
+      },
+      {
+       "Fn::Equals": [
+        {
+         "Ref": "AWS::Region"
+        },
+        "ap-northeast-2"
+       ]
+      },
+      {
+       "Fn::Equals": [
+        {
+         "Ref": "AWS::Region"
+        },
+        "ap-northeast-3"
+       ]
+      },
+      {
+       "Fn::Equals": [
+        {
+         "Ref": "AWS::Region"
+        },
+        "ap-south-1"
+       ]
+      },
+      {
+       "Fn::Equals": [
+        {
+         "Ref": "AWS::Region"
+        },
+        "ap-south-2"
+       ]
+      },
+      {
+       "Fn::Equals": [
+        {
+         "Ref": "AWS::Region"
+        },
+        "ap-southeast-1"
+       ]
+      },
+      {
+       "Fn::Equals": [
+        {
+         "Ref": "AWS::Region"
+        },
+        "ap-southeast-2"
+       ]
+      },
+      {
+       "Fn::Equals": [
+        {
+         "Ref": "AWS::Region"
+        },
+        "ap-southeast-3"
+       ]
+      }
+     ]
+    },
+    {
+     "Fn::Or": [
+      {
+       "Fn::Equals": [
+        {
+         "Ref": "AWS::Region"
+        },
+        "ap-southeast-4"
+       ]
+      },
+      {
+       "Fn::Equals": [
+        {
+         "Ref": "AWS::Region"
+        },
+        "ca-central-1"
+       ]
+      },
+      {
+       "Fn::Equals": [
+        {
+         "Ref": "AWS::Region"
+        },
+        "ca-west-1"
+       ]
+      },
+      {
+       "Fn::Equals": [
+        {
+         "Ref": "AWS::Region"
+        },
+        "cn-north-1"
+       ]
+      },
+      {
+       "Fn::Equals": [
+        {
+         "Ref": "AWS::Region"
+        },
+        "cn-northwest-1"
+       ]
+      },
+      {
+       "Fn::Equals": [
+        {
+         "Ref": "AWS::Region"
+        },
+        "eu-central-1"
+       ]
+      },
+      {
+       "Fn::Equals": [
+        {
+         "Ref": "AWS::Region"
+        },
+        "eu-central-2"
+       ]
+      },
+      {
+       "Fn::Equals": [
+        {
+         "Ref": "AWS::Region"
+        },
+        "eu-north-1"
+       ]
+      },
+      {
+       "Fn::Equals": [
+        {
+         "Ref": "AWS::Region"
+        },
+        "eu-south-1"
+       ]
+      },
+      {
+       "Fn::Equals": [
+        {
+         "Ref": "AWS::Region"
+        },
+        "eu-south-2"
+       ]
+      }
+     ]
+    },
+    {
+     "Fn::Or": [
+      {
+       "Fn::Equals": [
+        {
+         "Ref": "AWS::Region"
+        },
+        "eu-west-1"
+       ]
+      },
+      {
+       "Fn::Equals": [
+        {
+         "Ref": "AWS::Region"
+        },
+        "eu-west-2"
+       ]
+      },
+      {
+       "Fn::Equals": [
+        {
+         "Ref": "AWS::Region"
+        },
+        "eu-west-3"
+       ]
+      },
+      {
+       "Fn::Equals": [
+        {
+         "Ref": "AWS::Region"
+        },
+        "il-central-1"
+       ]
+      },
+      {
+       "Fn::Equals": [
+        {
+         "Ref": "AWS::Region"
+        },
+        "me-central-1"
+       ]
+      },
+      {
+       "Fn::Equals": [
+        {
+         "Ref": "AWS::Region"
+        },
+        "me-south-1"
+       ]
+      },
+      {
+       "Fn::Equals": [
+        {
+         "Ref": "AWS::Region"
+        },
+        "sa-east-1"
+       ]
+      },
+      {
+       "Fn::Equals": [
+        {
+         "Ref": "AWS::Region"
+        },
+        "us-east-1"
+       ]
+      },
+      {
+       "Fn::Equals": [
+        {
+         "Ref": "AWS::Region"
+        },
+        "us-east-2"
+       ]
+      },
+      {
+       "Fn::Equals": [
+        {
+         "Ref": "AWS::Region"
+        },
+        "us-west-1"
+       ]
+      }
+     ]
+    },
+    {
+     "Fn::Equals": [
+      {
+       "Ref": "AWS::Region"
+      },
+      "us-west-2"
+     ]
+    }
+   ]
+  }
+ },
+ "Rules": {
+  "CheckBootstrapVersion": {
+   "Assertions": [
+    {
+     "Assert": {
+      "Fn::Not": [
+       {
+        "Fn::Contains": [
+         [
+          "1",
+          "2",
+          "3",
+          "4",
+          "5"
+         ],
+         {
+          "Ref": "BootstrapVersion"
+         }
+        ]
+       }
+      ]
+     },
+     "AssertDescription": "CDK bootstrap stack version 6 required. Please run 'cdk bootstrap' with a recent version of the CDK CLI."
+    }
+   ]
+  }
+ }
+}
