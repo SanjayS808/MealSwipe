@@ -6,9 +6,13 @@
 
 **Members**:
 Sanjay Sugumar
+
 David Rodriguez
+
 Jacob Miller
+
 Henry Chibib
+
 *
 
 ## Status Report
