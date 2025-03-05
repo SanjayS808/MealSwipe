@@ -1,7 +1,7 @@
 // This Component is used to display a restaurant card in the Tinder-like interface.
 
 import React from "react";
-import TinderCard from "react-tinder-card";
+
 
 
 
@@ -15,7 +15,8 @@ function RestaurantCard({ restaurant}) {
                 className="card"
               >
                 <h3 className="text-lg font-bold">{restaurant.name}</h3>
-                <p className="text-sm">{restaurant.rating}⭐ • Price Level: {restaurant.priceLevel}</p>
+                
+                <p className="text-sm">{restaurant.rating}⭐ • Price Level: {restaurant.price}</p>
               </div>
   );
 }

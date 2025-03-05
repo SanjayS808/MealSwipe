@@ -20,11 +20,12 @@
     "web-vitals": "^2.1.4"
   },
   "scripts": {
-    "start": "http-server build -p 3000",
+    "start": "react-scripts start",
     "start:prod": "http-server build -p 80",
     "build": "react-scripts build",
     "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "rundev" : "react-scripts start"
   },
   "eslintConfig": {
     "extends": [
