@@ -15,7 +15,8 @@ function RestaurantCard({ restaurant}) {
                 className="card"
               >
                 <h3 className="text-lg font-bold">{restaurant.name}</h3>
-                <p className="text-sm">{restaurant.rating}⭐ • Price Level: {restaurant.priceLevel}</p>
+                {console.log(restaurant)}
+                <p className="text-sm">{restaurant.rating}⭐ • Price Level: {restaurant.price}</p>
               </div>
   );
 }

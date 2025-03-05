@@ -40,8 +40,8 @@ function App() {
   };
 
   const fetchRestaurants = () => {
-
-    fetch(`http://localhost:5001/api/serve/get-all-restaurants?maxDistance=${maxDistance}&minRating=${minRating}`)
+    console.log("Fetching restaurants with maxDistance:", maxDistance, "and minRating:", minRating);
+    fetch(`http://localhost:5000/api/serve/get-all-restaurants?maxDistance=${maxDistance}&minRating=${minRating}`)
 
       .then(response => {
         if (!response.ok) {
@@ -50,7 +50,10 @@ function App() {
         return response.json();
       })
       .then(data => {
-        setBackendData(data.map(r => new Restaurant(r.id, r.displayName.text, r.rating, r.priceLevel)));
+        
+        //id,name,rating,price,address, generativeSummary, googleMapsLink, reviews,website
+        setBackendData(data.map(r => new Restaurant(r.id, r.displayName.text, r.rating, r.priceLevel, r.formattedAddress, r.generativeSummary.overview.text, r.googleMapsLinks.placeUri, r.reviews, r.websiteUri, r.userRatingCount)));
+        console.log(data.map(r => new Restaurant(r.id, r.displayName.text, r.rating, r.priceLevel, r.formattedAddress, r.generativeSummary.overview.text, r.googleMapsLinks.placeUri, r.reviews, r.websiteUri, r.userRatingCount)))
       })
       .catch(error => console.error("Fetch error:", error));
   };
@@ -66,6 +69,8 @@ function App() {
   };
 
   useEffect(() => {
+    console.log("App mounted");
+    console.log("Backend data set:", backendData);
     fetchRestaurants();
     loadFavorites();
     loadTrashed();
