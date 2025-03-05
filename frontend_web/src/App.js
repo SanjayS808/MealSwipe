@@ -50,10 +50,22 @@ function App() {
         return response.json();
       })
       .then(data => {
+        console.log("Fetched data:", data);
+        //id,name,rating,price,address, generativeSummary, googleMapsLink, reviews,website, ratingsCount ,isOpen, phoneNumber, photos
+        setBackendData(data.map(r => new Restaurant(r.id, 
+                                                    r.displayName.text, 
+                                                    r.rating, 
+                                                    r.priceLevel, 
+                                                    r.formattedAddress, 
+                                                    r.generativeSummary.overview.text, 
+                                                    r.googleMapsLinks.placeUri, 
+                                                    r.reviews, 
+                                                    r.websiteUri, 
+                                                    r.userRatingCount, 
+                                                    r.currentOpeningHours.openNow, 
+                                                    r.nationalPhoneNumber, 
+                                                    r.photos)));
         
-        //id,name,rating,price,address, generativeSummary, googleMapsLink, reviews,website
-        setBackendData(data.map(r => new Restaurant(r.id, r.displayName.text, r.rating, r.priceLevel, r.formattedAddress, r.generativeSummary.overview.text, r.googleMapsLinks.placeUri, r.reviews, r.websiteUri, r.userRatingCount)));
-        console.log(data.map(r => new Restaurant(r.id, r.displayName.text, r.rating, r.priceLevel, r.formattedAddress, r.generativeSummary.overview.text, r.googleMapsLinks.placeUri, r.reviews, r.websiteUri, r.userRatingCount)))
       })
       .catch(error => console.error("Fetch error:", error));
   };
