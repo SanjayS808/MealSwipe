@@ -71,13 +71,13 @@ class MealSwipeAppService extends cdk.Stack {
       cpu: 256,
       taskImageOptions: {
         image: ecs.ContainerImage.fromEcrRepository(backendRepo, 'latest'),
-        containerPort: 5000,
+        containerPort: 5001,
         environment: {
           NODE_ENV: 'production'
         },
         // Adding healthcheck to ensure connection to ECR container works.dd
         healthCheck: {
-          command: ["CMD-SHELL", "curl -X GET -f http://localhost:5000/health || exit 1"],
+          command: ["CMD-SHELL", "curl -X GET -f http://localhost:5001/health || exit 1"],
           interval: cdk.Duration.seconds(30),
           retries: 3,
           timeout: cdk.Duration.minutes(3)
