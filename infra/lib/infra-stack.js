@@ -16,6 +16,34 @@ class MealSwipeAppService extends cdk.Stack {
     // Create a new VPC with default settings (2 AZs for high availability)
     const vpc = new ec2.Vpc(this, 'MealSwipeVPC', {
       maxAzs: 2,
+      subnetConfiguration: [
+        {
+          cidrMask: 24,
+          name: 'public',
+          subnetType: ec2.SubnetType.PUBLIC,
+        }
+      ],
+      natGateways: 0 // Explicitly specify no NAT gateways
+    });
+
+    /* Add VPC endpoints for AWS common services (S3) without the addition of NAT Gateways.*/
+    // Add VPC endpoints for common AWS services
+    new ec2.InterfaceVpcEndpoint(this, 'EcrDockerEndpoint', {
+      vpc,
+      service: ec2.InterfaceVpcEndpointAwsService.ECR_DOCKER,
+      privateDnsEnabled: true
+    });
+
+    new ec2.InterfaceVpcEndpoint(this, 'EcrEndpoint', {
+      vpc,
+      service: ec2.InterfaceVpcEndpointAwsService.ECR,
+      privateDnsEnabled: true
+    });
+
+    // Add more endpoints as needed for other AWS services
+    new ec2.GatewayVpcEndpoint(this, 'S3Endpoint', {
+      vpc,
+      service: ec2.GatewayVpcEndpointAwsService.S3
     });
 
     // Create an ECS cluster within the VPC
@@ -26,7 +54,7 @@ class MealSwipeAppService extends cdk.Stack {
       instanceType: new ec2.InstanceType('t2.small'),
       desiredCapacity: 1,
       minCapacity: 1,
-      maxCapacity: 1
+      maxCapacity: 2
     });
 
     // Reference existing ECR repository for backend instead of creating it
