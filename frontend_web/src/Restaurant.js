@@ -1,5 +1,8 @@
 class Restaurant{
-    constructor(id,name,rating,price,address, generativeSummary, googleMapsLink, reviews,website, ratingsCount ,isOpen, phoneNumber, photos){
+    constructor(id,name,rating,
+                price,address, generativeSummary, googleMapsLink, 
+                reviews,website, ratingsCount ,isOpen, 
+                phoneNumber, photos, distanceFromUser = 10.0) {
         this.id = id;
         this.name = name;
         this.rating = rating;
@@ -14,6 +17,7 @@ class Restaurant{
         this.isOpen = isOpen;
         this.phoneNumber = phoneNumber;
         this.photos = photos;
+        this.distanceFromUser = distanceFromUser;
     }
 }
 

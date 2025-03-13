@@ -1,0 +1,91 @@
+
+.card {
+    position: relative;
+    display: grid;
+    grid-template-rows: 70% 30%;
+
+    background-color: lightgray;
+    width: 80vw;
+    max-width: 300px;
+    height: 500px;
+    
+    border-radius: 20px;
+    background-size: cover;
+    background-position: center;
+  }
+  
+  .card-content {
+    display: flex;
+    flex-direction: column;
+    
+    padding: 1rem;
+    background-color: lightgray;
+    border-bottom-left-radius: 20px;
+    border-bottom-right-radius: 20px;
+    text-align: left;
+    padding: 2px;
+  }
+
+  .card-content > * {
+    
+    margin: 0; /* Remove default margin */
+    padding-left: .25rem;
+    padding-bottom: .25rem;
+    
+  }
+  
+  .card-links {
+    padding-left: 0;
+    
+    display: flex;
+    flex-direction: row;
+    justify-content: space-evenly;
+    align-items: center;
+    gap: 0.5rem;
+  }
+  
+  .card-links a {
+    color: blue;
+    text-decoration: underline;
+  }
+
+  .card-image{
+    
+    overflow: hidden;
+    border-top-left-radius: 10px;
+    border-top-right-radius: 10px;
+    
+  }
+
+  .icon-wrapper {
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: lightgray;
+    border-radius: 50%;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease, background-color 0.3s ease;
+  }
+  
+  .icon-wrapper:hover {
+    transform: scale(1.1);
+    background-color: #e0e0e0;
+  }
+  
+  .icon {
+    color: black;
+  }
+  .restaurant-details{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: flex-start;
+    height: 15px;
+  }
+    .restaurant-details > * {
+        margin-right: 5px;
+        font-size: 12px;
+        color: #333;
+    }

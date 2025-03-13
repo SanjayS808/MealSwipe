@@ -4,16 +4,20 @@
   "private": true,
   "homepage": ".",
   "dependencies": {
+    "@fortawesome/fontawesome-svg-core": "^6.7.2",
+    "@fortawesome/free-regular-svg-icons": "^6.7.2",
+    "@fortawesome/free-solid-svg-icons": "^6.7.2",
+    "@fortawesome/react-fontawesome": "^0.2.2",
     "@react-spring/web": "^9.5.5",
     "@testing-library/jest-dom": "^5.17.0",
     "@testing-library/react": "^13.4.0",
     "@testing-library/user-event": "^13.5.0",
     "ajv": "^8.17.1",
-
     "lucide-react": "^0.475.0",
     "react": "^18.3.1",
     "react-dom": "^19.0.0",
-
+    "react-fontawesome": "^1.7.1",
+    "react-rating-stars-component": "^2.2.0",
     "react-router-dom": "^7.2.0",
     "react-scripts": "^5.0.1",
     "react-tinder-card": "^1.6.4",
@@ -25,7 +29,7 @@
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
-    "rundev" : "react-scripts start"
+    "rundev": "react-scripts start"
   },
   "eslintConfig": {
     "extends": [
