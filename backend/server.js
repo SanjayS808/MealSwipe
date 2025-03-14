@@ -18,7 +18,7 @@ app.get("/api/serve/get-all-restaurants", (req, res) => {
                     "latitude": 30.627977,
                     "longitude": -96.334404
                 },
-                "radius": parseFloat(req.query.maxDistance) || 10000.0  // Adjusted default radius
+                "radius": parseFloat(req.query.maxDistance) * 1000 || 10000.0  // Adjusted default radius
             }
         }
     };
@@ -41,10 +41,10 @@ app.get("/api/serve/get-all-restaurants", (req, res) => {
     
         try {
             const restaurants = JSON.parse(response.body);
-            console.log("Received data:", restaurants); 
+            // console.log("Received data:", restaurants); 
     
             const minRating = parseFloat(req.query.minRating) || 0;
-            console.log("Minimum rating filter set to:", minRating);  
+            // console.log("Minimum rating filter set to:", minRating);  
     
             const filteredRestaurants = restaurants.filter(restaurant => {
                 const rating = parseFloat(restaurant.rating);
@@ -52,7 +52,7 @@ app.get("/api/serve/get-all-restaurants", (req, res) => {
                 return rating >= minRating;
             });
     
-            console.log("Filtered restaurants count:", filteredRestaurants.length);  
+            // console.log("Filtered restaurants count:", filteredRestaurants.length);  
             res.json(filteredRestaurants);
         } catch (parseError) {
             console.error("Error parsing JSON:", parseError);
@@ -77,4 +77,4 @@ app.get("/health", (req, res) => {
     res.status(200).send('OK');
 })
 
-app.listen(5000, () => console.log("Server started on port 5000"));
+app.listen(5001, () => console.log("Server started on port 5001"));

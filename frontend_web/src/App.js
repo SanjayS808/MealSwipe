@@ -6,8 +6,8 @@ import "./App.css";
 
 // import TinderCard from 'react-tinder-card'
 
-const DEV_MODE = false
-const backendURL = (DEV_MODE) ? "http://localhost:5000/"  : "http://MealSw-Backe-k0cJtOkGFP3i-29432626.us-west-1.elb.amazonaws.com";
+const DEV_MODE = true
+const backendURL = (DEV_MODE) ? "http://localhost:5001/"  : "http://MealSw-Backe-k0cJtOkGFP3i-29432626.us-west-1.elb.amazonaws.com";
 
 
 function App() {
@@ -41,7 +41,8 @@ function App() {
 
   const fetchRestaurants = () => {
     console.log("Fetching restaurants with maxDistance:", maxDistance, "and minRating:", minRating);
-    fetch(`http://localhost:5000/api/serve/get-all-restaurants?maxDistance=${maxDistance}&minRating=${minRating}`)
+    console.log(backendURL + `api/serve/get-all-restaurants?maxDistance=${maxDistance}&minRating=${minRating}`)
+    fetch(backendURL + `api/serve/get-all-restaurants?maxDistance=${maxDistance}&minRating=${minRating}`)
 
       .then(response => {
         if (!response.ok) {
@@ -52,20 +53,21 @@ function App() {
       .then(data => {
         console.log("Fetched data:", data);
         //id,name,rating,price,address, generativeSummary, googleMapsLink, reviews,website, ratingsCount ,isOpen, phoneNumber, photos
-        setBackendData(data.map(r => new Restaurant(r.id, 
-                                                    r.displayName.text, 
-                                                    r.rating, 
-                                                    r.priceLevel, 
-                                                    r.formattedAddress, 
-                                                    r.generativeSummary.overview.text, 
-                                                    r.googleMapsLinks.placeUri, 
-                                                    r.reviews, 
-                                                    r.websiteUri, 
-                                                    r.userRatingCount, 
-                                                    r.currentOpeningHours.openNow, 
-                                                    r.nationalPhoneNumber, 
-                                                    r.photos)));
-        
+        setBackendData(data.map(r => new Restaurant(
+          r.id, 
+          r.displayName?.text, 
+          r.rating, 
+          r.priceLevel, 
+          r.formattedAddress, 
+          r.generativeSummary?.overview?.text, 
+          r.googleMapsLinks?.placeUri, 
+          r.reviews, 
+          r.websiteUri, 
+          r.userRatingCount, 
+          r.currentOpeningHours?.openNow ?? false,  // Use optional chaining and default to false
+          r.nationalPhoneNumber, 
+          r.photos
+        )));
       })
       .catch(error => console.error("Fetch error:", error));
   };
