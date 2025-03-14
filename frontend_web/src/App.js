@@ -14,7 +14,7 @@ function App() {
   const [backendData, setBackendData] = useState([]);
   const [favoriteRestaurants, setFavoriteRestaurants] = useState([]);
   const [trashedRestaurants, setTrashedRestaurants] = useState([]);
-  const [maxDistance, setMaxDistance] = useState(20); // Default to 20 km
+  const [maxDistance, setMaxDistance] = useState(100); // Default to 20 km
   const [minRating, setMinRating] = useState(0); // Default to 0 stars
   const [showFilter, setShowFilter] = useState(false); // State to toggle filter visibility
 
@@ -107,7 +107,7 @@ function App() {
   };
 
   return (
-    <div>
+    <div className="App">
       <Navigation 
         clearFavorites={clearFavorites}
         clearTrashed={clearTrashed}

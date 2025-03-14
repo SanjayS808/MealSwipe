@@ -1,10 +1,10 @@
 import React from "react";
 
-
+import "./favorites.css"
 
 function FavoritesPage({ likedRestaurants, clearFavorites }) {
   return (
-    <div>
+    <div className="favoritesPage">
       <h2>Liked Restaurants</h2>
       <ul>
         {likedRestaurants.length === 0 ? (
