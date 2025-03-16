@@ -46,7 +46,7 @@ app.get("/api/serve/get-all-restaurants", (req, res) => {
             const minRating = parseFloat(req.query.minRating) || 0;
             // console.log("Minimum rating filter set to:", minRating);  
     
-            const filteredRestaurants = restaurants.filter(restaurant => {
+            const filteredRestaurants = restaurants['places'].filter(restaurant => {
                 const rating = parseFloat(restaurant.rating);
                 console.log("Restaurant rating:", rating); 
                 return rating >= minRating;
@@ -78,3 +78,6 @@ app.get("/health", (req, res) => {
 })
 
 app.listen(5001, () => console.log("Server started on port 5001"));
+
+// Exporting app for testing.
+module.exports = app;
