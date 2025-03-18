@@ -1,6 +1,7 @@
 const express = require('express');
 const cors = require('cors');  // Import CORS middleware
 const request = require('request');  // To make HTTP requests
+const pool = require('./db'); // Add access to DB
 
 const app = express();
 
@@ -60,6 +61,16 @@ app.get("/api/serve/get-all-restaurants", (req, res) => {
         }
     });
     
+});
+
+app.get("/api/serve/add-liked-restaurant", async (req, res) => {
+    try {
+        const result = await pool.query('SELECT * FROM Users;');
+        res.json(result.rows);
+    } catch (err) {
+        console.error('Error fetching users:', err);
+        res.status(500).json({ error: 'Internal Server Error' });
+    }
 });
 
 
