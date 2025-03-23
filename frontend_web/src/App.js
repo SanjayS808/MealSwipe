@@ -13,37 +13,13 @@ const backendURL = (DEV_MODE) ? "http://localhost:5001/"  : "http://MealSw-Backe
 function App() {
   const [backendData, setBackendData] = useState([]);
   const [favoriteRestaurants, setFavoriteRestaurants] = useState([]);
-  const [trashedRestaurants, setTrashedRestaurants] = useState([]);
-  const [maxDistance, setMaxDistance] = useState(100); // Default to 20 km
-  const [minRating, setMinRating] = useState(0); // Default to 0 stars
-  const [showFilter, setShowFilter] = useState(false); // State to toggle filter visibility
 
   const loadFavorites = () => {
     const favorites = JSON.parse(localStorage.getItem("favorites")) || [];
     setFavoriteRestaurants(favorites);
   };
-
-  const loadTrashed = () => {
-    const trashed = JSON.parse(localStorage.getItem("trashed")) || [];
-    setTrashedRestaurants(trashed);
-  };
-
-  const handleSwipe = (direction, restaurant) => {
-    console.log(`You swiped ${direction} on ${restaurant.name}`);
-    if (direction === 'right') {
-      setBackendData((prev) => prev.filter(r => r.id !== restaurant.id));
-      toggleFavorite(restaurant);
-    } else if (direction === 'left') {
-      setBackendData((prev) => prev.filter(r => r.id !== restaurant.id));
-      toggleTrashed(restaurant);
-    }
-  };
-
-  const fetchRestaurants = () => {
-    console.log("Fetching restaurants with maxDistance:", maxDistance, "and minRating:", minRating);
-    console.log(backendURL + `api/serve/get-all-restaurants?maxDistance=${maxDistance}&minRating=${minRating}`)
-    fetch(backendURL + `api/serve/get-all-restaurants?maxDistance=${maxDistance}&minRating=${minRating}`)
-
+  useEffect(() => {
+    fetch("http://localhost:5001/api/serve/get-all-restaurants")
       .then(response => {
         if (!response.ok) {
           throw new Error("Network response was not ok");
@@ -70,94 +46,60 @@ function App() {
         )));
       })
       .catch(error => console.error("Fetch error:", error));
-  };
+      loadFavorites();
+  }, []);
 
-  const clearFavorites = () => {
-    localStorage.removeItem("favorites");
-    setFavoriteRestaurants([]);
-  };
+  const toggleFavorite = (restaurantId) => {
+    const updatedFavorites = [...favoriteRestaurants];
+    const index = updatedFavorites.indexOf(restaurantId);
 
-  const clearTrashed = () => {
-    localStorage.removeItem("trashed");
-    setTrashedRestaurants([]);
-  };
-
-  useEffect(() => {
-    console.log("App mounted");
-    console.log("Backend data set:", backendData);
-    fetchRestaurants();
-    loadFavorites();
-    loadTrashed();
-  }, [maxDistance, minRating]);
-
-  const toggleFavorite = (restaurant) => {
-    const isAlreadyFavorite = favoriteRestaurants.some(fav => fav.id === restaurant.id);
-    if (!isAlreadyFavorite) {
-      const updatedFavorites = [...favoriteRestaurants, restaurant];
-      localStorage.setItem("favorites", JSON.stringify(updatedFavorites));
-      setFavoriteRestaurants(updatedFavorites);
+    if (index === -1) {
+      // If not in favorites, add it
+      updatedFavorites.push(restaurantId);
+    } else {
+      // If in favorites, remove it
+      updatedFavorites.splice(index, 1);
     }
-  };
 
-  const toggleTrashed = (restaurant) => {
-    const isAlreadyTrashed = trashedRestaurants.some(trash => trash.id === restaurant.id);
-    if (!isAlreadyTrashed) {
-      const updatedTrashed = [...trashedRestaurants, restaurant];
-      localStorage.setItem("trashed", JSON.stringify(updatedTrashed));
-      setTrashedRestaurants(updatedTrashed);
-    }
-  };
+    // Save the updated favorites to local storage
+    localStorage.setItem("favorites", JSON.stringify(updatedFavorites));
 
+    // Update the favorite restaurants state
+    setFavoriteRestaurants(updatedFavorites);
+  };
   return (
-    <div className="App">
-      <Navigation 
-        clearFavorites={clearFavorites}
-        clearTrashed={clearTrashed}
-        resetBackendData={fetchRestaurants}
-        backendData={backendData}
-        handleSwipe={handleSwipe}
-        likedRestaurants={favoriteRestaurants}
-        trashedRestaurants={trashedRestaurants}
-      />
-      <button 
-        style={{ 
-          position: 'absolute', 
-          top: '10px', 
-          right: '10px', 
-          zIndex: 1000, 
-          background: `url(${process.env.PUBLIC_URL + '/filter.png'}) no-repeat center center`, 
-          backgroundSize: 'cover',
-          border: 'none',
-          width: '50px', 
-          height: '50px' 
-        }} 
-        onClick={() => setShowFilter(!showFilter)}
-      />
-      {showFilter && (
-        <div style={{ position: 'absolute', top: '50px', right: '10px', padding: "10px", backgroundColor: "white", borderRadius: "8px" }}>
-          <div>
-            <label>Max Distance: {maxDistance} km</label>
-            <input
-              type="range"
-              min="1"
-              max="100"
-              value={maxDistance}
-              onChange={e => setMaxDistance(e.target.value)}
-            />
-          </div>
-          <div>
-            <label>Min Rating: {minRating} Stars</label>
-            <input
-              type="range"
-              min="0"
-              max="5"
-              step="0.5"
-              value={minRating}
-              onChange={e => setMinRating(parseFloat(e.target.value))}
-            />
-          </div>
-        </div>
-      )}
+    <div>
+      <h2>Restaurant List</h2>
+      <ul>
+        {backendData.length > 0 ? (
+          backendData.map(restaurant => (
+            <li key={restaurant.id}>
+              {restaurant.name} - {restaurant.rating}⭐ - Price Level: {restaurant.priceLevel} - Rating: {restaurant.rating}
+              <button onClick={() => toggleFavorite(restaurant.id)}>
+                {favoriteRestaurants.includes(restaurant.id) ? "Unfavorite" : "Favorite"}
+              </button>
+            </li>
+          ))
+        ) : (
+          <p>Loading...</p>
+        )}
+      </ul>
+
+      <h2>Favorite Restaurants</h2>
+      <ul>
+        {favoriteRestaurants.length > 0 ? (
+          backendData
+            .filter(restaurant => favoriteRestaurants.includes(restaurant.id))
+            .map(restaurant => (
+              <li key={restaurant.id}>
+                {restaurant.name} - {restaurant.rating}⭐
+              </li>
+            ))
+        ) : (
+          <p>No favorites yet!</p>
+        )}
+      </ul>
+      
     </div>
   );
 }
