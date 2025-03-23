@@ -13,6 +13,10 @@
     background-size: cover;
     background-position: center;
   }
+
+  .card:active {
+    -webkit-transform: scale(1.5);
+  }
   
   .card-content {
     display: flex;
