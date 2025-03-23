@@ -11,7 +11,7 @@ function FavoritesPage({ likedRestaurants, clearFavorites }) {
           <p>No liked restaurants yet.</p>
         ) : (
           likedRestaurants.map((restaurant, index) => (
-            <li key={index}>{restaurant.name}</li>
+            <li key={index}>{restaurant}</li>
           ))
         )}
       </ul>

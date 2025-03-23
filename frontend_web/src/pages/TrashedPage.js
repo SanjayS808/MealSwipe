@@ -9,7 +9,7 @@ function TrashedPage({ trashedRestaurants , clearTrashed}) {
           <p>No trashed restaurants yet.</p>
         ) : (
           trashedRestaurants.map((restaurant, index) => (
-            <li key={index}>{restaurant.name}</li>
+            <li key={index}>{restaurant}</li>
           ))
         )}
       </ul>
