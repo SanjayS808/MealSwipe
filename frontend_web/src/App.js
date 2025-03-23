@@ -63,7 +63,7 @@ function App() {
         data.forEach((result) => {
           let restaurant_info = fetchRestaurantInfo(result.placeid);
           restaurant_info.then(result => {
-            favoriteRestaurants.push(result[0].name);
+            setFavoriteRestaurants(prevSwipes => [...prevSwipes, result[0].name])
           })
         })
       }
@@ -90,9 +90,8 @@ function App() {
         data.forEach((result) => {
           let restaurant_info = fetchRestaurantInfo(result.placeid);
           restaurant_info.then(result => {
-            trashedRestaurants.push(result[0].name);
+            setTrashedRestaurants(prevSwipes => [...prevSwipes, result[0].name])
           })
-          console.log(trashedRestaurants)
         })
       }
     });
@@ -141,6 +140,14 @@ function App() {
       .catch(error => console.error("Fetch error:", error));
   };
 
+  useEffect(() => {
+    console.log("App mounted");
+    // console.log("Backend data set:", backendData);
+    fetchRestaurants();
+    loadFavorites();
+    loadTrashed();
+  }, [maxDistance, minRating]);
+
   const clearFavorites = () => {
     localStorage.removeItem("favorites");
     setFavoriteRestaurants([]);
@@ -150,14 +157,6 @@ function App() {
     localStorage.removeItem("trashed");
     setTrashedRestaurants([]);
   };
-
-  useEffect(() => {
-    console.log("App mounted");
-    // console.log("Backend data set:", backendData);
-    fetchRestaurants();
-    loadFavorites();
-    loadTrashed();
-  }, [maxDistance, minRating]);
 
   const toggleFavorite = async (restaurant) => {
     let api_body_data = {
