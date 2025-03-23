@@ -51,7 +51,7 @@ app.get("/api/serve/get-all-restaurants", (req, res) => {
     
             const filteredRestaurants = restaurants['places'].filter(restaurant => {
                 const rating = parseFloat(restaurant.rating);
-                console.log("Restaurant rating:", rating); 
+                // console.log("Restaurant rating:", rating); 
                 return rating >= minRating;
             });
     
@@ -256,7 +256,7 @@ app.post("/api/serve/add-user-trashed-resstaurant", async (req, res) => {
     } 
 });
 
-app.get("/api/serve/get-user-liked-restaurants", async (req, res) => {
+app.get("/api/serve/get-user-favorite-restaurants", async (req, res) => {
     if(req.query.uid === undefined) {
         console.error('Could not fetch undefined user.');
         res.status(400).json({error: 'Could not fetch undefined user.'});
@@ -272,7 +272,7 @@ app.get("/api/serve/get-user-liked-restaurants", async (req, res) => {
     }
 });
 
-app.post("/api/serve/add-user-liked-restaurant", async (req, res) => {
+app.post("/api/serve/add-user-favorite-restaurant", async (req, res) => {
      // Check and insert all information needed for creating new user.
      const hasNullValue = (array) => array.some(element => element === undefined);
      const uinfo = [req.body.uid, req.body.rname];

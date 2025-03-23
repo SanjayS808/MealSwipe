@@ -9,23 +9,79 @@ import "./App.css";
 const DEV_MODE = true
 const backendURL = (DEV_MODE) ? "http://localhost:5001/"  : "http://MealSw-Backe-k0cJtOkGFP3i-29432626.us-west-1.elb.amazonaws.com";
 
-
 function App() {
   const [backendData, setBackendData] = useState([]);
+  const [maxDistance, setMaxDistance] = useState(100); // Default to 20 km
   const [favoriteRestaurants, setFavoriteRestaurants] = useState([]);
   const [trashedRestaurants, setTrashedRestaurants] = useState([]);
-  const [maxDistance, setMaxDistance] = useState(100); // Default to 20 km
   const [minRating, setMinRating] = useState(0); // Default to 0 stars
   const [showFilter, setShowFilter] = useState(false); // State to toggle filter visibility
 
-  const loadFavorites = () => {
-    const favorites = JSON.parse(localStorage.getItem("favorites")) || [];
-    setFavoriteRestaurants(favorites);
+  // TODO: Create Login Page
+  const uname = "drodr24";
+
+  const loadFavorites = async () => {
+    if(favoriteRestaurants.length > 0) {return;} // We do not want to do anything.
+    fetch(`${backendURL}api/serve/get-userid-with-uname?uname=${uname}`)
+    .then(response => {
+      if(!response.ok) {
+        throw new Error("Backend error. Failed to fetch user information.");
+      }
+      return response.json();
+    })
+    .then(data => {    
+      // Check if I can fix this nasty nested fetch command.     
+      fetch(`${backendURL}api/serve/get-user-favorite-restaurants?uid=${data[0].userid}`)
+      .then(response => {
+        if(!response.ok) {
+          throw new Error("Internal error. Failed to fetch swipe information.");
+        }
+        return response.json();
+      })
+      .then(data => {
+        if(!Object.keys(data).length){
+          // No data found for user. Set local storage empty.
+          console.log("No restaurants swiped from user.")
+          setFavoriteRestaurants([]);
+        } else {
+          // TODO: We are storing only the placeID of our user's restaurants.
+          
+          setFavoriteRestaurants([]);
+        }
+      });
+    });
   };
 
-  const loadTrashed = () => {
-    const trashed = JSON.parse(localStorage.getItem("trashed")) || [];
-    setTrashedRestaurants(trashed);
+  const loadTrashed = async () => {
+    // Fetch data information
+    fetch(`${backendURL}api/serve/get-userid-with-uname?uname=${uname}`)
+    .then(response => {
+      if(!response.ok) {
+        throw new Error("Backend error. Failed to fetch user information.");
+      }
+      return response.json();
+    })
+    .then(data => {    
+      // Check if I can fix this nasty nested fetch command.     
+      fetch(`${backendURL}api/serve/get-user-trashed-restaurant?uid=${data[0].userid}`)
+      .then(response => {
+        if(!response.ok) {
+          throw new Error("Internal error. Failed to fetch swipe information.");
+        }
+        return response.json();
+      })
+      .then(data => {
+        if(!Object.keys(data).length){
+          // No data found for user. Set local storage empty.
+          console.log("No restaurants swiped from user.")
+          setFavoriteRestaurants([]);
+          console.log(backendData)
+        } else {
+          // TODO: We are storing only the placeID of our user's restaurants.
+          setFavoriteRestaurants([]);
+        }
+      });
+    });
   };
 
   const handleSwipe = (direction, restaurant) => {
@@ -39,7 +95,7 @@ function App() {
     }
   };
 
-  const fetchRestaurants = () => {
+  const fetchRestaurants = async () => {
     console.log("Fetching restaurants with maxDistance:", maxDistance, "and minRating:", minRating);
     console.log(backendURL + `api/serve/get-all-restaurants?maxDistance=${maxDistance}&minRating=${minRating}`)
     fetch(backendURL + `api/serve/get-all-restaurants?maxDistance=${maxDistance}&minRating=${minRating}`)
@@ -51,7 +107,6 @@ function App() {
         return response.json();
       })
       .then(data => {
-        console.log("Fetched data:", data);
         //id,name,rating,price,address, generativeSummary, googleMapsLink, reviews,website, ratingsCount ,isOpen, phoneNumber, photos
         setBackendData(data.map(r => new Restaurant(
           r.id, 
@@ -84,7 +139,7 @@ function App() {
 
   useEffect(() => {
     console.log("App mounted");
-    console.log("Backend data set:", backendData);
+    // console.log("Backend data set:", backendData);
     fetchRestaurants();
     loadFavorites();
     loadTrashed();
@@ -94,6 +149,7 @@ function App() {
     const isAlreadyFavorite = favoriteRestaurants.some(fav => fav.id === restaurant.id);
     if (!isAlreadyFavorite) {
       const updatedFavorites = [...favoriteRestaurants, restaurant];
+      // TODO: Change so information goes to DB via backend.
       localStorage.setItem("favorites", JSON.stringify(updatedFavorites));
       setFavoriteRestaurants(updatedFavorites);
     }
@@ -103,10 +159,12 @@ function App() {
     const isAlreadyTrashed = trashedRestaurants.some(trash => trash.id === restaurant.id);
     if (!isAlreadyTrashed) {
       const updatedTrashed = [...trashedRestaurants, restaurant];
+      // TODO: Change so information goes to DB via backend.
       localStorage.setItem("trashed", JSON.stringify(updatedTrashed));
       setTrashedRestaurants(updatedTrashed);
     }
   };
+
 
   return (
     <div className="App">
