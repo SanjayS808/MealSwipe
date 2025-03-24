@@ -7,7 +7,7 @@ import "./App.css";
 // import TinderCard from 'react-tinder-card'
 
 const DEV_MODE = false
-const backendURL = (DEV_MODE) ? "http://localhost:5001"  : "http://MealSw-Backe-XjPwkMdlfUtN-1247908423.us-west-1.elb.amazonaws.com";"
+const backendURL = (DEV_MODE) ? "http://localhost:5001"  : "http://MealSw-Backe-XjPwkMdlfUtN-1247908423.us-west-1.elb.amazonaws.com";
 
 function App() {
   const [backendData, setBackendData] = useState([]);
