@@ -42,7 +42,7 @@ function App() {
     return response;
   }
 
-  const loadFavorites = async () => {
+  const loadFavorites = useCallback(async () => {
     if(favoriteRestaurants.length > 0) {return;} // We do not want to do anything.
     
     let userid = await fetchuid();
@@ -68,9 +68,9 @@ function App() {
         })
       }
     });
-  };
+  }, []);
 
-  const loadTrashed = async () => {
+  const loadTrashed = useCallback(async () => {
     let userid = await fetchuid();
     
     fetch(`${backendURL}/api/serve/get-user-trashed-restaurant?uid=${userid}`)
@@ -95,7 +95,7 @@ function App() {
         })
       }
     });
-  };
+  }, []);
 
   const handleSwipe = (direction, restaurant) => {
     console.log(`You swiped ${direction} on ${restaurant.name}`);
@@ -108,7 +108,7 @@ function App() {
     }
   };
 
-  const fetchRestaurants = async () => {
+  const fetchRestaurants = useCallback(async () => {
     console.log("Fetching restaurants with maxDistance:", maxDistance, "and minRating:", minRating);
     console.log(backendURL + `/api/serve/get-all-restaurants?maxDistance=${maxDistance}&minRating=${minRating}`)
     fetch(backendURL + `/api/serve/get-all-restaurants?maxDistance=${maxDistance}&minRating=${minRating}`)
@@ -137,7 +137,7 @@ function App() {
         )));
       })
       .catch(error => console.error("Fetch error:", error));
-  };
+  }, []);
 
   useEffect(() => {
     console.log("App mounted");
