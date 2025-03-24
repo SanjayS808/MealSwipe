@@ -125,7 +125,9 @@ app.post("/api/serve/add-user", async (req, res) => {
         // Check if user already exists.
         const get_result = await pool.query(get_query);
         if(get_result.rows.length != 0) {
-            throw Error(`Username ${req.body.uname} already exists.`);
+            console.log('`Username ${req.body.uname} already exists.` ');
+            res.status(400).json({error: `User already exists.`})
+            return;
         }
 
         // If not add, user.
