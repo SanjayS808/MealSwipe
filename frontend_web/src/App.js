@@ -6,8 +6,8 @@ import "./App.css";
 
 // import TinderCard from 'react-tinder-card'
 
-const DEV_MODE = true
-const backendURL = (DEV_MODE) ? "http://localhost:5001"  : "http://MealSw-Backe-k0cJtOkGFP3i-29432626.us-west-1.elb.amazonaws.com";
+const DEV_MODE = false
+const backendURL = (DEV_MODE) ? "http://localhost:5001/"  : "http://MealSw-Backe-XjPwkMdlfUtN-1247908423.us-west-1.elb.amazonaws.com/";
 
 function App() {
   const [backendData, setBackendData] = useState([]);
@@ -112,7 +112,6 @@ function App() {
     console.log("Fetching restaurants with maxDistance:", maxDistance, "and minRating:", minRating);
     console.log(backendURL + `/api/serve/get-all-restaurants?maxDistance=${maxDistance}&minRating=${minRating}`)
     fetch(backendURL + `/api/serve/get-all-restaurants?maxDistance=${maxDistance}&minRating=${minRating}`)
-
       .then(response => {
         if (!response.ok) {
           throw new Error("Network response was not ok");
