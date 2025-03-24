@@ -43,32 +43,33 @@ function App() {
   }
 
   const loadFavorites = useCallback(async () => {
-    if(favoriteRestaurants.length > 0) {return;} // We do not want to do anything.
-    
+    if (favoriteRestaurants.length > 0) {
+      return;
+    } 
+  
     let userid = await fetchuid();
-    
+  
     fetch(`${backendURL}/api/serve/get-user-favorite-restaurants?uid=${userid}`)
-    .then(response => {
-      if(!response.ok) {
-        throw new Error("Internal error. Failed to fetch swipe information.");
-      }
-      return response.json();
-    })
-    .then(data => {
-      if(!Object.keys(data).length){
-        // No data found for user. Set local storage empty.
-        setFavoriteRestaurants([]);
-      } else {
-        setFavoriteRestaurants([]);
-        data.forEach((result) => {
-          let restaurant_info = fetchRestaurantInfo(result.placeid);
-          restaurant_info.then(result => {
-            setFavoriteRestaurants(prevSwipes => [...prevSwipes, result[0].name])
-          })
-        })
-      }
-    });
-  }, []);
+      .then(response => {
+        if (!response.ok) {
+          throw new Error("Internal error. Failed to fetch swipe information.");
+        }
+        return response.json();
+      })
+      .then(data => {
+        if (!Object.keys(data).length) {
+          setFavoriteRestaurants([]);
+        } else {
+          setFavoriteRestaurants([]);
+          data.forEach(result => {
+            let restaurant_info = fetchRestaurantInfo(result.placeid);
+            restaurant_info.then(result => {
+              setFavoriteRestaurants(prevSwipes => [...prevSwipes, result[0].name]);
+            });
+          });
+        }
+      });
+  }, [favoriteRestaurants.length]);
 
   const loadTrashed = useCallback(async () => {
     let userid = await fetchuid();
@@ -110,7 +111,7 @@ function App() {
 
   const fetchRestaurants = useCallback(async () => {
     console.log("Fetching restaurants with maxDistance:", maxDistance, "and minRating:", minRating);
-    console.log(backendURL + `/api/serve/get-all-restaurants?maxDistance=${maxDistance}&minRating=${minRating}`)
+    console.log(backendURL + `/api/serve/get-all-restaurants?maxDistance=${maxDistance}&minRating=${minRating}`);
     fetch(backendURL + `/api/serve/get-all-restaurants?maxDistance=${maxDistance}&minRating=${minRating}`)
       .then(response => {
         if (!response.ok) {
@@ -119,7 +120,6 @@ function App() {
         return response.json();
       })
       .then(data => {
-        //id,name,rating,price,address, generativeSummary, googleMapsLink, reviews,website, ratingsCount ,isOpen, phoneNumber, photos
         setBackendData(data.map(r => new Restaurant(
           r.id, 
           r.displayName?.text, 
@@ -131,13 +131,13 @@ function App() {
           r.reviews, 
           r.websiteUri, 
           r.userRatingCount, 
-          r.currentOpeningHours?.openNow ?? false,  // Use optional chaining and default to false
+          r.currentOpeningHours?.openNow ?? false, 
           r.nationalPhoneNumber, 
           r.photos
         )));
       })
       .catch(error => console.error("Fetch error:", error));
-  }, []);
+  }, [maxDistance, minRating]);
 
   useEffect(() => {
     console.log("App mounted");
