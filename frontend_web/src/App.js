@@ -145,7 +145,7 @@ function App() {
     fetchRestaurants();
     loadFavorites();
     loadTrashed();
-  }, [maxDistance, minRating]);
+  }, [fetchRestaurants, loadFavorites, loadTrashed, maxDistance, minRating]);
 
   const clearFavorites = () => {
     localStorage.removeItem("favorites");
