@@ -1,17 +1,17 @@
 import React from "react";
 
-
+import "./favorites.css"
 
 function FavoritesPage({ likedRestaurants, clearFavorites }) {
   return (
-    <div>
+    <div className="favoritesPage">
       <h2>Liked Restaurants</h2>
       <ul>
         {likedRestaurants.length === 0 ? (
           <p>No liked restaurants yet.</p>
         ) : (
           likedRestaurants.map((restaurant, index) => (
-            <li key={index}>{restaurant.name}</li>
+            <li key={index}>{restaurant}</li>
           ))
         )}
       </ul>

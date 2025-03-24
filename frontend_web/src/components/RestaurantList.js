@@ -26,7 +26,7 @@ function RestaurantList({ restaurants, onSwipe ,resetBackendData}) {
         ) : (
           
           restaurants.map((restaurant) => (
-            <TinderCard className="swipe"  key={restaurant.id} onSwipe={(dir) => onSwipe(dir, restaurant) } >
+            <TinderCard className="swipe pressable"  key={restaurant.id} onSwipe={(dir) => onSwipe(dir, restaurant) } >
               <RestaurantCard restaurant={restaurant} />
             </TinderCard>
           ))
