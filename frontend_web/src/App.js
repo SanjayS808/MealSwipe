@@ -1,8 +1,9 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useCallback } from "react";
 import Restaurant from "./Restaurant";
 import Navigation from "./Navigation";
-import Filters from "./components/Filters"; // Make sure this path is correct.
+import FilterPage from "./components/FilterPage";
 import "./App.css";
+import "./components/FilterPage.css";
 
 const DEV_MODE = true;
 const backendURL = DEV_MODE ? "http://localhost:5001/" : "http://MealSw-Backe-k0cJtOkGFP3i-29432626.us-west-1.elb.amazonaws.com";
@@ -13,17 +14,24 @@ function App() {
   const [trashedRestaurants, setTrashedRestaurants] = useState([]);
   const [maxDistance, setMaxDistance] = useState(100);
   const [minRating, setMinRating] = useState(0);
-  const [showFilter, setShowFilter] = useState(false);
+  const [priceLevel, setPriceLevel] = useState(0);
+  const [showFilterPage, setShowFilterPage] = useState(false);
 
-  useEffect(() => {
-    fetchRestaurants();
-    loadFavorites();
-    loadTrashed();
-  }, []);
+  const fetchRestaurants = useCallback(() => {
+    console.log("Fetching restaurants with:", {
+      maxDistance, 
+      minRating, 
+      priceLevel
+    });
+    
+    // Construct query parameters
+    const queryParams = new URLSearchParams({
+      maxDistance,
+      minRating,
+      ...(priceLevel > 0 && { priceLevel })
+    });
 
-  const fetchRestaurants = () => {
-    console.log("Fetching restaurants with maxDistance:", maxDistance, "and minRating:", minRating);
-    fetch(`${backendURL}api/serve/get-all-restaurants?maxDistance=${maxDistance}&minRating=${minRating}`)
+    fetch(`${backendURL}api/serve/get-all-restaurants?${queryParams}`)
       .then(response => {
         if (!response.ok) {
           throw new Error("Network response was not ok");
@@ -31,7 +39,12 @@ function App() {
         return response.json();
       })
       .then(data => {
-        setBackendData(data.map(r => new Restaurant(
+        // Filter by price level if needed
+        const filteredData = priceLevel > 0 
+          ? data.filter(r => r.priceLevel === priceLevel)
+          : data;
+
+        setBackendData(filteredData.map(r => new Restaurant(
           r.id,
           r.displayName?.text,
           r.rating,
@@ -48,9 +61,14 @@ function App() {
         )));
       })
       .catch(error => console.error("Fetch error:", error));
-  };
+  }, [maxDistance, minRating, priceLevel]);
 
-  // Here are the implementations of the missing functions
+  useEffect(() => {
+    fetchRestaurants();
+    loadFavorites();
+    loadTrashed();
+  }, [fetchRestaurants]);
+
   const loadFavorites = () => {
     const favorites = JSON.parse(localStorage.getItem("favorites")) || [];
     setFavoriteRestaurants(favorites);
@@ -74,10 +92,16 @@ function App() {
   const handleSwipe = (direction, restaurant) => {
     console.log(`You swiped ${direction} on ${restaurant.name}`);
     if (direction === 'right') {
-      setFavoriteRestaurants(prev => [...prev, restaurant]);
+      const updatedFavorites = [...favoriteRestaurants, restaurant];
+      setFavoriteRestaurants(updatedFavorites);
+      localStorage.setItem("favorites", JSON.stringify(updatedFavorites));
+      
       setBackendData(prev => prev.filter(item => item.id !== restaurant.id));
     } else if (direction === 'left') {
-      setTrashedRestaurants(prev => [...prev, restaurant]);
+      const updatedTrashed = [...trashedRestaurants, restaurant];
+      setTrashedRestaurants(updatedTrashed);
+      localStorage.setItem("trashed", JSON.stringify(updatedTrashed));
+      
       setBackendData(prev => prev.filter(item => item.id !== restaurant.id));
     }
   };
@@ -105,15 +129,19 @@ function App() {
           width: '50px',
           height: '50px'
         }}
-        onClick={() => setShowFilter(!showFilter)}
+        onClick={() => setShowFilterPage(true)}
       />
-      {showFilter && <Filters
+      <FilterPage
         maxDistance={maxDistance}
         setMaxDistance={setMaxDistance}
         minRating={minRating}
         setMinRating={setMinRating}
+        priceLevel={priceLevel}
+        setPriceLevel={setPriceLevel}
         applyFilters={fetchRestaurants}
-      />}
+        onClose={() => setShowFilterPage(false)}
+        isOpen={showFilterPage}
+      />
     </div>
   );
 }
