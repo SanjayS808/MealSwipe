@@ -20,6 +20,21 @@ function App() {
   // TODO: Create Login Page
   const uname = "drodr24";
 
+  useEffect(() => {
+    const onMount = () => {
+      console.log("Application is mounted.")
+      fetchRestaurants(); 
+      loadFavorites();
+      loadTrashed();
+    };
+
+    onMount();
+
+    return () => {
+      console.log("App component is unmounting.")
+    }
+  }, []);
+
   const fetchuid = async () => {
     let response = await fetch(`${backendURL}/api/serve/get-userid-with-uname?uname=${uname}`)
     .then(response => {
@@ -139,14 +154,6 @@ function App() {
       })
       .catch(error => console.error("Fetch error:", error));
   };
-
-  useEffect(() => {
-    console.log("App mounted");
-    // console.log("Backend data set:", backendData);
-    fetchRestaurants();
-    loadFavorites();
-    loadTrashed();
-  }, [maxDistance, minRating]);
 
   const clearFavorites = () => {
     localStorage.removeItem("favorites");
@@ -279,21 +286,36 @@ function App() {
 
   return (
     <div className="App">
-      <Navigation 
-        clearFavorites={clearFavorites}
-        clearTrashed={clearTrashed}
-        resetBackendData={fetchRestaurants}
-        backendData={backendData}
-        handleSwipe={handleSwipe}
-        likedRestaurants={favoriteRestaurants}
-        trashedRestaurants={trashedRestaurants}
-      />
+       <a href="/login" style={{
+        position: 'absolute', 
+        top: '10px', 
+        left: '10px', 
+        zIndex: 10, 
+       }}>
+        <div style={{
+        width: '50px', 
+        height: '50px',
+        padding: '.5em',
+        margin: '.1em', 
+        }}> 
+          <p style={{
+            fontSize: 'big',
+            fontWeight: 'bold',
+            textDEcorationLine: 'none',
+            color:'white',
+            textAlign: 'center',
+            textDecorationLine:'none',}}>
+          Login
+          </p>
+        </div>  
+      </a>
+      
       <button 
         style={{ 
           position: 'absolute', 
           top: '10px', 
           right: '10px', 
-          zIndex: 1000, 
+          zIndex: 10, 
           background: `url(${process.env.PUBLIC_URL + '/filter.png'}) no-repeat center center`, 
           backgroundSize: 'cover',
           border: 'none',
@@ -327,6 +349,16 @@ function App() {
           </div>
         </div>
       )}
+
+      <Navigation 
+        clearFavorites={clearFavorites}
+        clearTrashed={clearTrashed}
+        resetBackendData={fetchRestaurants}
+        backendData={backendData}
+        handleSwipe={handleSwipe}
+        likedRestaurants={favoriteRestaurants}
+        trashedRestaurants={trashedRestaurants}
+      />
     </div>
   );
 }
