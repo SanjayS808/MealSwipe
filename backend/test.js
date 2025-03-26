@@ -511,7 +511,180 @@ describe('API Endpoints', () => {
       expect(response.status).toBe(400);
       expect(response.body).toEqual({ error: 'Could not create user. User information is missing.' });
       expect(pool.query).not.toHaveBeenCalled();
+    });    
+
+  // Test 11: DELETE /api/serve/delete-trashed-swipe-with-rid-uid
+  describe('DELETE /api/serve/delete-trashed-swipe-with-rid-uid', () => {
+    it('should successfully delete a specific trashed swipe for a user', async () => {
+      pool.query.mockResolvedValueOnce({
+        rowCount: 1 // Simulating one row deleted
+      });
+
+      const response = await request(app)
+        .delete('/api/serve/delete-trashed-swipe-with-rid-uid')
+        .query({ rid: 'restaurant123', uid: 'user456' });
+
+      expect(response.status).toBe(200);
+      expect(response.body).toEqual({ 
+        transactionComplete: "Deleted trashed swipes of placeidown by user" 
+      });
+      expect(pool.query).toHaveBeenCalledWith(
+        `DELETE FROM trashed_swipes WHERE placeid='restaurant123' AND userid='user456'`
+      );
     });
+
+    it('should return 400 when both rid and uid are undefined', async () => {
+      const response = await request(app)
+        .delete('/api/serve/delete-trashed-swipe-with-rid-uid');
+
+      expect(response.status).toBe(400);
+      expect(response.body).toEqual({ 
+        error: 'Could not fetch with undefined user and restaurant id.' 
+      });
+      expect(pool.query).not.toHaveBeenCalled();
+    });
+
+    it('should return 500 when database query fails', async () => {
+      // Mock the database query to reject
+      pool.query.mockRejectedValueOnce(new Error('Database connection error'));
+
+      const response = await request(app)
+        .delete('/api/serve/delete-trashed-swipe-with-rid-uid')
+        .query({ rid: 'restaurant123', uid: 'user456' });
+
+      expect(response.status).toBe(500);
+      expect(response.body).toEqual({ error: 'Internal Server Error' });
+    });
+  });
+
+  // Test 12: DELETE /api/serve/delete-favorite-swipe-with-rid-uid
+  describe('DELETE /api/serve/delete-favorite-swipe-with-rid-uid', () => {
+    it('should successfully delete a specific favorite swipe for a user', async () => {
+      pool.query.mockResolvedValueOnce({
+        rowCount: 1
+      });
+
+      const response = await request(app)
+        .delete('/api/serve/delete-favorite-swipe-with-rid-uid')
+        .query({ rid: 'restaurant789', uid: 'user123' });
+
+      expect(response.status).toBe(200);
+      expect(response.body).toEqual({ 
+        transactionComplete: "Deleted favorite_swipe of placeidown by user" 
+      });
+      expect(pool.query).toHaveBeenCalledWith(
+        `DELETE FROM liked_swipes WHERE placeid='restaurant789' AND userid='user123'`
+      );
+    });
+
+    it('should return 400 when both rid and uid are undefined', async () => {
+      const response = await request(app)
+        .delete('/api/serve/delete-favorite-swipe-with-rid-uid');
+
+      expect(response.status).toBe(400);
+      expect(response.body).toEqual({ 
+        error: 'Could not fetch with undefined user and restaurant id.' 
+      });
+      expect(pool.query).not.toHaveBeenCalled();
+    });
+
+    it('should return 500 when database query fails', async () => {
+      pool.query.mockRejectedValueOnce(new Error('Database connection error'));
+
+      const response = await request(app)
+        .delete('/api/serve/delete-favorite-swipe-with-rid-uid')
+        .query({ rid: 'restaurant789', uid: 'user123' });
+
+      expect(response.status).toBe(500);
+      expect(response.body).toEqual({ error: 'Internal Server Error' });
+    });
+  });
+
+  // Test 13: DELETE /api/serve/delete-trashed-swipe-with-uid
+  describe('DELETE /api/serve/delete-trashed-swipe-with-uid', () => {
+    it('should successfully delete all trashed swipes for a user', async () => {
+      pool.query.mockResolvedValueOnce({
+        rowCount: 3 // Simulating 3 rows deleted
+      });
+
+      const response = await request(app)
+        .delete('/api/serve/delete-trashed-swipe-with-uid')
+        .query({ uid: 'user456' });
+
+      expect(response.status).toBe(200);
+      expect(response.body).toEqual({ 
+        transactionComplete: "Deleted all trashed_swipes own by user" 
+      });
+      expect(pool.query).toHaveBeenCalledWith(
+        `DELETE FROM trashed_swipes WHERE userid='user456';`
+      );
+    });
+
+    it('should return 400 when uid is undefined', async () => {
+      const response = await request(app)
+        .delete('/api/serve/delete-trashed-swipe-with-uid');
+
+      expect(response.status).toBe(400);
+      expect(response.body).toEqual({ 
+        error: 'Could not fetch with undefined user.' 
+      });
+      expect(pool.query).not.toHaveBeenCalled();
+    });
+
+    it('should return 500 when database query fails', async () => {
+      pool.query.mockRejectedValueOnce(new Error('Database connection error'));
+
+      const response = await request(app)
+        .delete('/api/serve/delete-trashed-swipe-with-uid')
+        .query({ uid: 'user456' });
+
+      expect(response.status).toBe(500);
+      expect(response.body).toEqual({ error: 'Internal Server Error' });
+    });
+  });
+
+  // Test 14 DELETE /api/serve/delete-favorite-swipe-with-uid
+  describe('DELETE /api/serve/delete-favorite-swipe-with-uid', () => {
+    it('should successfully delete all favorite swipes for a user', async () => {
+      pool.query.mockResolvedValueOnce({
+        rowCount: 2 // Simulating 2 rows deleted
+      });
+
+      const response = await request(app)
+        .delete('/api/serve/delete-favorite-swipe-with-uid')
+        .query({ uid: 'user123' });
+
+      expect(response.status).toBe(200);
+      expect(response.body).toEqual({ 
+        transactionComplete: "Deleted all trashed_swipes own by user" 
+      });
+      expect(pool.query).toHaveBeenCalledWith(
+        `DELETE FROM liked_swipes WHERE userid='user123';`
+      );
+    });
+
+    it('should return 400 when uid is undefined', async () => {
+      const response = await request(app)
+        .delete('/api/serve/delete-favorite-swipe-with-uid');
+
+      expect(response.status).toBe(400);
+      expect(response.body).toEqual({ 
+        error: 'Could not fetch with undefined user.' 
+      });
+      expect(pool.query).not.toHaveBeenCalled();
+    });
+
+    it('should return 500 when database query fails', async () => {
+      pool.query.mockRejectedValueOnce(new Error('Database connection error'));
+
+      const response = await request(app)
+        .delete('/api/serve/delete-favorite-swipe-with-uid')
+        .query({ uid: 'user123' });
+
+      expect(response.status).toBe(500);
+      expect(response.body).toEqual({ error: 'Internal Server Error' });
+    });
+  });
 
     it('should return warning when relation already exists', async () => {
       // Mock checking if relation exists (returns a relation)

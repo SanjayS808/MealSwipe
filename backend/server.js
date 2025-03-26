@@ -359,6 +359,76 @@ app.post("/api/serve/add-user-favorite-restaurant", async (req, res) => {
      } 
 });
 
+app.delete("/api/serve/delete-trashed-swipe-with-rid-uid", async (req, res) => {
+    if(req.query.rid === undefined && req.query.uid === undefined) {
+        console.error('Could not fetch undefined user or restaurant id.');
+        res.status(400).json({error: 'Could not fetch with undefined user and restaurant id.'});
+        return;
+    }
+    const delete_query = `DELETE FROM trashed_swipes WHERE placeid='${sanitize_text(req.query.rid)}' AND userid='${req.query.uid}'`;
+
+    try {
+        const result = await pool.query(delete_query);
+        res.status(200).json({transactionComplete: "Deleted trashed swipes of placeidown by user"});
+    } catch(err) {
+        console.error(`Error deleting user's trashed swipes: ${err}`);
+        res.status(500).json({error: 'Internal Server Error'});
+    }
+})
+
+app.delete("/api/serve/delete-favorite-swipe-with-rid-uid", async (req, res) => {
+    if(req.query.rid === undefined && req.query.uid === undefined) {
+        console.error('Could not fetch undefined user or restaurant id.');
+        res.status(400).json({error: 'Could not fetch with undefined user and restaurant id.'});
+        return;
+    }
+    const delete_query = `DELETE FROM liked_swipes WHERE placeid='${sanitize_text(req.query.rid)}' AND userid='${req.query.uid}'`;
+
+    try {
+        const result = await pool.query(delete_query);
+        res.status(200).json({transactionComplete: "Deleted favorite_swipe of placeidown by user"});
+    } catch(err) {
+        console.error(`Error deleting user's favorite swipes: ${err}`);
+        res.status(500).json({error: 'Internal Server Error'});
+    }
+});
+
+// Deletes all trashed swipes from user.
+app.delete("/api/serve/delete-trashed-swipe-with-uid", async (req, res) => {
+    if(req.query.uid === undefined) {
+        console.error('Could not fetch undefined user.');
+        res.status(400).json({error: 'Could not fetch with undefined user.'});
+        return;
+    }
+    const delete_query = `DELETE FROM trashed_swipes WHERE userid='${req.query.uid}';`
+
+    try {
+        const result = await pool.query(delete_query);
+        res.status(200).json({transactionComplete: "Deleted all trashed_swipes own by user"});
+    } catch(err) {
+        console.error(`Error deleting user's trashed swipes: ${err}`);
+        res.status(500).json({error: 'Internal Server Error'});
+    }
+});
+
+// Deletes all favorite swipes from user.
+app.delete("/api/serve/delete-favorite-swipe-with-uid", async (req, res) => {
+    if(req.query.uid === undefined) {
+        console.error('Could not fetch undefined user.');
+        res.status(400).json({error: 'Could not fetch with undefined user.'});
+        return;
+    }
+    const delete_query = `DELETE FROM liked_swipes WHERE userid='${req.query.uid}';`
+
+    try {
+        const result = await pool.query(delete_query);
+        res.status(200).json({transactionComplete: "Deleted all trashed_swipes own by user"});
+    } catch(err) {
+        console.error(`Error deleting user's favorite swipes: ${err}`);
+        res.status(500).json({error: 'Internal Server Error'});
+    }
+});
+
 
 app.get("/api", (req, res) => {
     res.json({"restaurants": ["resOne", "resTwo"]});

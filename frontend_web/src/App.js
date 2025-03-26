@@ -155,14 +155,35 @@ function App() {
       .catch(error => console.error("Fetch error:", error));
   };
 
-  const clearFavorites = () => {
+  const clearFavorites = async () => {
     localStorage.removeItem("favorites");
     setFavoriteRestaurants([]);
+    const userid = await fetchuid();
+    // Deletes from db
+    await fetch(`${backendURL}/api/serve/delete-favorite-swipe-with-uid?uid=${userid}`, {
+      method: 'DELETE',
+    })
+    .then(response => {
+      console.log(response)
+      if (!response.ok) {
+        throw new Error("Backend error: Could not delete data")
+      }
+    })
   };
 
-  const clearTrashed = () => {
+  const clearTrashed = async () => {
     localStorage.removeItem("trashed");
     setTrashedRestaurants([]);
+     // Deletes from db
+     const userid = await fetchuid();
+     await fetch(`${backendURL}/api/serve/delete-trashed-swipe-with-uid?uid=${userid}`, {
+      method: 'DELETE',
+     })
+     .then(response => {
+       if (!response.ok) {
+         throw new Error("Backend error: Could not delete data")
+       }
+     })
   };
 
   const toggleFavorite = async (restaurant) => {
