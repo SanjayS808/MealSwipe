@@ -12,23 +12,31 @@ function App() {
   const [backendData, setBackendData] = useState([]);
   const [favoriteRestaurants, setFavoriteRestaurants] = useState([]);
   const [trashedRestaurants, setTrashedRestaurants] = useState([]);
-  const [maxDistance, setMaxDistance] = useState(100);
+  
+  // Pending filter values that haven't been applied yet
+  const [pendingMaxDistance, setPendingMaxDistance] = useState(50);
+  const [pendingMinRating, setPendingMinRating] = useState(0);
+  const [pendingPriceLevels, setPendingPriceLevels] = useState([]);
+  
+  // Current applied filter values
+  const [maxDistance, setMaxDistance] = useState(50);
   const [minRating, setMinRating] = useState(0);
-  const [priceLevel, setPriceLevel] = useState(0);
+  const [priceLevels, setPriceLevels] = useState([]);
+  
   const [showFilterPage, setShowFilterPage] = useState(false);
 
   const fetchRestaurants = useCallback(() => {
     console.log("Fetching restaurants with:", {
       maxDistance, 
       minRating, 
-      priceLevel
+      priceLevels
     });
     
     // Construct query parameters
     const queryParams = new URLSearchParams({
       maxDistance,
       minRating,
-      ...(priceLevel > 0 && { priceLevel })
+      ...(priceLevels.length > 0 && { priceLevels: priceLevels.join(',') })
     });
 
     fetch(`${backendURL}api/serve/get-all-restaurants?${queryParams}`)
@@ -39,12 +47,7 @@ function App() {
         return response.json();
       })
       .then(data => {
-        // Filter by price level if needed
-        const filteredData = priceLevel > 0 
-          ? data.filter(r => r.priceLevel === priceLevel)
-          : data;
-
-        setBackendData(filteredData.map(r => new Restaurant(
+        setBackendData(data.map(r => new Restaurant(
           r.id,
           r.displayName?.text,
           r.rating,
@@ -61,13 +64,23 @@ function App() {
         )));
       })
       .catch(error => console.error("Fetch error:", error));
-  }, [maxDistance, minRating, priceLevel]);
+  }, [maxDistance, minRating, priceLevels]);
 
   useEffect(() => {
     fetchRestaurants();
     loadFavorites();
     loadTrashed();
   }, [fetchRestaurants]);
+
+  const applyFilters = () => {
+    // Update applied filters
+    setMaxDistance(pendingMaxDistance);
+    setMinRating(pendingMinRating);
+    setPriceLevels(pendingPriceLevels);
+    
+    // Close filter page
+    setShowFilterPage(false);
+  };
 
   const loadFavorites = () => {
     const favorites = JSON.parse(localStorage.getItem("favorites")) || [];
@@ -132,13 +145,13 @@ function App() {
         onClick={() => setShowFilterPage(true)}
       />
       <FilterPage
-        maxDistance={maxDistance}
-        setMaxDistance={setMaxDistance}
-        minRating={minRating}
-        setMinRating={setMinRating}
-        priceLevel={priceLevel}
-        setPriceLevel={setPriceLevel}
-        applyFilters={fetchRestaurants}
+        maxDistance={pendingMaxDistance}
+        setMaxDistance={setPendingMaxDistance}
+        minRating={pendingMinRating}
+        setMinRating={setPendingMinRating}
+        priceLevels={pendingPriceLevels}
+        setPriceLevels={setPendingPriceLevels}
+        applyFilters={applyFilters}
         onClose={() => setShowFilterPage(false)}
         isOpen={showFilterPage}
       />

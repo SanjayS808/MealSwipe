@@ -1,17 +1,72 @@
 import React from 'react';
 import './FilterPage.css';
 
+const StarRating = ({ rating, onRatingChange }) => {
+  const handleStarClick = (event, starValue) => {
+    const starElement = event.currentTarget;
+    const rect = starElement.getBoundingClientRect();
+    const clickPosition = event.clientX - rect.left;
+    const starWidth = rect.width;
+
+    // Determine if click is on left or right half of star
+    const ratingValue = clickPosition < starWidth / 2 
+      ? starValue - 0.5 
+      : starValue;
+
+    onRatingChange(ratingValue);
+  };
+
+  return (
+    <div className="star-rating-selector">
+      {[1, 2, 3, 4, 5].map((starValue) => (
+        <svg
+          key={starValue}
+          xmlns="http://www.w3.org/2000/svg"
+          viewBox="0 0 24 24"
+          className={`star ${rating >= starValue - 0.5 ? 'partially-filled' : ''} ${rating >= starValue ? 'filled' : ''}`}
+          onClick={(e) => handleStarClick(e, starValue)}
+        >
+          {rating >= starValue - 0.5 && rating < starValue && (
+            <defs>
+              <linearGradient id={`halfGradient${starValue}`}>
+                <stop offset="50%" stopColor="#ffc107"/>
+                <stop offset="50%" stopColor="#ddd" stopOpacity="1"/>
+              </linearGradient>
+            </defs>
+          )}
+          <path 
+            fill={
+              rating >= starValue - 0.5 && rating < starValue 
+                ? `url(#halfGradient${starValue})` 
+                : (rating >= starValue ? '#ffc107' : '#ddd')
+            }
+            d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"
+          />
+        </svg>
+      ))}
+    </div>
+  );
+};
+
 const FilterPage = ({ 
   maxDistance, 
   setMaxDistance, 
   minRating, 
   setMinRating, 
-  priceLevel,
-  setPriceLevel,
+  priceLevels,
+  setPriceLevels,
   applyFilters, 
   onClose,
   isOpen
 }) => {
+  const togglePriceLevel = (level) => {
+    setPriceLevels(prev => 
+      prev.includes(level) 
+        ? prev.filter(l => l !== level)
+        : [...prev, level]
+    );
+  };
+
   return (
     <div className={`filter-page ${isOpen ? 'open' : ''}`}>
       <div className="filter-page-content">
@@ -19,11 +74,11 @@ const FilterPage = ({
         <h2>Filters</h2>
         
         <div className="filter-section">
-          <label>Max Distance: {maxDistance} km</label>
+          <label>Max Distance: {maxDistance} miles</label>
           <input
             type="range"
             min="1"
-            max="100"
+            max="50"
             value={maxDistance}
             onChange={e => setMaxDistance(parseInt(e.target.value, 10))}
           />
@@ -31,13 +86,9 @@ const FilterPage = ({
         
         <div className="filter-section">
           <label>Min Rating: {minRating} Stars</label>
-          <input
-            type="range"
-            min="0"
-            max="5"
-            step="0.5"
-            value={minRating}
-            onChange={e => setMinRating(parseFloat(e.target.value))}
+          <StarRating 
+            rating={minRating} 
+            onRatingChange={setMinRating}
           />
         </div>
         
@@ -47,8 +98,8 @@ const FilterPage = ({
             {[1, 2, 3, 4].map(level => (
               <button
                 key={level}
-                className={`price-level-btn ${priceLevel === level ? 'selected' : ''}`}
-                onClick={() => setPriceLevel(priceLevel === level ? 0 : level)}
+                className={`price-level-btn ${priceLevels.includes(level) ? 'selected' : ''}`}
+                onClick={() => togglePriceLevel(level)}
               >
                 {'$'.repeat(level)}
               </button>
@@ -56,10 +107,10 @@ const FilterPage = ({
           </div>
         </div>
         
-        <button className="apply-filters-button" onClick={() => {
-          applyFilters();
-          onClose();
-        }}>
+        <button 
+          className="apply-filters-button" 
+          onClick={applyFilters}
+        >
           Apply Filters
         </button>
       </div>
