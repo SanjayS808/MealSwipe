@@ -2,6 +2,8 @@ const express = require('express');
 const cors = require('cors');  // Import CORS middleware
 const request = require('request');  // To make HTTP requests
 const pool = require('./db'); // Add access to DB
+const CENTER_LAT = 30.627977;  // College Station latitude
+const CENTER_LNG = -96.334404; // College Station longitude
 
 const app = express();
 
@@ -17,6 +19,7 @@ const sanitize_text = (raw_text) => {
     sanitizedString = sanitizedString.replace(/\\/g, '\\\\');
     return sanitizedString;
 };
+
 app.get("/api/serve/get-all-restaurants", (req, res) => {
     const maxDistance = parseFloat(req.query.maxDistance) || 10; // Default to 10 miles if not specified
     const minRating = parseFloat(req.query.minRating) || 0; // Default to 0 if not specified
@@ -28,7 +31,7 @@ app.get("/api/serve/get-all-restaurants", (req, res) => {
             "circle": {
                 "center": {
                     "latitude": CENTER_LAT,
-                    "longitude": CENTER_LON
+                    "longitude": CENTER_LNG
                 },
                 "radius": maxDistance * 1609.34 // Convert miles to meters
             }
