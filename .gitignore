@@ -1,1 +1,18 @@
 backend/.env
+
+# General
+.DS_Store
+
+# Node modules
+/backend/node_modules/
+/frontend_web/node_modules/
+
+# Environment files
+/backend/.env
+
+# Build outputs
+/build/
+/dist/
+
+# Other directories that might contain unnecessary files
+/Weekly-reports/
