@@ -1,12 +1,10 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useCallback } from "react";
 import Restaurant from "./Restaurant";
 import Navigation from "./Navigation";
 import FilterPage from "./components/FilterPage";
 import "./components/FilterPage.css";
 import "./App.css";
-
-
-// import TinderCard from 'react-tinder-card'
+import "./components/FilterPage.css";
 
 const DEV_MODE = true;
 const backendURL = (DEV_MODE) ? "http://localhost:5001"  : "http://MealSw-Backe-k0cJtOkGFP3i-29432626.us-west-1.elb.amazonaws.com";
@@ -168,18 +166,18 @@ function App() {
       .then(data => {
         //id,name,rating,price,address, generativeSummary, googleMapsLink, reviews,website, ratingsCount ,isOpen, phoneNumber, photos
         setBackendData(data.map(r => new Restaurant(
-          r.id, 
-          r.displayName?.text, 
-          r.rating, 
-          r.priceLevel, 
-          r.formattedAddress, 
-          r.generativeSummary?.overview?.text, 
-          r.googleMapsLinks?.placeUri, 
-          r.reviews, 
-          r.websiteUri, 
-          r.userRatingCount, 
-          r.currentOpeningHours?.openNow ?? false,  // Use optional chaining and default to false
-          r.nationalPhoneNumber, 
+          r.id,
+          r.displayName?.text,
+          r.rating,
+          r.priceLevel,
+          r.formattedAddress,
+          r.generativeSummary?.overview?.text,
+          r.googleMapsLinks?.placeUri,
+          r.reviews,
+          r.websiteUri,
+          r.userRatingCount,
+          r.currentOpeningHours?.openNow ?? false,
+          r.nationalPhoneNumber,
           r.photos
         )));
       })
@@ -325,7 +323,7 @@ function App() {
 
   return (
     <div className="App">
-      <Navigation 
+      <Navigation
         clearFavorites={clearFavorites}
         clearTrashed={clearTrashed}
         resetBackendData={fetchRestaurants}
@@ -334,13 +332,13 @@ function App() {
         likedRestaurants={favoriteRestaurants}
         trashedRestaurants={trashedRestaurants}
       />
-      <button 
-        style={{ 
-          position: 'absolute', 
-          top: '10px', 
-          right: '10px', 
-          zIndex: 1000, 
-          background: `url(${process.env.PUBLIC_URL + '/filter.png'}) no-repeat center center`, 
+      <button
+        style={{
+          position: 'absolute',
+          top: '10px',
+          right: '10px',
+          zIndex: 1000,
+          background: `url(${process.env.PUBLIC_URL + '/filter.png'}) no-repeat center center`,
           backgroundSize: 'cover',
           border: 'none',
           width: '50px', 

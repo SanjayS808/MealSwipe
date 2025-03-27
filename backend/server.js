@@ -27,8 +27,8 @@ app.get("/api/serve/get-all-restaurants", (req, res) => {
         "locationRestriction": {
             "circle": {
                 "center": {
-                    "latitude": 30.627977,
-                    "longitude": -96.334404
+                    "latitude": CENTER_LAT,
+                    "longitude": CENTER_LON
                 },
                 "radius": maxDistance * 1609.34 // Convert miles to meters
             }
