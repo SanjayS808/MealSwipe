@@ -109,15 +109,15 @@ app.get("/api/serve/get-user-with-id", async (req, res) => {
 app.post("/api/serve/add-user", async (req, res) => {
     // Check and insert all information needed for creating new user.
     const hasNullValue = (array) => array.some(element => element === undefined);
-    const uinfo = [req.body.uid, req.body.uname, req.body.ubio, req.body.nswipes];
+    const uinfo = [req.body.uname, req.body.ubio, req.body.nswipes];
     if(hasNullValue(uinfo)) {
         console.error('Could not create user. User information is missing.');
         res.status(400).json({error: 'Could not create user. User information is missing.'});
         return;
     }
 
-    const add_query = `INSERT INTO Users 
-    VALUES (${req.body.uid}, '${req.body.uname}', '${req.body.ubio}', ${req.body.nswipes});`;
+    const add_query = `INSERT INTO users (name, bio, numswipes)
+    VALUES ('${req.body.uname}', '${req.body.ubio}', ${req.body.nswipes});`;
 
     const get_query = `SELECT * FROM Users WHERE name='${req.body.uname}'`;
 

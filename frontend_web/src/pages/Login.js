@@ -1,11 +1,16 @@
-import React from "react";
-import { View, Text, TextInput, TouchableOpacity, StyleSheet, Dimensions } from "react-native";
+import { View, Text, TouchableOpacity, StyleSheet, Dimensions } from "react-native";
 import { Link } from 'react-router-dom';
 import pizzaimg from './login-img/login-pizza.png';
+// import { GoogleSignin, authAPI, handlePostLoginData } from '@react-oauth/google';
+import { GoogleLoginButton } from './GoogleLoginButton'
 
 const { width, height } = Dimensions.get("window");
 
+const DEV_MODE = true
+const backendURL = (DEV_MODE) ? "http://localhost:5001"  : "http://MealSw-Backe-k0cJtOkGFP3i-29432626.us-west-1.elb.amazonaws.com";
+
 const Login = () => {
+
   return (
     <View style={styles.container}>
       <Link to="/" style={styles.closeButton}>
@@ -27,9 +32,8 @@ const Login = () => {
       <View style={styles.rightContainer}>
         <Text style={styles.brandTitle}>MealSwipe!</Text>
         <Text style={styles.createAccount}>Create Account</Text>
-        <TextInput style={styles.input} placeholder="User name" />
-        <TextInput style={styles.input} placeholder="Email" keyboardType="email-address" />
-        <TextInput style={styles.input} placeholder="Password" secureTextEntry />
+        <GoogleLoginButton></GoogleLoginButton>
+        <br/>
         <TouchableOpacity style={styles.button}>
           <Text style={styles.buttonText}>Create Account</Text>
         </TouchableOpacity>
@@ -58,10 +62,10 @@ const styles = StyleSheet.create({
     height: 30,
     justifyContent: "center",
     alignItems: "center",
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.2,
-    shadowRadius: 2,
+    boxShadowColor: "#000",
+    boxShadowOffset: { width: 0, height: 2 },
+    boxShadowOpacity: 0.2,
+    boxShadowRadius: 2,
   },
   closeButtonText: {
     fontSize: 20,
@@ -110,7 +114,7 @@ const styles = StyleSheet.create({
     marginBottom: 20,
   },
   input: {
-    width: "90%",
+    width: "32em",
     padding: 15,
     borderWidth: 1,
     borderColor: "#ccc",

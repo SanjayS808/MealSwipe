@@ -2,9 +2,7 @@ import React, { useEffect, useState } from "react";
 import Restaurant from "./Restaurant";
 import Navigation from "./Navigation";
 import "./App.css";
-
-
-// import TinderCard from 'react-tinder-card'
+import { Config } from "react-native-config";
 
 const DEV_MODE = true
 const backendURL = (DEV_MODE) ? "http://localhost:5001"  : "http://MealSw-Backe-k0cJtOkGFP3i-29432626.us-west-1.elb.amazonaws.com";
