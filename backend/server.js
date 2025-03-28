@@ -21,12 +21,12 @@ const sanitize_text = (raw_text) => {
 };
 
 app.get("/api/serve/get-all-restaurants", (req, res) => {
-    const maxDistance = parseFloat(req.query.maxDistance) || 10; // Default to 10 miles if not specified
-    const minRating = parseFloat(req.query.minRating) || 0; // Default to 0 if not specified
+    // Default maximum distance of 50 miles
+    const maxDistance = parseFloat(req.query.maxDistance) || 50;
 
     const data = {
         "includedTypes": ["restaurant"],
-        "maxResultCount": 20,
+        "maxResultCount": 50, // Increased to allow more results
         "locationRestriction": {
             "circle": {
                 "center": {
@@ -56,21 +56,13 @@ app.get("/api/serve/get-all-restaurants", (req, res) => {
     
         try {
             const restaurants = JSON.parse(response.body);
-
-            // Apply the rating filter
-            const filteredRestaurants = restaurants['places'].filter(restaurant => {
-                const rating = parseFloat(restaurant.rating || 0);
-                return rating >= minRating; // Filter by minimum rating
-            });
-
-            res.json(filteredRestaurants);
+            res.json(restaurants['places'] || []);
         } catch (parseError) {
             console.error("Error parsing JSON:", parseError);
             res.status(500).send("Error processing data");
         }
     });
 });
-
 
 // Get userid via username
 app.get("/api/serve/get-userid-with-uname", async (req, res) => {
