@@ -10,15 +10,22 @@ const DEV_MODE = true;
 const backendURL = (DEV_MODE) ? "http://localhost:5001"  : "http://MealSw-Backe-k0cJtOkGFP3i-29432626.us-west-1.elb.amazonaws.com";
 
 function App() {
+  const [originalBackendData, setOriginalBackendData] = useState([]);
   const [backendData, setBackendData] = useState([]);
+  const [filteredRestaurants, setFilteredRestaurants] = useState([]);
   const [favoriteRestaurants, setFavoriteRestaurants] = useState([]);
   const [trashedRestaurants, setTrashedRestaurants] = useState([]);
-  const [maxDistance, setMaxDistance] = useState(50); // Adjust the default value as needed
+  
+  // Filter state
+  const [maxDistance, setMaxDistance] = useState(50);
   const [minRating, setMinRating] = useState(0);
   const [priceLevels, setPriceLevels] = useState([]);
-  const [pendingMaxDistance, setPendingMaxDistance] = useState(50); // Adjust the default value as needed
+  
+  // Pending filter state (for FilterPage)
+  const [pendingMaxDistance, setPendingMaxDistance] = useState(50);
   const [pendingMinRating, setPendingMinRating] = useState(0);
   const [pendingPriceLevels, setPendingPriceLevels] = useState([]);
+  
   const [showFilterPage, setShowFilterPage] = useState(false);
 
   // TODO: Create Login Page
@@ -41,7 +48,6 @@ function App() {
       return data[0].userid;
     } catch (error) {
       console.error("Error fetching user ID:", error);
-      // Handle the error appropriately, maybe set a default user or show an error message
       return null;
     }
   };
@@ -133,64 +139,102 @@ function App() {
     }
   };
 
-  const handleSwipe = (direction, restaurant) => {
-    console.log(`You swiped ${direction} on ${restaurant.name}`);
-    if (direction === 'right') {
-      setBackendData((prev) => prev.filter(r => r.id !== restaurant.id));
-      toggleFavorite(restaurant);
-    } else if (direction === 'left') {
-      setBackendData((prev) => prev.filter(r => r.id !== restaurant.id));
-      toggleTrashed(restaurant);
-    }
-  };
-
   const applyFilters = () => {
+    // Update active filter state
     setMaxDistance(pendingMaxDistance);
     setMinRating(pendingMinRating);
     setPriceLevels(pendingPriceLevels);
+
+    // Apply filters to the original dataset
+    const filtered = originalBackendData.filter(restaurant => {
+      // Distance filter 
+      const distanceMatch = !restaurant.distanceFromUser || 
+        restaurant.distanceFromUser <= pendingMaxDistance;
+
+      // Rating filter
+      const ratingMatch = restaurant.rating >= pendingMinRating;
+
+      // Price level filter
+      const priceLevelMatch = pendingPriceLevels.length === 0 || 
+        pendingPriceLevels.some(level => {
+          // Map price levels to match the price representation in the restaurant object
+          const priceMap = {
+            1: 'PRICE_LEVEL_INEXPENSIVE',
+            2: 'PRICE_LEVEL_MODERATE',
+            3: 'PRICE_LEVEL_EXPENSIVE',
+            4: 'PRICE_LEVEL_VERY_EXPENSIVE'
+          };
+          return restaurant.price === priceMap[level];
+        });
+
+      return distanceMatch && ratingMatch && priceLevelMatch;
+    });
+
+    // Update the displayed restaurants
+    setFilteredRestaurants(filtered);
+    setBackendData(filtered);
 
     // Close filter page
     setShowFilterPage(false);
   };
 
   const fetchRestaurants = async () => {
-    console.log("Fetching restaurants with maxDistance:", maxDistance, "and minRating:", minRating);
-    console.log(backendURL + `/api/serve/get-all-restaurants?maxDistance=${maxDistance}&minRating=${minRating}`)
-    fetch(backendURL + `/api/serve/get-all-restaurants?maxDistance=${maxDistance}&minRating=${minRating}`)
-      .then(response => {
-        if (!response.ok) {
-          throw new Error("Network response was not ok");
-        }
-        return response.json();
-      })
-      .then(data => {
-        //id,name,rating,price,address, generativeSummary, googleMapsLink, reviews,website, ratingsCount ,isOpen, phoneNumber, photos
-        setBackendData(data.map(r => new Restaurant(
-          r.id,
-          r.displayName?.text,
-          r.rating,
-          r.priceLevel,
-          r.formattedAddress,
-          r.generativeSummary?.overview?.text,
-          r.googleMapsLinks?.placeUri,
-          r.reviews,
-          r.websiteUri,
-          r.userRatingCount,
-          r.currentOpeningHours?.openNow ?? false,
-          r.nationalPhoneNumber,
-          r.photos
-        )));
-      })
-      .catch(error => console.error("Fetch error:", error));
+    try {
+      // Fetch restaurants without any filtering on the backend
+      const response = await fetch(`${backendURL}/api/serve/get-all-restaurants?maxDistance=50`);
+      
+      if (!response.ok) {
+        throw new Error("Network response was not ok");
+      }
+      
+      const data = await response.json();
+
+      // Map the restaurants 
+      const mappedRestaurants = data.map(r => new Restaurant(
+        r.id,
+        r.displayName?.text,
+        r.rating,
+        r.priceLevel,
+        r.formattedAddress,
+        r.generativeSummary?.overview?.text,
+        r.googleMapsLinks?.placeUri,
+        r.reviews,
+        r.websiteUri,
+        r.userRatingCount,
+        r.currentOpeningHours?.openNow ?? false,
+        r.nationalPhoneNumber,
+        r.photos
+      ));
+
+      // Store original and filtered data
+      setOriginalBackendData(mappedRestaurants);
+      setFilteredRestaurants(mappedRestaurants);
+      setBackendData(mappedRestaurants);
+    } catch (error) {
+      console.error("Fetch error:", error);
+    }
   };
 
   useEffect(() => {
     console.log("App mounted");
-    // console.log("Backend data set:", backendData);
     fetchRestaurants();
     loadFavorites();
     loadTrashed();
-  }, [maxDistance, minRating]);
+  }, []);
+
+  // Modify handleSwipe to use filteredRestaurants
+  const handleSwipe = (direction, restaurant) => {
+    console.log(`You swiped ${direction} on ${restaurant.name}`);
+    if (direction === 'right') {
+      setFilteredRestaurants((prev) => prev.filter(r => r.id !== restaurant.id));
+      setBackendData((prev) => prev.filter(r => r.id !== restaurant.id));
+      toggleFavorite(restaurant);
+    } else if (direction === 'left') {
+      setFilteredRestaurants((prev) => prev.filter(r => r.id !== restaurant.id));
+      setBackendData((prev) => prev.filter(r => r.id !== restaurant.id));
+      toggleTrashed(restaurant);
+    }
+  };
 
   const clearFavorites = () => {
     localStorage.removeItem("favorites");
