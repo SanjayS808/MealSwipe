@@ -1,46 +1,77 @@
 import React from 'react';
 import { GoogleLogin } from '@react-oauth/google';
 import { jwtDecode } from 'jwt-decode';
+import { useNavigate } from 'react-router-dom';
+import { useCookies } from 'react-cookie';
+import { DEV_MODE, user } from '../config';
+import { useUser } from '../context/UserContext';
 
+const backendURL = DEV_MODE 
+  ? "http://localhost:5001"  
+  : "http://MealSw-Backe-k0cJtOkGFP3i-29432626.us-west-1.elb.amazonaws.com";
 
-export const GoogleLoginButton = () => {
-  const responseMessage = (response) => {
-    console.log('Login Success:', response);
+const GoogleLoginButton = () => {
+    const navigate = useNavigate();
+    const { user, setUser } = useUser();
+    const [cookies, setCookie] = useCookies(['authToken']);
     
-    try {
-      // Decode the credential to get user information
-      const decoded = jwtDecode(response.credential);
-      
-      console.log('Decoded User Info:', {
-        name: decoded.name,
-        email: decoded.email,
-        picture: decoded.picture
-      });
+    const responseMessage = async (response) => {
+        console.log('Login Success:', response);
 
-      // Produce user
-      // At end navigate back to home page.
+        try {
+            const decoded = jwtDecode(response.credential);
+            
+            const body = {
+                uname: decoded.name,
+                ubio: "Hi! I am new to MealSwipe.",
+                nswipe: 0,
+                email: decoded.email,
+            };
 
-    } catch (decodeError) {
-      console.error('Error decoding Google token:', decodeError);
-    }
-  };
+            let json_body = JSON.stringify(body);
 
-  const errorMessage = (error) => {
-    console.error('Google Login Error:', {
-      error: error.error,
-      details: error.details,
-      message: error.message
-    });
-  };
+            await fetch(`${backendURL}/api/serve/add-user`, {
+                method: "POST",
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: json_body,
+            });
 
-  return (
-    <GoogleLogin
-      onSuccess={responseMessage}
-      onError={errorMessage}
-      size="large"
-      width="550"
-      useOneTap
-      auto_select={false}
-    />
-  );
+            setCookie('authToken', response.credential, {
+                path: '/',
+                httpOnly: false,
+                secure: true,
+                sameSite: 'Strict',
+                maxAge: 3600,
+            });
+
+            setUser(body.uname);
+
+            navigate('/');
+        } catch (decodeError) {
+            console.error('Error decoding Google token:', decodeError);
+        }
+    };
+
+    const errorMessage = (error) => {
+        console.error('Google Login Error:', {
+            error: error.error,
+            details: error.details,
+            message: error.message
+        });
+    };
+
+    return (
+        <GoogleLogin
+            onSuccess={responseMessage}
+            onError={errorMessage}
+            size="large"
+            width="550"
+            useOneTap
+            auto_select={false}
+        />
+    );
 };
+
+export default GoogleLoginButton;

@@ -2,6 +2,7 @@ const express = require('express');
 const cors = require('cors');  // Import CORS middleware
 const request = require('request');  // To make HTTP requests
 const pool = require('./db'); // Add access to DB
+const DEV_MODE = require('./config')
 
 const app = express();
 
@@ -109,17 +110,17 @@ app.get("/api/serve/get-user-with-id", async (req, res) => {
 app.post("/api/serve/add-user", async (req, res) => {
     // Check and insert all information needed for creating new user.
     const hasNullValue = (array) => array.some(element => element === undefined);
-    const uinfo = [req.body.uname, req.body.ubio, req.body.nswipes];
+    const uinfo = [req.body.uname, req.body.ubio, req.body.nswipe, req.body.email];
     if(hasNullValue(uinfo)) {
         console.error('Could not create user. User information is missing.');
         res.status(400).json({error: 'Could not create user. User information is missing.'});
         return;
     }
 
-    const add_query = `INSERT INTO users (name, bio, numswipes)
-    VALUES ('${req.body.uname}', '${req.body.ubio}', ${req.body.nswipes});`;
+    const add_query = `INSERT INTO users (name, bio, numswipes, email)
+    VALUES ('${sanitize_text(req.body.uname)}', '${sanitize_text(req.body.ubio)}', ${req.body.nswipe}, '${req.body.email}');`;
 
-    const get_query = `SELECT * FROM Users WHERE name='${req.body.uname}'`;
+    const get_query = `SELECT * FROM Users WHERE name='${req.body.uname} OR email=${req.body.email}';`;
 
     try {
         // Check if user already exists.
@@ -444,7 +445,17 @@ app.get("/health", (req, res) => {
     res.status(200).send('OK');
 })
 
-const server = app.listen(5001, () => console.log("Server started on port 5001"));
+let server = undefined;
+if (DEV_MODE) {
+    server = app.listen(5001, () => console.log("Server started on port 5001"));
+} else {
+    // Node.js Express example
+    server = app.use(cors({
+        origin: '',
+        methods: ['GET', 'POST', 'PUT', 'DELETE'],
+        allowedHeaders: ['Content-Type', 'Authorization']
+    })).listen(5001, () => console.log("Server started on port 5001"));
+}
 
 // Exporting app for testing.
 module.exports = { app, server };

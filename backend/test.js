@@ -143,7 +143,8 @@ describe('API Endpoints', () => {
         uid: 123,
         uname: 'newuser',
         ubio: 'New user bio',
-        nswipes: 10
+        nswipe: 10,
+        email: 'test_email@testemail.com',
       };
 
       const response = await request(app)
@@ -175,7 +176,8 @@ describe('API Endpoints', () => {
         uid: 123,
         uname: 'existinguser',
         ubio: 'User bio',
-        nswipes: 10
+        nswipe: 10,
+        email: 'test_email@testemail.com',
       };
 
       const response = await request(app)

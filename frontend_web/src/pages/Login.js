@@ -2,12 +2,9 @@ import { View, Text, TouchableOpacity, StyleSheet, Dimensions } from "react-nati
 import { Link } from 'react-router-dom';
 import pizzaimg from './login-img/login-pizza.png';
 // import { GoogleSignin, authAPI, handlePostLoginData } from '@react-oauth/google';
-import { GoogleLoginButton } from './GoogleLoginButton'
+import GoogleLoginButton from './GoogleLoginButton';
 
 const { width, height } = Dimensions.get("window");
-
-const DEV_MODE = true
-const backendURL = (DEV_MODE) ? "http://localhost:5001"  : "http://MealSw-Backe-k0cJtOkGFP3i-29432626.us-west-1.elb.amazonaws.com";
 
 const Login = () => {
 

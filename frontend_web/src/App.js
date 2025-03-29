@@ -2,9 +2,9 @@ import React, { useEffect, useState } from "react";
 import Restaurant from "./Restaurant";
 import Navigation from "./Navigation";
 import "./App.css";
-import { Config } from "react-native-config";
+import {DEV_MODE} from "./config"
+import { UserProvider, useUser } from './context/UserContext';
 
-const DEV_MODE = true
 const backendURL = (DEV_MODE) ? "http://localhost:5001"  : "http://MealSw-Backe-k0cJtOkGFP3i-29432626.us-west-1.elb.amazonaws.com";
 
 function App() {
@@ -14,13 +14,12 @@ function App() {
   const [trashedRestaurants, setTrashedRestaurants] = useState([]);
   const [minRating, setMinRating] = useState(0); // Default to 0 stars
   const [showFilter, setShowFilter] = useState(false); // State to toggle filter visibility
-
-  // TODO: Create Login Page
-  const uname = "drodr24";
+  const { user, setUser } = useUser();  
 
   useEffect(() => {
     const onMount = () => {
       console.log("Application is mounted.")
+      console.log(user)
       fetchRestaurants(); 
       loadFavorites();
       loadTrashed();
@@ -31,10 +30,10 @@ function App() {
     return () => {
       console.log("App component is unmounting.")
     }
-  }, []);
+  }, [user]);
 
   const fetchuid = async () => {
-    let response = await fetch(`${backendURL}/api/serve/get-userid-with-uname?uname=${uname}`)
+    let response = await fetch(`${backendURL}/api/serve/get-userid-with-uname?uname=${user}`)
     .then(response => {
       if(!response.ok) {
         throw new Error("Backend error. Failed to fetch user information.");
@@ -57,7 +56,8 @@ function App() {
 
   const loadFavorites = async () => {
     if(favoriteRestaurants.length > 0) {return;} // We do not want to do anything.
-    
+  
+    if(user === null) {return ;} // We do not want to load API if we have no user.
     let userid = await fetchuid();
     
     fetch(`${backendURL}/api/serve/get-user-favorite-restaurants?uid=${userid}`)
@@ -84,6 +84,7 @@ function App() {
   };
 
   const loadTrashed = async () => {
+    if(user === null) {return ;} // We do not want to load API if we have no user.
     let userid = await fetchuid();
     
     fetch(`${backendURL}/api/serve/get-user-trashed-restaurant?uid=${userid}`)
@@ -156,6 +157,7 @@ function App() {
   const clearFavorites = async () => {
     localStorage.removeItem("favorites");
     setFavoriteRestaurants([]);
+    if(user === null) {return ;} // We do not want to load API if we have no user.
     const userid = await fetchuid();
     // Deletes from db
     await fetch(`${backendURL}/api/serve/delete-favorite-swipe-with-uid?uid=${userid}`, {
@@ -173,6 +175,7 @@ function App() {
     localStorage.removeItem("trashed");
     setTrashedRestaurants([]);
      // Deletes from db
+     if(user === null) {return ;} // We do not want to load API if we have no user.
      const userid = await fetchuid();
      await fetch(`${backendURL}/api/serve/delete-trashed-swipe-with-uid?uid=${userid}`, {
       method: 'DELETE',
@@ -214,6 +217,7 @@ function App() {
       console.log("Internal error. Could not add restaurant.")
     })
 
+    if(user === null) {return ;} // We do not want to load API if we have no user.
     let userid = await fetchuid();
 
     // Add placeid and userid to trashed swipes.
@@ -273,6 +277,7 @@ function App() {
       console.log("Internal error. Could not add restaurant.")
     })
 
+    if(user === null) {return ;} // We do not want to load API if we have no user.
     let userid = await fetchuid();
 
     // Add placeid and userid to trashed swipes.
@@ -378,7 +383,7 @@ function App() {
         likedRestaurants={favoriteRestaurants}
         trashedRestaurants={trashedRestaurants}
       />
-    </div>
+    </div>    
   );
 }
 
