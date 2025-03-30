@@ -3,6 +3,8 @@ const cors = require('cors');  // Import CORS middleware
 const request = require('request');  // To make HTTP requests
 const pool = require('./db'); // Add access to DB
 const DEV_MODE = require('./config')
+const CENTER_LAT = 30.627977;  // College Station latitude
+const CENTER_LNG = -96.334404; // College Station longitude
 
 const app = express();
 
@@ -20,16 +22,19 @@ const sanitize_text = (raw_text) => {
 };
 
 app.get("/api/serve/get-all-restaurants", (req, res) => {
+    const maxDistance = parseFloat(req.query.maxDistance) || 10; // Default to 10 miles if not specified
+    const minRating = parseFloat(req.query.minRating) || 0; // Default to 0 if not specified
+
     const data = {
         "includedTypes": ["restaurant"],
         "maxResultCount": 20,
         "locationRestriction": {
             "circle": {
                 "center": {
-                    "latitude": 30.627977,
-                    "longitude": -96.334404
+                    "latitude": CENTER_LAT,
+                    "longitude": CENTER_LNG
                 },
-                "radius": parseFloat(req.query.maxDistance) * 1000 || 10000.0  // Adjusted default radius
+                "radius": maxDistance * 1609.34 // Convert miles to meters
             }
         }
     };
@@ -52,26 +57,21 @@ app.get("/api/serve/get-all-restaurants", (req, res) => {
     
         try {
             const restaurants = JSON.parse(response.body);
-            // console.log("Received data:", restaurants); 
-    
-            const minRating = parseFloat(req.query.minRating) || 0;
-            // console.log("Minimum rating filter set to:", minRating);  
-    
+
+            // Apply the rating filter
             const filteredRestaurants = restaurants['places'].filter(restaurant => {
-                const rating = parseFloat(restaurant.rating);
-                // console.log("Restaurant rating:", rating); 
-                return rating >= minRating;
+                const rating = parseFloat(restaurant.rating || 0);
+                return rating >= minRating; // Filter by minimum rating
             });
-    
-            // console.log("Filtered restaurants count:", filteredRestaurants.length);  
+
             res.json(filteredRestaurants);
         } catch (parseError) {
             console.error("Error parsing JSON:", parseError);
             res.status(500).send("Error processing data");
         }
     });
-    
 });
+
 
 // Get userid via username
 app.get("/api/serve/get-userid-with-uname", async (req, res) => {
