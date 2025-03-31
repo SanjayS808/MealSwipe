@@ -51,18 +51,9 @@ function App() {
       if(!response.ok) {
         throw new Error("Backend error. Failed to fetch user information.");
       }
-      
-      const data = await response.json();
-      
-      if (data.length === 0) {
-        throw new Error("No user found with this username");
-      }
-      
-      return data[0].userid;
-    } catch (error) {
-      console.error("Error fetching user ID:", error);
-      return null;
-    }
+      return response.json();
+    });
+    return response[0].userid;
   };
 
   const fetchRestaurantInfo = async (rid) => {
@@ -78,76 +69,60 @@ function App() {
 
   const loadFavorites = async () => {
     if(favoriteRestaurants.length > 0) {return;} // We do not want to do anything.
-  
-    if(user === null) {return ;} // We do not want to load API if we have no user.
+    if(user === null) {return;} // We do not want to do anything.
+    let userid = await fetchuid();
     
-    try {
-      let userid = await fetchuid();
-      
-      if (!userid) {
-        console.error("Could not fetch user ID");
-        setFavoriteRestaurants([]);
-        return;
-      }
-      
-      const response = await fetch(`${backendURL}api/serve/get-user-favorite-restaurants?uid=${userid}`);
-      
-      if (!response.ok) {
-        throw new Error("Internal error. Failed to fetch swipe information.");
-      }
-      
-      const data = await response.json();
-      
-      if(!data.length) {
-        setFavoriteRestaurants([]);
-      } else {
-        const restaurantPromises = data.map(result => 
-          fetchRestaurantInfo(result.placeid)
-        );
-        
-        const restaurantInfos = await Promise.all(restaurantPromises);
-        
-        setFavoriteRestaurants(
-          restaurantInfos.map(result => result[0].name)
-        );
-      }
-    } catch (error) {
-      console.error("Error in loadFavorites:", error);
-      setFavoriteRestaurants([]);
-    }
-  };
-  
-const loadTrashed = async () => {
-  if(user === null) {return ;} // We do not want to load API if we have no user.
-  try {
-      let userid = await fetchuid();
-
-      fetch(`${backendURL}/api/serve/get-user-trashed-restaurant?uid=${userid}`)
-      .then(response => {
+    fetch(`${backendURL}/api/serve/get-user-favorite-restaurants?uid=${userid}`)
+    .then(response => {
       if(!response.ok) {
         throw new Error("Internal error. Failed to fetch swipe information.");
       }
-
-      const data = await response.json();
-
-      if(!data.length) {
+      return response.json();
+    })
+    .then(data => {
+      if(!Object.keys(data).length){
+        // No data found for user. Set local storage empty.
+        setFavoriteRestaurants([]);
+      } else {
+        setFavoriteRestaurants([]);
+        data.forEach((result) => {
+          let restaurant_info = fetchRestaurantInfo(result.placeid);
+          restaurant_info.then(result => {
+            setFavoriteRestaurants(prevSwipes => [...prevSwipes, result[0].name])
+          })
+        })
+      }
+    });
+  };
+  
+  const loadTrashed = async () => {
+    if(user === null) {return;} // We do not want to do anything.
+    let userid = await fetchuid();
+    
+    fetch(`${backendURL}/api/serve/get-user-trashed-restaurant?uid=${userid}`)
+    .then(response => {
+      if(!response.ok) {
+        throw new Error("Internal error. Failed to fetch swipe information.");
+      }
+      return response.json();
+    })
+    .then(data => {
+      if(!Object.keys(data).length){
+        // No data found for user. Set local storage empty.
+        // console.log("No restaurants swiped from user.")
         setTrashedRestaurants([]);
       } else {
-        const restaurantPromises = data.map(result => 
-          fetchRestaurantInfo(result.placeid)
-        );
-
-        const restaurantInfos = await Promise.all(restaurantPromises);
-
-        setTrashedRestaurants(
-          restaurantInfos.map(result => result[0].name)
-        );
+        setTrashedRestaurants([]);
+        data.forEach((result) => {
+          let restaurant_info = fetchRestaurantInfo(result.placeid);
+          restaurant_info.then(result => {
+            setTrashedRestaurants(prevSwipes => [...prevSwipes, result[0].name])
+          })
+        })
       }
-    } catch (error) {
-      console.error("Error in loadTrashed:", error);
-      setTrashedRestaurants([]);
-    }
+    });
   };
+
 
   const applyFilters = () => {
     // Update active filter state
@@ -222,6 +197,20 @@ const loadTrashed = async () => {
       setBackendData(mappedRestaurants);
     } catch (error) {
       console.error("Fetch error:", error);
+    }
+  };
+
+  // Modify handleSwipe to use filteredRestaurants
+  const handleSwipe = (direction, restaurant) => {
+    console.log(`You swiped ${direction} on ${restaurant.name}`);
+    if (direction === 'right') {
+      setFilteredRestaurants((prev) => prev.filter(r => r.id !== restaurant.id));
+      setBackendData((prev) => prev.filter(r => r.id !== restaurant.id));
+      toggleFavorite(restaurant);
+    } else if (direction === 'left') {
+      setFilteredRestaurants((prev) => prev.filter(r => r.id !== restaurant.id));
+      setBackendData((prev) => prev.filter(r => r.id !== restaurant.id));
+      toggleTrashed(restaurant);
     }
   };
 
@@ -406,7 +395,15 @@ const loadTrashed = async () => {
           </p>
         </div>  
       </a>
-      
+      <Navigation
+        clearFavorites={clearFavorites}
+        clearTrashed={clearTrashed}
+        resetBackendData={fetchRestaurants}
+        backendData={backendData}
+        handleSwipe={handleSwipe}
+        likedRestaurants={favoriteRestaurants}
+        trashedRestaurants={trashedRestaurants}
+      />
       <button 
         style={{ 
           position: 'absolute', 

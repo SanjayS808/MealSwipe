@@ -14,5 +14,8 @@ backend/.env
 /build/
 /dist/
 
+**/*.env
+**/*.cert
+
 # Other directories that might contain unnecessary files
 /Weekly-reports/

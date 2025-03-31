@@ -112,7 +112,7 @@ app.post("/api/serve/add-user", async (req, res) => {
     const add_query = `INSERT INTO users (name, bio, numswipes, email)
     VALUES ('${sanitize_text(req.body.uname)}', '${sanitize_text(req.body.ubio)}', ${req.body.nswipe}, '${req.body.email}');`;
 
-    const get_query = `SELECT * FROM Users WHERE name='${req.body.uname} OR email=${req.body.email}';`;
+    const get_query = `SELECT * FROM Users WHERE name='${req.body.uname}' OR email='${req.body.email}';`;
 
     try {
         // Check if user already exists.
