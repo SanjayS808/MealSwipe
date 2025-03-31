@@ -2,6 +2,7 @@ const express = require('express');
 const cors = require('cors');  // Import CORS middleware
 const request = require('request');  // To make HTTP requests
 const pool = require('./db'); // Add access to DB
+const DEV_MODE = require('./config')
 const CENTER_LAT = 30.627977;  // College Station latitude
 const CENTER_LNG = -96.334404; // College Station longitude
 
@@ -101,17 +102,17 @@ app.get("/api/serve/get-user-with-id", async (req, res) => {
 app.post("/api/serve/add-user", async (req, res) => {
     // Check and insert all information needed for creating new user.
     const hasNullValue = (array) => array.some(element => element === undefined);
-    const uinfo = [req.body.uid, req.body.uname, req.body.ubio, req.body.nswipes];
+    const uinfo = [req.body.uname, req.body.ubio, req.body.nswipe, req.body.email];
     if(hasNullValue(uinfo)) {
         console.error('Could not create user. User information is missing.');
         res.status(400).json({error: 'Could not create user. User information is missing.'});
         return;
     }
 
-    const add_query = `INSERT INTO Users 
-    VALUES (${req.body.uid}, '${req.body.uname}', '${req.body.ubio}', ${req.body.nswipes});`;
+    const add_query = `INSERT INTO users (name, bio, numswipes, email)
+    VALUES ('${sanitize_text(req.body.uname)}', '${sanitize_text(req.body.ubio)}', ${req.body.nswipe}, '${req.body.email}');`;
 
-    const get_query = `SELECT * FROM Users WHERE name='${req.body.uname}'`;
+    const get_query = `SELECT * FROM Users WHERE name='${req.body.uname} OR email=${req.body.email}';`;
 
     try {
         // Check if user already exists.
@@ -351,6 +352,76 @@ app.post("/api/serve/add-user-favorite-restaurant", async (req, res) => {
      } 
 });
 
+app.delete("/api/serve/delete-trashed-swipe-with-rid-uid", async (req, res) => {
+    if(req.query.rid === undefined && req.query.uid === undefined) {
+        console.error('Could not fetch undefined user or restaurant id.');
+        res.status(400).json({error: 'Could not fetch with undefined user and restaurant id.'});
+        return;
+    }
+    const delete_query = `DELETE FROM trashed_swipes WHERE placeid='${sanitize_text(req.query.rid)}' AND userid='${req.query.uid}'`;
+
+    try {
+        const result = await pool.query(delete_query);
+        res.status(200).json({transactionComplete: "Deleted trashed swipes of placeidown by user"});
+    } catch(err) {
+        console.error(`Error deleting user's trashed swipes: ${err}`);
+        res.status(500).json({error: 'Internal Server Error'});
+    }
+})
+
+app.delete("/api/serve/delete-favorite-swipe-with-rid-uid", async (req, res) => {
+    if(req.query.rid === undefined && req.query.uid === undefined) {
+        console.error('Could not fetch undefined user or restaurant id.');
+        res.status(400).json({error: 'Could not fetch with undefined user and restaurant id.'});
+        return;
+    }
+    const delete_query = `DELETE FROM liked_swipes WHERE placeid='${sanitize_text(req.query.rid)}' AND userid='${req.query.uid}'`;
+
+    try {
+        const result = await pool.query(delete_query);
+        res.status(200).json({transactionComplete: "Deleted favorite_swipe of placeidown by user"});
+    } catch(err) {
+        console.error(`Error deleting user's favorite swipes: ${err}`);
+        res.status(500).json({error: 'Internal Server Error'});
+    }
+});
+
+// Deletes all trashed swipes from user.
+app.delete("/api/serve/delete-trashed-swipe-with-uid", async (req, res) => {
+    if(req.query.uid === undefined) {
+        console.error('Could not fetch undefined user.');
+        res.status(400).json({error: 'Could not fetch with undefined user.'});
+        return;
+    }
+    const delete_query = `DELETE FROM trashed_swipes WHERE userid='${req.query.uid}';`
+
+    try {
+        const result = await pool.query(delete_query);
+        res.status(200).json({transactionComplete: "Deleted all trashed_swipes own by user"});
+    } catch(err) {
+        console.error(`Error deleting user's trashed swipes: ${err}`);
+        res.status(500).json({error: 'Internal Server Error'});
+    }
+});
+
+// Deletes all favorite swipes from user.
+app.delete("/api/serve/delete-favorite-swipe-with-uid", async (req, res) => {
+    if(req.query.uid === undefined) {
+        console.error('Could not fetch undefined user.');
+        res.status(400).json({error: 'Could not fetch with undefined user.'});
+        return;
+    }
+    const delete_query = `DELETE FROM liked_swipes WHERE userid='${req.query.uid}';`
+
+    try {
+        const result = await pool.query(delete_query);
+        res.status(200).json({transactionComplete: "Deleted all trashed_swipes own by user"});
+    } catch(err) {
+        console.error(`Error deleting user's favorite swipes: ${err}`);
+        res.status(500).json({error: 'Internal Server Error'});
+    }
+});
+
 
 app.get("/api", (req, res) => {
     res.json({"restaurants": ["resOne", "resTwo"]});
@@ -366,7 +437,17 @@ app.get("/health", (req, res) => {
     res.status(200).send('OK');
 })
 
-const server = app.listen(5001, () => console.log("Server started on port 5001"));
+let server = undefined;
+if (DEV_MODE) {
+    server = app.listen(5001, () => console.log("Server started on port 5001"));
+} else {
+    // Node.js Express example
+    server = app.use(cors({
+        origin: '',
+        methods: ['GET', 'POST', 'PUT', 'DELETE'],
+        allowedHeaders: ['Content-Type', 'Authorization']
+    })).listen(5001, () => console.log("Server started on port 5001"));
+}
 
 // Exporting app for testing.
 module.exports = { app, server };

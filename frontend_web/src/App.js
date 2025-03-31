@@ -5,8 +5,9 @@ import FilterPage from "./components/FilterPage";
 import "./components/FilterPage.css";
 import "./App.css";
 import "./components/FilterPage.css";
+import {DEV_MODE} from "./config"
+import { UserProvider, useUser } from './context/UserContext';
 
-const DEV_MODE = true;
 const backendURL = (DEV_MODE) ? "http://localhost:5001"  : "http://MealSw-Backe-k0cJtOkGFP3i-29432626.us-west-1.elb.amazonaws.com";
 
 function App() {
@@ -15,10 +16,10 @@ function App() {
   const [filteredRestaurants, setFilteredRestaurants] = useState([]);
   const [favoriteRestaurants, setFavoriteRestaurants] = useState([]);
   const [trashedRestaurants, setTrashedRestaurants] = useState([]);
-  
-  // Filter state
-  const [maxDistance, setMaxDistance] = useState(50);
-  const [minRating, setMinRating] = useState(0);
+
+  const [minRating, setMinRating] = useState(0); // Default to 0 stars
+  const [maxDistance, setMaxDistance] = useState(50); // Adjust the default value as needed
+
   const [priceLevels, setPriceLevels] = useState([]);
   
   // Pending filter state (for FilterPage)
@@ -27,16 +28,28 @@ function App() {
   const [pendingPriceLevels, setPendingPriceLevels] = useState([]);
   
   const [showFilterPage, setShowFilterPage] = useState(false);
+  const { user, setUser } = useUser();  
 
-  // TODO: Create Login Page
-  const uname = "drodr24";
+  useEffect(() => {
+    const onMount = () => {
+      console.log("Application is mounted.")
+      console.log(user)
+      fetchRestaurants(); 
+      loadFavorites();
+      loadTrashed();
+    };
+
+    onMount();
+    return () => {
+      console.log("App component is unmounting.")
+    }
+  }, [user]);
 
   const fetchuid = async () => {
-    try {
-      const response = await fetch(`${backendURL}api/serve/get-userid-with-uname?uname=${uname}`);
-      
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
+    let response = await fetch(`${backendURL}/api/serve/get-userid-with-uname?uname=${user}`)
+    .then(response => {
+      if(!response.ok) {
+        throw new Error("Backend error. Failed to fetch user information.");
       }
       
       const data = await response.json();
@@ -64,7 +77,9 @@ function App() {
   }
 
   const loadFavorites = async () => {
-    if(favoriteRestaurants.length > 0) return;
+    if(favoriteRestaurants.length > 0) {return;} // We do not want to do anything.
+  
+    if(user === null) {return ;} // We do not want to load API if we have no user.
     
     try {
       let userid = await fetchuid();
@@ -102,33 +117,28 @@ function App() {
     }
   };
   
-  const loadTrashed = async () => {
-    try {
+const loadTrashed = async () => {
+  if(user === null) {return ;} // We do not want to load API if we have no user.
+  try {
       let userid = await fetchuid();
-      
-      if (!userid) {
-        console.error("Could not fetch user ID");
-        setTrashedRestaurants([]);
-        return;
-      }
-      
-      const response = await fetch(`${backendURL}api/serve/get-user-trashed-restaurant?uid=${userid}`);
-      
-      if (!response.ok) {
+
+      fetch(`${backendURL}/api/serve/get-user-trashed-restaurant?uid=${userid}`)
+      .then(response => {
+      if(!response.ok) {
         throw new Error("Internal error. Failed to fetch swipe information.");
       }
-      
+
       const data = await response.json();
-      
+
       if(!data.length) {
         setTrashedRestaurants([]);
       } else {
         const restaurantPromises = data.map(result => 
           fetchRestaurantInfo(result.placeid)
         );
-        
+
         const restaurantInfos = await Promise.all(restaurantPromises);
-        
+
         setTrashedRestaurants(
           restaurantInfos.map(result => result[0].name)
         );
@@ -215,35 +225,39 @@ function App() {
     }
   };
 
-  useEffect(() => {
-    console.log("App mounted");
-    fetchRestaurants();
-    loadFavorites();
-    loadTrashed();
-  }, []);
 
-  // Modify handleSwipe to use filteredRestaurants
-  const handleSwipe = (direction, restaurant) => {
-    console.log(`You swiped ${direction} on ${restaurant.name}`);
-    if (direction === 'right') {
-      setFilteredRestaurants((prev) => prev.filter(r => r.id !== restaurant.id));
-      setBackendData((prev) => prev.filter(r => r.id !== restaurant.id));
-      toggleFavorite(restaurant);
-    } else if (direction === 'left') {
-      setFilteredRestaurants((prev) => prev.filter(r => r.id !== restaurant.id));
-      setBackendData((prev) => prev.filter(r => r.id !== restaurant.id));
-      toggleTrashed(restaurant);
-    }
-  };
+  const clearFavorites = async () => {
 
-  const clearFavorites = () => {
     localStorage.removeItem("favorites");
     setFavoriteRestaurants([]);
+    if(user === null) {return ;} // We do not want to load API if we have no user.
+    const userid = await fetchuid();
+    // Deletes from db
+    await fetch(`${backendURL}/api/serve/delete-favorite-swipe-with-uid?uid=${userid}`, {
+      method: 'DELETE',
+    })
+    .then(response => {
+      console.log(response)
+      if (!response.ok) {
+        throw new Error("Backend error: Could not delete data")
+      }
+    })
   };
 
-  const clearTrashed = () => {
+  const clearTrashed = async () => {
     localStorage.removeItem("trashed");
     setTrashedRestaurants([]);
+     // Deletes from db
+     if(user === null) {return ;} // We do not want to load API if we have no user.
+     const userid = await fetchuid();
+     await fetch(`${backendURL}/api/serve/delete-trashed-swipe-with-uid?uid=${userid}`, {
+      method: 'DELETE',
+     })
+     .then(response => {
+       if (!response.ok) {
+         throw new Error("Backend error: Could not delete data")
+       }
+     })
   };
 
   const toggleFavorite = async (restaurant) => {
@@ -276,6 +290,7 @@ function App() {
       console.log("Internal error. Could not add restaurant.")
     })
 
+    if(user === null) {return ;} // We do not want to load API if we have no user.
     let userid = await fetchuid();
 
     // Add placeid and userid to trashed swipes.
@@ -335,6 +350,7 @@ function App() {
       console.log("Internal error. Could not add restaurant.")
     })
 
+    if(user === null) {return ;} // We do not want to load API if we have no user.
     let userid = await fetchuid();
 
     // Add placeid and userid to trashed swipes.
@@ -367,22 +383,37 @@ function App() {
 
   return (
     <div className="App">
-      <Navigation
-        clearFavorites={clearFavorites}
-        clearTrashed={clearTrashed}
-        resetBackendData={fetchRestaurants}
-        backendData={backendData}
-        handleSwipe={handleSwipe}
-        likedRestaurants={favoriteRestaurants}
-        trashedRestaurants={trashedRestaurants}
-      />
-      <button
-        style={{
-          position: 'absolute',
-          top: '10px',
-          right: '10px',
-          zIndex: 1000,
-          background: `url(${process.env.PUBLIC_URL + '/filter.png'}) no-repeat center center`,
+       <a href="/login" style={{
+        position: 'absolute', 
+        top: '10px', 
+        left: '10px', 
+        zIndex: 10, 
+       }}>
+        <div style={{
+        width: '50px', 
+        height: '50px',
+        padding: '.5em',
+        margin: '.1em', 
+        }}> 
+          <p style={{
+            fontSize: 'big',
+            fontWeight: 'bold',
+            textDEcorationLine: 'none',
+            color:'white',
+            textAlign: 'center',
+            textDecorationLine:'none',}}>
+          Login
+          </p>
+        </div>  
+      </a>
+      
+      <button 
+        style={{ 
+          position: 'absolute', 
+          top: '10px', 
+          right: '10px', 
+          zIndex: 10, 
+          background: `url(${process.env.PUBLIC_URL + '/filter.png'}) no-repeat center center`, 
           backgroundSize: 'cover',
           border: 'none',
           width: '50px', 
