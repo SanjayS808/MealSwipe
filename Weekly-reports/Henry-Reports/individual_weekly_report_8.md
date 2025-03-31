@@ -19,6 +19,9 @@ MealSwipe:
 *Include screenshots/diagrams/figures/etc. to illustrate what you did this past week.*  
 *![][image1]*
 
+<img width="336" alt="Screenshot 2025-03-31 at 4 05 02 PM" src="https://github.com/user-attachments/assets/9c6e2172-6f75-4c39-8d25-de6a256d729a" />
+
+
 ### 
 
 ### What problems did you run into? What is your plan for them?
