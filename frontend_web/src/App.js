@@ -7,6 +7,7 @@ import "./App.css";
 import "./components/FilterPage.css";
 import {DEV_MODE} from "./config"
 import { UserProvider, useUser } from './context/UserContext';
+import { useNavigate } from "react-router-dom";
 
 const backendURL = (DEV_MODE) ? "http://localhost:5001"  : "http://MealSw-Backe-k0cJtOkGFP3i-29432626.us-west-1.elb.amazonaws.com";
 
@@ -30,6 +31,8 @@ function App() {
   const [showFilterPage, setShowFilterPage] = useState(false);
   const { user, setUser } = useUser();  
 
+  const navigate = useNavigate();
+
   useEffect(() => {
     const onMount = () => {
       console.log("Application is mounted.")
@@ -45,8 +48,22 @@ function App() {
     }
   }, [user]);
 
+  const handleLogout = () => {
+    setUser(null); // Clear user state
+    localStorage.removeItem('user'); // Clear localStorage
+    navigate('/'); // Redirect to login page
+  };
+
+  const handleLoginClick = () => {
+    if (user) {
+      handleLogout(); // If user is logged in, log them out
+    } else {
+      navigate('/login'); // If user is logged out, navigate to login
+    }
+  };
+
   const fetchuid = async () => {
-    let response = await fetch(`${backendURL}/api/serve/get-userid-with-uname?uname=${user}`)
+    let response = await fetch(`${backendURL}/api/serve/get-userid-with-uname?uname=${user.name}`)
     .then(response => {
       if(!response.ok) {
         throw new Error("Backend error. Failed to fetch user information.");
@@ -372,29 +389,50 @@ function App() {
 
   return (
     <div className="App">
-       <a href="/login" style={{
-        position: 'absolute', 
-        top: '10px', 
-        left: '10px', 
-        zIndex: 10, 
-       }}>
+      <div
+        onClick={handleLoginClick} // Use onClick instead of href
+        style={{
+          position: 'absolute',
+          top: '10px',
+          left: '10px',
+          zIndex: 10,
+          cursor: 'pointer', // Indicate clickable
+        }}
+      >
         <div style={{
-        width: '50px', 
-        height: '50px',
-        padding: '.5em',
-        margin: '.1em', 
-        }}> 
-          <p style={{
-            fontSize: 'big',
-            fontWeight: 'bold',
-            textDEcorationLine: 'none',
-            color:'white',
-            textAlign: 'center',
-            textDecorationLine:'none',}}>
-          Login
-          </p>
-        </div>  
-      </a>
+          width: 50,
+          height: 50,
+          padding: '.5em',
+          margin: '.1em',
+          borderRadius: 50,
+          overflow: 'hidden',
+          border: '2px solid white',
+          boxShadow: '0 2px 2px rgba(0, 0, 0, 0.2)', // Adjusted boxShadow for web
+        }}>
+          {user && user.picture ? (
+            <img
+              src={user.picture}
+              alt="Profile"
+              style={{
+                width: '100%',
+                height: '100%',
+                objectFit: 'cover',
+              }}
+            />
+          ) : (
+            <p style={{
+              fontSize: 'big',
+              fontWeight: 'bold',
+              color: 'white',
+              textAlign: 'center',
+              lineHeight: '50px',
+              margin: 0,
+            }}>
+              Login
+            </p>
+          )}
+        </div>
+      </div>
       <Navigation
         clearFavorites={clearFavorites}
         clearTrashed={clearTrashed}
