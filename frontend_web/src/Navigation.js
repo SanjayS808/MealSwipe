@@ -4,6 +4,7 @@ import RestaurantList from "./components/RestaurantList";
 import FavoritesPage from "./pages/FavoritesPage";
 import TrashedPage from "./pages/TrashedPage";
 import Login from "./pages/Login";
+import ProfilePage from "./pages/ProfilePage";
 import "./styles/navbar.css";
 
 function Navigation({ backendData, likedRestaurants, trashedRestaurants, handleSwipe, resetBackendData, clearFavorites, clearTrashed }) {
@@ -18,6 +19,7 @@ function Navigation({ backendData, likedRestaurants, trashedRestaurants, handleS
         <Route path="/" element={<RestaurantList restaurants={backendData} onSwipe={handleSwipe} resetBackendData={resetBackendData} />} />
         <Route path="/trashed" element={<TrashedPage trashedRestaurants={trashedRestaurants} clearTrashed={clearTrashed} />} />
         <Route path="/login" element={<Login />} />
+        <Route path="/profile" element={<ProfilePage/>}/>
       </Routes>
 
       <nav className="bottomNav">

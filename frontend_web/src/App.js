@@ -48,15 +48,9 @@ function App() {
     }
   }, [user]);
 
-  const handleLogout = () => {
-    setUser(null); // Clear user state
-    localStorage.removeItem('user'); // Clear localStorage
-    navigate('/'); // Redirect to login page
-  };
-
   const handleLoginClick = () => {
     if (user) {
-      handleLogout(); // If user is logged in, log them out
+      navigate('/profile')
     } else {
       navigate('/login'); // If user is logged out, navigate to login
     }
