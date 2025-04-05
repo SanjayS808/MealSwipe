@@ -188,7 +188,8 @@ function App() {
         r.userRatingCount,
         r.currentOpeningHours?.openNow ?? false,
         r.nationalPhoneNumber,
-        r.photos
+        r.photos,
+        r.distanceFromCenter || 0
       ));
 
       // Store original and filtered data
