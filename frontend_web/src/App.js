@@ -191,7 +191,7 @@ function App() {
       }
       
       const data = await response.json();
-
+      console.log("Fetched restaurants data:", data);
       // Map the restaurants 
       const mappedRestaurants = data.map(r => new Restaurant(
         r.id,
@@ -201,7 +201,11 @@ function App() {
         r.formattedAddress,
         r.generativeSummary?.overview?.text,
         r.googleMapsLinks?.placeUri,
-        r.reviews,
+        r.reviews?.map(review => ({
+          author: review.authorAttribution.displayName,
+          text: review.originalText.text,
+          rating: review.rating,
+        })) || [],
         r.websiteUri,
         r.userRatingCount,
         r.currentOpeningHours?.openNow ?? false,
