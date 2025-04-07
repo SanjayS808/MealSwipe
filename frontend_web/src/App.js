@@ -16,7 +16,7 @@ function App() {
   const [filteredRestaurants, setFilteredRestaurants] = useState([]);
   const [favoriteRestaurants, setFavoriteRestaurants] = useState([]);
   const [trashedRestaurants, setTrashedRestaurants] = useState([]);
-
+  const [ loggedIn, setLoggedIn ] = useState(false);
   const [minRating, setMinRating] = useState(0); // Default to 0 stars
   const [maxDistance, setMaxDistance] = useState(50); // Adjust the default value as needed
 
@@ -69,6 +69,7 @@ function App() {
       }
       return response.json();
     });
+    setLoggedIn(true);
     return response[0].userid;
   };
 
@@ -190,7 +191,7 @@ function App() {
       }
       
       const data = await response.json();
-
+      console.log("Fetched restaurants data:", data);
       // Map the restaurants 
       const mappedRestaurants = data.map(r => new Restaurant(
         r.id,
@@ -200,7 +201,11 @@ function App() {
         r.formattedAddress,
         r.generativeSummary?.overview?.text,
         r.googleMapsLinks?.placeUri,
-        r.reviews,
+        r.reviews?.map(review => ({
+          author: review.authorAttribution.displayName,
+          text: review.originalText.text,
+          rating: review.rating,
+        })) || [],
         r.websiteUri,
         r.userRatingCount,
         r.currentOpeningHours?.openNow ?? false,
@@ -403,17 +408,23 @@ function App() {
         padding: '.5em',
         margin: '.1em', 
         }}> 
-          <p style={{
-            fontSize: 'big',
+          <p
+          style={{
+            fontSize: '1.00rem',         // use a valid font size
             fontWeight: 'bold',
-            textDEcorationLine: 'none',
-            color:'white',
+            textDecoration: 'none',
+            color: 'white',
             textAlign: 'center',
-            textDecorationLine:'none',}}>
-          Login
+            margin: 10,                   // optional: prevents spacing that can push to new line
+            whiteSpace: 'nowrap',       // ensures all stays on one line
+          }}
+          >
+            {loggedIn ? `Welcome, ${user}` : 'Login'}
           </p>
         </div>  
       </a>
+
+      
       <Navigation
         clearFavorites={clearFavorites}
         clearTrashed={clearTrashed}

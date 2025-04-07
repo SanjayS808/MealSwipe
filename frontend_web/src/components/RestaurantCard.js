@@ -19,7 +19,12 @@ function RestaurantCard({ restaurant}) {
         <img src={restaurant.imageUrl} draggable="false" style={{ width: "100%", height: "100%", objectFit: "cover" }} alt={restaurant.name} />
       </div>
       <div className="card-content">
-        <h3>{restaurant.name}</h3>
+      <h3>
+          {restaurant.name.length > 30
+            ? restaurant.name.slice(0, 30) + '...'
+            : restaurant.name}
+        </h3>
+
         <h5> <MapPin size={14} className="icon"/> {restaurant.distanceFromUser} miles</h5>
         <div className="restaurant-details">
           <StarRating rating={restaurant.rating} />
@@ -32,7 +37,11 @@ function RestaurantCard({ restaurant}) {
           }
 
         </div>
-        <h5>{restaurant.address}</h5>
+        <h5>
+          {restaurant.address.length > 35
+            ? restaurant.address.slice(0, 35) + '...'
+            : restaurant.address}
+        </h5>
         <div className="card-links">
             <a href={restaurant.googleMapsLink} target="_blank" rel="noreferrer" className="icon-wrapper">
               <MapPin size={24} className="icon"/> {/* Google Maps Icon */}
