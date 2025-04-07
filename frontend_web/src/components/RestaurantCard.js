@@ -7,7 +7,7 @@ import { MapPin, Globe, Phone } from "lucide-react";
 
 
 
-function RestaurantCard({ restaurant}) {
+function RestaurantCard({ restaurant, showRestaurantModal}) {
 
 
   const modalStyles = {
@@ -48,10 +48,11 @@ function RestaurantCard({ restaurant}) {
   const [showModal, setShowModal] = useState(false);
   const handleClick = () => {
     console.log("Restaurant clicked:", restaurant);
+    showRestaurantModal(restaurant);
   };
 
   return (
-    <div className="card" onClick={onClick} style={{ cursor: "pointer" }}>
+    <div className="card" onClick={handleClick} style={{ cursor: "pointer" }}>
       <div className="card-image">
         <img src={restaurant.imageUrl} draggable="false" style={{ width: "100%", height: "100%", objectFit: "cover" }} alt={restaurant.name} />
       </div>
