@@ -2,31 +2,35 @@ import React from 'react';
 import { GoogleLogin } from '@react-oauth/google';
 import { jwtDecode } from 'jwt-decode';
 import { useNavigate } from 'react-router-dom';
-import { useCookies } from 'react-cookie';
-import { DEV_MODE, user } from '../config';
-import { useUser } from '../context/UserContext';
+import { DEV_MODE } from '../config'; // Assuming 'user' is not needed here
+import { useUser } from '../context/UserContext'; 
 
-const backendURL = DEV_MODE 
-  ? "http://localhost:5001"  
-  : "http://MealSw-Backe-k0cJtOkGFP3i-29432626.us-west-1.elb.amazonaws.com";
+const backendURL = DEV_MODE ? "http://localhost:5001" : "http://MealSw-Backe-k0cJtOkGFP3i-29432626.us-west-1.elb.amazonaws.com";
 
 const GoogleLoginButton = () => {
     const navigate = useNavigate();
     const { user, setUser } = useUser();
-    const [cookies, setCookie] = useCookies(['authToken']);
-    
+
     const responseMessage = async (response) => {
         console.log('Login Success:', response);
 
         try {
             const decoded = jwtDecode(response.credential);
-            
+
             const body = {
                 uname: decoded.name,
                 ubio: "Hi! I am new to MealSwipe.",
                 nswipe: 0,
                 email: decoded.email,
             };
+
+            const constUserInfo = {
+                name: decoded.name,
+                email: decoded.email,
+                bio: "Hi! I am new to MealSwipe.",
+                picture: decoded.picture,
+                nswipes: 0,
+            }
 
             let json_body = JSON.stringify(body);
 
@@ -38,15 +42,7 @@ const GoogleLoginButton = () => {
                 body: json_body,
             });
 
-            setCookie('authToken', response.credential, {
-                path: '/',
-                httpOnly: false,
-                secure: true,
-                sameSite: 'Strict',
-                maxAge: 3600,
-            });
-
-            setUser(body.uname);
+            setUser(constUserInfo); 
 
             navigate('/');
         } catch (decodeError) {
