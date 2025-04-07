@@ -16,7 +16,7 @@ function App() {
   const [filteredRestaurants, setFilteredRestaurants] = useState([]);
   const [favoriteRestaurants, setFavoriteRestaurants] = useState([]);
   const [trashedRestaurants, setTrashedRestaurants] = useState([]);
-  const [ loggedIn, setLoggedIn ] = useState(false);
+  const [loggedIn, setLoggedIn ] = useState(false);
   const [minRating, setMinRating] = useState(0); // Default to 0 stars
   const [maxDistance, setMaxDistance] = useState(50); // Adjust the default value as needed
 
@@ -435,6 +435,7 @@ function App() {
         trashedRestaurants={trashedRestaurants}
         loadFavorites={loadFavorites}
         loadTrashed = {loadTrashed}
+        loggedIn={loggedIn}
       />
       <button 
         style={{ 

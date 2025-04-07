@@ -8,7 +8,7 @@ import Login from "./pages/Login";
 import "./styles/navbar.css";
 import { CookiesProvider } from 'react-cookie';
 
-function Navigation({ backendData, likedRestaurants, trashedRestaurants ,handleSwipe, resetBackendData, clearFavorites, clearTrashed,loadFavorites, loadTrashed }) {
+function Navigation({ backendData, likedRestaurants, trashedRestaurants ,handleSwipe, resetBackendData, clearFavorites, clearTrashed,loadFavorites, loadTrashed ,loggedIn}) {
   return (
     <CookiesProvider>
         <Router>
@@ -17,9 +17,9 @@ function Navigation({ backendData, likedRestaurants, trashedRestaurants ,handleS
           </div>
 
           <Routes>
-            <Route path="/favorites" element={<FavoritesPage likedRestaurants={likedRestaurants} clearFavorites = {clearFavorites} loadFavorites = {loadFavorites}/>} />
+            <Route path="/favorites" element={<FavoritesPage likedRestaurants={likedRestaurants} clearFavorites = {clearFavorites} loadFavorites = {loadFavorites} loggedIn = {loggedIn}/>} />
             <Route path="/" element={<RestaurantList restaurants={backendData} onSwipe={handleSwipe} resetBackendData = {resetBackendData}/>} />
-            <Route path="/trashed" element={<TrashedPage trashedRestaurants={trashedRestaurants} clearTrashed = {clearTrashed} loadTrashed = {loadTrashed} />} />
+            <Route path="/trashed" element={<TrashedPage trashedRestaurants={trashedRestaurants} clearTrashed = {clearTrashed} loadTrashed = {loadTrashed} loggedIn = {loggedIn} />} />
             <Route path="/login" element={<Login />} />
           </Routes>
 
