@@ -448,7 +448,7 @@ function App() {
           position: 'absolute', 
           top: '10px', 
           right: '10px', 
-          zIndex: 10, 
+          zIndex: 1000, 
           background: `url(${process.env.PUBLIC_URL + '/filter.png'}) no-repeat center center`, 
           backgroundSize: 'cover',
           backgroundColor: 'white',

@@ -19,11 +19,10 @@ function Navigation({ backendData, likedRestaurants, trashedRestaurants ,handleS
       </div>
 
       <Routes>
-        <Route path="/favorites" element={<FavoritesPage likedRestaurants={likedRestaurants} clearFavorites={clearFavorites} />} />
-        <Route path="/" element={<RestaurantList restaurants={backendData} onSwipe={handleSwipe} resetBackendData={resetBackendData} />} />
-        <Route path="/trashed" element={<TrashedPage trashedRestaurants={trashedRestaurants} clearTrashed={clearTrashed} />} />
-        <Route path="/login" element={<Login />} />
-        <Route path="/profile" element={<ProfilePage/>}/>
+            <Route path="/favorites" element={<FavoritesPage likedRestaurants={likedRestaurants} clearFavorites = {clearFavorites} loadFavorites = {loadFavorites}/>} />
+            <Route path="/" element={<RestaurantList restaurants={backendData} onSwipe={handleSwipe} resetBackendData = {resetBackendData}/>} />
+            <Route path="/trashed" element={<TrashedPage trashedRestaurants={trashedRestaurants} clearTrashed = {clearTrashed} loadTrashed = {loadTrashed} />} />
+            <Route path="/login" element={<Login />} />
       </Routes>
 
       <nav className="bottomNav">
