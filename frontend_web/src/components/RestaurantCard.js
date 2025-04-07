@@ -7,14 +7,10 @@ import { MapPin, Globe, Phone } from "lucide-react";
 
 
 
-function RestaurantCard({ restaurant}) {
-
-  const handleClick = () => {
-    console.log("Restaurant clicked:", restaurant);
-  };
+function RestaurantCard({ restaurant, onClick }) {
 
   return (
-    <div className="card" onClick={handleClick} style={{ cursor: "pointer" }}>
+    <div className="card" onClick={onClick} style={{ cursor: "pointer" }}>
       <div className="card-image">
         <img src={restaurant.imageUrl} draggable="false" style={{ width: "100%", height: "100%", objectFit: "cover" }} alt={restaurant.name} />
       </div>
