@@ -21,6 +21,18 @@ const sanitize_text = (raw_text) => {
     return sanitizedString;
 };
 
+function calculateDistance(lat1, lng1, lat2, lng2) {
+    const R = 3958.8; // Earth's radius in miles
+    const dLat = (lat2 - lat1) * Math.PI / 180;
+    const dLng = (lng2 - lng1) * Math.PI / 180;
+    const a = 
+        Math.sin(dLat/2) * Math.sin(dLat/2) +
+        Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) * 
+        Math.sin(dLng/2) * Math.sin(dLng/2);
+    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+    return R * c; // Distance in miles
+}
+
 app.get("/api/serve/get-all-restaurants", (req, res) => {
     // Default maximum distance of 50 miles
     const maxDistance = parseFloat(req.query.maxDistance) || 50;
@@ -57,7 +69,33 @@ app.get("/api/serve/get-all-restaurants", (req, res) => {
     
         try {
             const restaurants = JSON.parse(response.body);
-            res.json(restaurants['places'] || []);
+            
+            // Add distance to each restaurant
+            const restaurantsWithDistance = (restaurants['places'] || []).map(place => {
+                // Check if the restaurant has location data
+                if (place.location && place.location.latitude && place.location.longitude) {
+                    const distance = calculateDistance(
+                        CENTER_LAT, 
+                        CENTER_LNG, 
+                        place.location.latitude, 
+                        place.location.longitude
+                    );
+                    
+                    // Add distance to restaurant object
+                    return {
+                        ...place,
+                        distanceFromCenter: parseFloat(distance.toFixed(1)) // Round to 1 decimal place
+                    };
+                }
+                
+                // If no location data, return restaurant with default distance
+                return {
+                    ...place,
+                    distanceFromCenter: null
+                };
+            });
+            
+            res.json(restaurantsWithDistance);
         } catch (parseError) {
             console.error("Error parsing JSON:", parseError);
             res.status(500).send("Error processing data");

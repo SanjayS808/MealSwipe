@@ -8,7 +8,7 @@ import ProfilePage from "./pages/ProfilePage";
 import "./styles/navbar.css";
 import LoginPic from "./components/LoginPic";
 
-function Navigation({ backendData, likedRestaurants, trashedRestaurants, handleSwipe, resetBackendData, clearFavorites, clearTrashed }) {
+function Navigation({ backendData, likedRestaurants, trashedRestaurants ,handleSwipe, resetBackendData, clearFavorites, clearTrashed,loadFavorites, loadTrashed }) {
   return (
     <div>
       <div style={{

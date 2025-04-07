@@ -1,8 +1,13 @@
-import React from "react";
+import React, {useEffect} from "react";
 
 import "./favorites.css"
 
-function FavoritesPage({ likedRestaurants, clearFavorites }) {
+function FavoritesPage({ likedRestaurants, clearFavorites, loadFavorites }) {
+  useEffect(() => {
+    console.log("Loading favorites...");
+    loadFavorites();
+  }
+  , []); 
   return (
     <div className="favoritesPage">
       <h2>Liked Restaurants</h2>

@@ -1,7 +1,9 @@
+import Review from "./Review.js";
+
 class Restaurant{
     constructor(id,name,rating,
                 price,address, generativeSummary, googleMapsLink, 
-                reviews,website, ratingsCount ,isOpen, 
+                reviews = [],website, ratingsCount ,isOpen, 
                 phoneNumber, photos, distanceFromUser = 10.0) {
         this.id = id;
         this.name = name;
@@ -19,6 +21,15 @@ class Restaurant{
         this.photos = photos;
         this.distanceFromUser = distanceFromUser;
     }
+    addReview(author, text, rating) {
+        const review = {
+          author,
+          text,
+          rating,
+          
+        };
+        this.reviews.push(review);
+      }
 }
 
 export default Restaurant;
