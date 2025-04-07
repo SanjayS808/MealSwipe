@@ -26,26 +26,42 @@ function App() {
   const [pendingMaxDistance, setPendingMaxDistance] = useState(50);
   const [pendingMinRating, setPendingMinRating] = useState(0);
   const [pendingPriceLevels, setPendingPriceLevels] = useState([]);
-  
+  const [uid,setUid] = useState(null);
   const [showFilterPage, setShowFilterPage] = useState(false);
   const { user, setUser } = useUser();  
 
   useEffect(() => {
-    const onMount = () => {
-      console.log("Application is mounted.")
-      console.log(user)
-      fetchRestaurants(); 
-      loadFavorites();
-      loadTrashed();
+    const onMount = async () => {
+      console.log("Application is mounted.");
+      console.log("User:", user);
+  
+      try {
+        let uid = await fetchuid(); 
+        console.log("Fetched UID:", uid);
+        fetchRestaurants();
+        if (uid) {
+          setUid(uid);
+          
+        } else {
+          console.warn("No UID retrieved. Skipping data fetch.");
+        }
+      } catch (error) {
+        console.error("Error fetching UID:", error);
+      }
     };
-
-    onMount();
+  
+    onMount(); 
+  
     return () => {
-      console.log("App component is unmounting.")
-    }
+      console.log("App component is unmounting.");
+    };
   }, [user]);
 
   const fetchuid = async () => {
+    if (user === null || user === undefined) {
+      console.error("User is not logged in. Cannot fetch user ID.");
+      return null;
+    }
     let response = await fetch(`${backendURL}/api/serve/get-userid-with-uname?uname=${user}`)
     .then(response => {
       if(!response.ok) {
@@ -68,9 +84,10 @@ function App() {
   }
 
   const loadFavorites = async () => {
-    if(favoriteRestaurants.length > 0) {return;} // We do not want to do anything.
+
+    
     if(user === null) {return;} // We do not want to do anything.
-    let userid = await fetchuid();
+    let userid = uid;
     
     fetch(`${backendURL}/api/serve/get-user-favorite-restaurants?uid=${userid}`)
     .then(response => {
@@ -404,6 +421,7 @@ function App() {
         handleSwipe={handleSwipe}
         likedRestaurants={favoriteRestaurants}
         trashedRestaurants={trashedRestaurants}
+        loadFavorites={loadFavorites}
       />
       <button 
         style={{ 
@@ -429,6 +447,7 @@ function App() {
         applyFilters={applyFilters}
         onClose={() => setShowFilterPage(false)}
         isOpen={showFilterPage}
+        
       />
     </div>
   );
