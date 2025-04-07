@@ -114,7 +114,7 @@ function App() {
   
   const loadTrashed = async () => {
     if(user === null) {return;} // We do not want to do anything.
-    let userid = await fetchuid();
+    let userid = uid;
     
     fetch(`${backendURL}/api/serve/get-user-trashed-restaurant?uid=${userid}`)
     .then(response => {
@@ -422,6 +422,7 @@ function App() {
         likedRestaurants={favoriteRestaurants}
         trashedRestaurants={trashedRestaurants}
         loadFavorites={loadFavorites}
+        loadTrashed = {loadTrashed}
       />
       <button 
         style={{ 
