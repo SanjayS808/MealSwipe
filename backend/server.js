@@ -275,8 +275,9 @@ app.post("/api/serve/add-user-trashed-restaurant", async (req, res) => {
     try {
         // If not add, user.
         const get_result = await pool.query(get_query);
+        console.log(get_result.rows);
          if(get_result.rows.length != 0) {
-            res.status(200).json({warning: `Username ${req.body.rname} already exists.`});
+             res.status(200).json({warning: `Swipe with ${req.body.rname} already exists.`});
             return;
         }
         const add_result = await pool.query(add_query);
@@ -422,6 +423,50 @@ app.delete("/api/serve/delete-favorite-swipe-with-uid", async (req, res) => {
     }
 });
 
+// Get and update numswipes.
+
+app.get("/api/serve/get-swipes", async (req, res) => {
+    if(req.query.uid === undefined) {
+        console.error('Could not fetch invalid userid.');
+        res.status(400).json({error: 'Could not fetch undefined username.'});
+        return;
+    }
+
+    console.log(req.query.uid)
+
+    const get_query = `SELECT numswipes FROM Users WHERE userid=${req.query.uid};`
+    try {
+        const result = await pool.query(get_query);
+        if(!result.rows) {
+            res.status(400).json({error: `Could not find information with uid ${req.query.uid}`})
+        }
+        res.json(result.rows);
+    } catch (err) {
+        console.error('Error fetching users:', err);
+        res.status(500).json({ error: 'Internal Server Error' });
+    }
+});
+
+app.post("/api/serve/increment-swipes", async (req, res) => {
+    // Check and insert all information needed for creating new user.
+    const hasNullValue = (array) => array.some(element => element === undefined);
+    const uinfo = [req.body.uid, req.body.rid];
+    if(hasNullValue(uinfo)) {
+        console.error('Could not create user. User information is missing.');
+        res.status(400).json({error: 'Could not create user. User information is missing.'});
+        return;
+    }
+
+    const update_query = `UPDATE users SET numswipes = numswipes +1 WHERE userid=${req.body.uid};`;
+    try {
+        const result = await pool.query(update_query);
+        res.status(200).json({transactionComplete: "Added number of swipes to 1."});
+    } catch(err) {
+        console.error(`Error deleting user's favorite swipes: ${err}`);
+        res.status(500).json({error: 'Internal Server Error'});
+    }
+
+});
 
 app.get("/api", (req, res) => {
     res.json({"restaurants": ["resOne", "resTwo"]});

@@ -1,9 +1,10 @@
-import React, { createContext, useState, useEffect, useContext } from 'react';
+import React, { createContext, useState, useEffect, useContext, useRef } from 'react';
 
 const UserContext = createContext();
 
 export const UserProvider = ({ children }) => {
     const [user, setUser] = useState(null);
+    const swipesRef = useRef(0);
 
     // Load user data from localStorage on component mount
     useEffect(() => {
@@ -22,9 +23,28 @@ export const UserProvider = ({ children }) => {
         }
     }, [user]);
 
+    const updateName = (newName) => {
+        setUser((prev) => ({ ...prev, name: newName }));
+    };
+
+    const updateEmail = (newEmail) => {
+        setUser((prev) => ({ ...prev, email: newEmail }));
+    };
+
+    const incrementSwipes = () => {
+        swipesRef.current += 1;
+        localStorage.setItem('swipes', swipesRef.current);
+      };
+
+    const getSwipes = () => swipesRef.current;
+
     const contextValue = {
         user,
         setUser,
+        updateName,
+        updateEmail,
+        incrementSwipes,
+        getSwipes,
     };
 
     return (

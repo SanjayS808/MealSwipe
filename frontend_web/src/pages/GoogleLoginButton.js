@@ -26,7 +26,10 @@ const GoogleLoginButton = () => {
 
             const constUserInfo = {
                 name: decoded.name,
+                email: decoded.email,
+                bio: "Hi! I am new to MealSwipe.",
                 picture: decoded.picture,
+                nswipes: 0,
             }
 
             let json_body = JSON.stringify(body);

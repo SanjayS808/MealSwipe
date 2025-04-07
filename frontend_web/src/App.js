@@ -29,14 +29,13 @@ function App() {
   const [pendingPriceLevels, setPendingPriceLevels] = useState([]);
   
   const [showFilterPage, setShowFilterPage] = useState(false);
-  const { user, setUser } = useUser();  
+  const { user, setUser, incrementSwipes } = useUser();  
 
   const navigate = useNavigate();
 
   useEffect(() => {
     const onMount = () => {
       console.log("Application is mounted.")
-      console.log(user)
       fetchRestaurants(); 
       loadFavorites();
       loadTrashed();
@@ -47,14 +46,6 @@ function App() {
       console.log("App component is unmounting.")
     }
   }, [user]);
-
-  const handleLoginClick = () => {
-    if (user) {
-      navigate('/profile')
-    } else {
-      navigate('/login'); // If user is logged out, navigate to login
-    }
-  };
 
   const fetchuid = async () => {
     let response = await fetch(`${backendURL}/api/serve/get-userid-with-uname?uname=${user.name}`)
@@ -282,7 +273,7 @@ function App() {
     })
     .then(response => response.json())
     .then(data => {
-      if(data.ok()) {
+      if(data) {
         console.log("Restaurant succesfully added.");
       }
     })
@@ -311,13 +302,29 @@ function App() {
     })
     .then(response => response.json())
     .then(data => {
-      if(data.ok()) {
+      if(data) {
         console.log("Restaurant succesfully added.");
       }
     })
     .catch((error) => {
       console.log("Internal error. Could not add restaurant.")
     })
+
+    fetch(`${backendURL}/api/serve/increment-swipes`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: json_body_data
+    })
+    .then(response => {
+      if(response) {
+        console.log("successfully added swipe.")
+      }
+    })
+    .catch((error) => {
+      console.log("Internal error. Could not add swipe" + error)
+    });
   };
 
   const toggleTrashed = async (restaurant) => {
@@ -342,12 +349,12 @@ function App() {
     })
     .then(response => response.json())
     .then(data => {
-      if(data.ok()) {
+      if(data) {
         console.log("Restaurant succesfully added.");
       }
     })
     .catch((error) => {
-      console.log("Internal error. Could not add restaurant.")
+      console.log("Internal error. Could not add restaurant." + error)
     })
 
     if(user === null) {return ;} // We do not want to load API if we have no user.
@@ -371,19 +378,37 @@ function App() {
     })
     .then(response => response.json())
     .then(data => {
-      if(data.ok()) {
+      if(data) {
         console.log("Restaurant succesfully added.");
       }
     })
     .catch((error) => {
       console.log("Internal error. Could not add restaurant.")
     })
+
+    fetch(`${backendURL}/api/serve/increment-swipes`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: json_body_data
+    })
+    .then(response => {
+      if(response) {
+        console.log("successfully added swipe.")
+      }
+    })
+    .catch((error) => {
+      console.log("Internal error. Could not add swipe" + error)
+    });
+
+    incrementSwipes();
   };
 
 
   return (
     <div className="App">
-      <div
+      {/* <div
         onClick={handleLoginClick} // Use onClick instead of href
         style={{
           position: 'absolute',
@@ -426,7 +451,7 @@ function App() {
             </p>
           )}
         </div>
-      </div>
+    </div> */}
       <Navigation
         clearFavorites={clearFavorites}
         clearTrashed={clearTrashed}

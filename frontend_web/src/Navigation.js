@@ -6,11 +6,15 @@ import TrashedPage from "./pages/TrashedPage";
 import Login from "./pages/Login";
 import ProfilePage from "./pages/ProfilePage";
 import "./styles/navbar.css";
+import LoginPic from "./components/LoginPic";
 
 function Navigation({ backendData, likedRestaurants, trashedRestaurants, handleSwipe, resetBackendData, clearFavorites, clearTrashed }) {
   return (
     <div>
-      <div className="header">
+      <div style={{
+        zIndex: 100,
+      }} className="header">
+        <LoginPic></LoginPic>
         <h1>mealswipe!</h1>
       </div>
 
@@ -23,9 +27,9 @@ function Navigation({ backendData, likedRestaurants, trashedRestaurants, handleS
       </Routes>
 
       <nav className="bottomNav">
-        <Link to="/favorites">Favorites</Link> |
+        <Link to="/trashed">Trashed</Link>|
         <Link to="/">Home</Link> |
-        <Link to="/trashed">Trashed</Link>
+        <Link to="/favorites">Favorites</Link> 
       </nav>
     </div>
   );

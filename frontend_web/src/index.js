@@ -14,13 +14,13 @@ const google_client_id = process.env.REACT_APP_GOOGLE_WEB_CLIENT_ID;
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   <BrowserRouter>
-  <UserProvider>
   <GoogleOAuthProvider clientId={google_client_id}>
   <React.StrictMode>
+  <UserProvider>
     <App />
+  </UserProvider>
   </React.StrictMode>
   </GoogleOAuthProvider>
-  </UserProvider>
   </BrowserRouter>
 );
 
