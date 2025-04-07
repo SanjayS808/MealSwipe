@@ -16,7 +16,7 @@ function App() {
   const [filteredRestaurants, setFilteredRestaurants] = useState([]);
   const [favoriteRestaurants, setFavoriteRestaurants] = useState([]);
   const [trashedRestaurants, setTrashedRestaurants] = useState([]);
-
+  const [ loggedIn, setLoggedIn ] = useState(false);
   const [minRating, setMinRating] = useState(0); // Default to 0 stars
   const [maxDistance, setMaxDistance] = useState(50); // Adjust the default value as needed
 
@@ -26,26 +26,42 @@ function App() {
   const [pendingMaxDistance, setPendingMaxDistance] = useState(50);
   const [pendingMinRating, setPendingMinRating] = useState(0);
   const [pendingPriceLevels, setPendingPriceLevels] = useState([]);
-  
+  const [uid,setUid] = useState(null);
   const [showFilterPage, setShowFilterPage] = useState(false);
   const { user, setUser } = useUser();  
 
   useEffect(() => {
-    const onMount = () => {
-      console.log("Application is mounted.")
-      console.log(user)
-      fetchRestaurants(); 
-      loadFavorites();
-      loadTrashed();
+    const onMount = async () => {
+      console.log("Application is mounted.");
+      console.log("User:", user);
+  
+      try {
+        let uid = await fetchuid(); 
+        console.log("Fetched UID:", uid);
+        fetchRestaurants();
+        if (uid) {
+          setUid(uid);
+          
+        } else {
+          console.warn("No UID retrieved. Skipping data fetch.");
+        }
+      } catch (error) {
+        console.error("Error fetching UID:", error);
+      }
     };
-
-    onMount();
+  
+    onMount(); 
+  
     return () => {
-      console.log("App component is unmounting.")
-    }
+      console.log("App component is unmounting.");
+    };
   }, [user]);
 
   const fetchuid = async () => {
+    if (user === null || user === undefined) {
+      console.error("User is not logged in. Cannot fetch user ID.");
+      return null;
+    }
     let response = await fetch(`${backendURL}/api/serve/get-userid-with-uname?uname=${user}`)
     .then(response => {
       if(!response.ok) {
@@ -53,6 +69,7 @@ function App() {
       }
       return response.json();
     });
+    setLoggedIn(true);
     return response[0].userid;
   };
 
@@ -68,10 +85,11 @@ function App() {
   }
 
   const loadFavorites = async () => {
-    if(favoriteRestaurants.length > 0) {return;} // We do not want to do anything.
+
+    
     if(user === null) {return;} // We do not want to do anything.
-    let userid = await fetchuid();
-  
+    let userid = uid;
+    
     fetch(`${backendURL}/api/serve/get-user-favorite-restaurants?uid=${userid}`)
     .then(response => {
       if(!response.ok) {
@@ -97,7 +115,7 @@ function App() {
   
   const loadTrashed = async () => {
     if(user === null) {return;} // We do not want to do anything.
-    let userid = await fetchuid();
+    let userid = uid;
     
     fetch(`${backendURL}/api/serve/get-user-trashed-restaurant?uid=${userid}`)
     .then(response => {
@@ -173,7 +191,7 @@ function App() {
       }
       
       const data = await response.json();
-
+      console.log("Fetched restaurants data:", data);
       // Map the restaurants 
       const mappedRestaurants = data.map(r => new Restaurant(
         r.id,
@@ -183,12 +201,17 @@ function App() {
         r.formattedAddress,
         r.generativeSummary?.overview?.text,
         r.googleMapsLinks?.placeUri,
-        r.reviews,
+        r.reviews?.map(review => ({
+          author: review.authorAttribution.displayName,
+          text: review.originalText.text,
+          rating: review.rating,
+        })) || [],
         r.websiteUri,
         r.userRatingCount,
         r.currentOpeningHours?.openNow ?? false,
         r.nationalPhoneNumber,
-        r.photos
+        r.photos,
+        r.distanceFromCenter || 0
       ));
 
       // Store original and filtered data
@@ -372,6 +395,7 @@ function App() {
 
   return (
     <div className="App">
+      
        <a href="/login" style={{
         position: 'absolute', 
         top: '10px', 
@@ -384,17 +408,23 @@ function App() {
         padding: '.5em',
         margin: '.1em', 
         }}> 
-          <p style={{
-            fontSize: 'big',
+          <p
+          style={{
+            fontSize: '1.00rem',         // use a valid font size
             fontWeight: 'bold',
-            textDEcorationLine: 'none',
-            color:'white',
+            textDecoration: 'none',
+            color: 'white',
             textAlign: 'center',
-            textDecorationLine:'none',}}>
-          Login
+            margin: 10,                   // optional: prevents spacing that can push to new line
+            whiteSpace: 'nowrap',       // ensures all stays on one line
+          }}
+          >
+            {loggedIn ? `Welcome, ${user}` : 'Login'}
           </p>
         </div>  
       </a>
+
+      
       <Navigation
         clearFavorites={clearFavorites}
         clearTrashed={clearTrashed}
@@ -403,6 +433,8 @@ function App() {
         handleSwipe={handleSwipe}
         likedRestaurants={favoriteRestaurants}
         trashedRestaurants={trashedRestaurants}
+        loadFavorites={loadFavorites}
+        loadTrashed = {loadTrashed}
       />
       <button 
         style={{ 
@@ -428,6 +460,7 @@ function App() {
         applyFilters={applyFilters}
         onClose={() => setShowFilterPage(false)}
         isOpen={showFilterPage}
+        
       />
     </div>
   );
