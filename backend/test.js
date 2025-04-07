@@ -166,7 +166,7 @@ describe('API Endpoints', () => {
       expect(pool.query).not.toHaveBeenCalled();
     });
 
-    it('should return error when username already exists', async () => {
+    it('should return a warming and 200 when username already exists', async () => {
       // Mock checking if user exists (returns a user)
       pool.query.mockResolvedValueOnce({
         rows: [{ userid: 123, name: 'existinguser' }]
@@ -184,7 +184,7 @@ describe('API Endpoints', () => {
         .post('/api/serve/add-user')
         .send(userData);
 
-        expect(response.status).toBe(400);
+        expect(response.status).toBe(200);
         expect(response.body).toEqual({error: 'User already exists.'});
     });
   });

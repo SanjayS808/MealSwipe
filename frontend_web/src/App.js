@@ -7,6 +7,7 @@ import "./App.css";
 import "./components/FilterPage.css";
 import {DEV_MODE} from "./config"
 import { UserProvider, useUser } from './context/UserContext';
+import { useNavigate } from "react-router-dom";
 
 const backendURL = (DEV_MODE) ? "http://localhost:5001"  : "http://MealSw-Backe-k0cJtOkGFP3i-29432626.us-west-1.elb.amazonaws.com";
 
@@ -16,7 +17,7 @@ function App() {
   const [filteredRestaurants, setFilteredRestaurants] = useState([]);
   const [favoriteRestaurants, setFavoriteRestaurants] = useState([]);
   const [trashedRestaurants, setTrashedRestaurants] = useState([]);
-  const [ loggedIn, setLoggedIn ] = useState(false);
+  const [loggedIn, setLoggedIn ] = useState(false);
   const [minRating, setMinRating] = useState(0); // Default to 0 stars
   const [maxDistance, setMaxDistance] = useState(50); // Adjust the default value as needed
 
@@ -28,7 +29,9 @@ function App() {
   const [pendingPriceLevels, setPendingPriceLevels] = useState([]);
   const [uid,setUid] = useState(null);
   const [showFilterPage, setShowFilterPage] = useState(false);
-  const { user, setUser } = useUser();  
+  const { user, setUser, incrementSwipes } = useUser();  
+
+  const navigate = useNavigate();
 
   useEffect(() => {
     const onMount = async () => {
@@ -62,7 +65,7 @@ function App() {
       console.error("User is not logged in. Cannot fetch user ID.");
       return null;
     }
-    let response = await fetch(`${backendURL}/api/serve/get-userid-with-uname?uname=${user}`)
+    let response = await fetch(`${backendURL}/api/serve/get-userid-with-uname?uname=${user.name}`)
     .then(response => {
       if(!response.ok) {
         throw new Error("Backend error. Failed to fetch user information.");
@@ -294,7 +297,7 @@ function App() {
     })
     .then(response => response.json())
     .then(data => {
-      if(data.ok()) {
+      if(data) {
         console.log("Restaurant succesfully added.");
       }
     })
@@ -323,13 +326,29 @@ function App() {
     })
     .then(response => response.json())
     .then(data => {
-      if(data.ok()) {
+      if(data) {
         console.log("Restaurant succesfully added.");
       }
     })
     .catch((error) => {
       console.log("Internal error. Could not add restaurant.")
     })
+
+    fetch(`${backendURL}/api/serve/increment-swipes`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: json_body_data
+    })
+    .then(response => {
+      if(response) {
+        console.log("successfully added swipe.")
+      }
+    })
+    .catch((error) => {
+      console.log("Internal error. Could not add swipe" + error)
+    });
   };
 
   const toggleTrashed = async (restaurant) => {
@@ -354,12 +373,12 @@ function App() {
     })
     .then(response => response.json())
     .then(data => {
-      if(data.ok()) {
+      if(data) {
         console.log("Restaurant succesfully added.");
       }
     })
     .catch((error) => {
-      console.log("Internal error. Could not add restaurant.")
+      console.log("Internal error. Could not add restaurant." + error)
     })
 
     if(user === null) {return ;} // We do not want to load API if we have no user.
@@ -383,48 +402,36 @@ function App() {
     })
     .then(response => response.json())
     .then(data => {
-      if(data.ok()) {
+      if(data) {
         console.log("Restaurant succesfully added.");
       }
     })
     .catch((error) => {
       console.log("Internal error. Could not add restaurant.")
     })
+
+    fetch(`${backendURL}/api/serve/increment-swipes`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: json_body_data
+    })
+    .then(response => {
+      if(response) {
+        console.log("successfully added swipe.")
+      }
+    })
+    .catch((error) => {
+      console.log("Internal error. Could not add swipe" + error)
+    });
+
+    incrementSwipes();
   };
 
 
   return (
     <div className="App">
-      
-       <a href="/login" style={{
-        position: 'absolute', 
-        top: '10px', 
-        left: '10px', 
-        zIndex: 10, 
-       }}>
-        <div style={{
-        width: '50px', 
-        height: '50px',
-        padding: '.5em',
-        margin: '.1em', 
-        }}> 
-          <p
-          style={{
-            fontSize: '1.00rem',         // use a valid font size
-            fontWeight: 'bold',
-            textDecoration: 'none',
-            color: 'white',
-            textAlign: 'center',
-            margin: 10,                   // optional: prevents spacing that can push to new line
-            whiteSpace: 'nowrap',       // ensures all stays on one line
-          }}
-          >
-            {loggedIn ? `Welcome, ${user}` : 'Login'}
-          </p>
-        </div>  
-      </a>
-
-      
       <Navigation
         clearFavorites={clearFavorites}
         clearTrashed={clearTrashed}
@@ -435,13 +442,14 @@ function App() {
         trashedRestaurants={trashedRestaurants}
         loadFavorites={loadFavorites}
         loadTrashed = {loadTrashed}
+        loggedIn={loggedIn}
       />
       <button 
         style={{ 
           position: 'absolute', 
           top: '10px', 
           right: '10px', 
-          zIndex: 10, 
+          zIndex: 1000, 
           background: `url(${process.env.PUBLIC_URL + '/filter.png'}) no-repeat center center`, 
           backgroundSize: 'cover',
           backgroundColor: 'white',
