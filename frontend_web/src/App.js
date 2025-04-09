@@ -88,34 +88,95 @@ function App() {
   }
 
   const loadFavorites = async () => {
-
+    if (user === null) { 
+      console.log("No user logged in, can't load favorites");
+      setFavoriteRestaurants([]);
+      return Promise.resolve();
+    }
     
-    if(user === null) {return;} // We do not want to do anything.
-    let userid = uid;
-    
-    fetch(`${backendURL}/api/serve/get-user-favorite-restaurants?uid=${userid}`)
-    .then(response => {
-      if(!response.ok) {
-        throw new Error("Internal error. Failed to fetch swipe information.");
+    try {
+      let userid = uid;
+      if (!userid) {
+        try {
+          userid = await fetchuid();
+          if (!userid) {
+            console.error("Failed to get user ID");
+            setFavoriteRestaurants([]);
+            return Promise.resolve();
+          }
+        } catch (error) {
+          console.error("Error fetching user ID:", error);
+          return Promise.reject(error);
+        }
       }
-      return response.json();
-    })
-    .then(data => {
-      if(!Object.keys(data).length){
-        // No data found for user. Set local storage empty.
+      
+      console.log(`Fetching favorites for user ID: ${userid}`);
+      const response = await fetch(`${backendURL}/api/serve/get-user-favorite-restaurants?uid=${userid}`);
+      
+      if (!response.ok) {
+        throw new Error(`Failed to fetch favorite restaurants. Status: ${response.status}`);
+      }
+      
+      const favoritesData = await response.json();
+      console.log("Raw favorites data:", favoritesData);
+      
+      if (!Array.isArray(favoritesData) || favoritesData.length === 0) {
+        console.log("No favorites found");
         setFavoriteRestaurants([]);
-      } else {
-        setFavoriteRestaurants([]);
-        data.forEach((result) => {
-          let restaurant_info = fetchRestaurantInfo(result.placeid);
-          restaurant_info.then(result => {
-            setFavoriteRestaurants(prevSwipes => [...prevSwipes, result[0].name])
-          })
+        return Promise.resolve();
+      }
+      
+      // Get complete restaurant info for each favorite
+      const favoriteDetails = await Promise.all(
+        favoritesData.map(async (favorite) => {
+          try {
+            const placeid = favorite.placeid || favorite.rid;
+            if (!placeid) return null;
+            
+            console.log(`Fetching details for restaurant ID: ${placeid}`);
+            const restaurantInfo = await fetchRestaurantInfo(placeid);
+            console.log(`Restaurant info for ${placeid}:`, restaurantInfo);
+            
+            if (!restaurantInfo || !restaurantInfo[0]) return null;
+            
+            const restaurant = restaurantInfo[0];
+            
+            // Create a Restaurant object to maintain consistency with the rest of the app
+            return new Restaurant(
+              placeid,
+              restaurant.rname || restaurant.name || "Unknown Restaurant",
+              restaurant.rating || 0,
+              restaurant.price || "PRICE_LEVEL_MODERATE",
+              restaurant.address || restaurant.formattedAddress || "Address not available",
+              null, // generativeSummary
+              restaurant.gmapurl || null, // googleMapsLink
+              [], // reviews
+              restaurant.weburl || null, // website
+              0, // ratingsCount
+              false, // isOpen
+              null, // phoneNumber
+              null, // photos
+              0 // distanceFromUser
+            );
+          } catch (error) {
+            console.error(`Error fetching details for restaurant ${favorite.placeid}:`, error);
+            return null;
+          }
         })
-      }
-    });
+      );
+      
+      // Filter out any null values from failed fetches
+      const validFavorites = favoriteDetails.filter(item => item !== null);
+      console.log("Processed favorites with full details:", validFavorites);
+      
+      setFavoriteRestaurants(validFavorites);
+      return Promise.resolve();
+    } catch (error) {
+      console.error("Error loading favorites:", error);
+      setFavoriteRestaurants([]);
+      return Promise.reject(error);
+    }
   };
-  
   const loadTrashed = async () => {
     if(user === null) {return;} // We do not want to do anything.
     let userid = uid;

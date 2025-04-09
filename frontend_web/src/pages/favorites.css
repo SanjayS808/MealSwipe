@@ -1,3 +1,131 @@
-.favoritesPage{
-    padding-top: 120px;
-}
+.favoritesPage {
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+  
+  .favoritesPage h2 {
+    margin-bottom: 20px;
+    color: #333;
+  }
+  
+  .favoritesContainer {
+    width: 100%;
+    height: calc(100vh - 150px);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    overflow-y: auto;
+  }
+  
+  .favoritesGrid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 20px;
+    width: 100%;
+    padding: 10px;
+  }
+  
+  .favoriteCard {
+    background: #fff;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    overflow: hidden;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+  }
+  
+  .favoriteCard:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 6px 16px rgba(0,0,0,0.15);
+  }
+  
+  .imageContainer {
+    width: 100%;
+    height: 180px;
+    position: relative;
+    background-color: #f0f0f0;
+  }
+  
+  .restaurantImage {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  
+  .restaurantImagePlaceholder {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #999;
+    font-style: italic;
+    background-color: #f0f0f0;
+  }
+  
+  .restaurantInfo {
+    padding: 15px;
+  }
+  
+  .restaurantInfo h3 {
+    margin: 0 0 10px;
+    font-size: 18px;
+    color: #333;
+  }
+  
+  .restaurant-details {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 8px;
+  }
+  
+  .address {
+    color: #666;
+    font-size: 14px;
+    margin-bottom: 8px;
+  }
+  
+  .rating {
+    font-weight: bold;
+    color: #f8b400;
+    margin: 0;
+  }
+  
+  .price {
+    font-weight: bold;
+    color: #2e9c5a;
+    margin: 0;
+  }
+  
+  .clearButton {
+    margin-top: 20px;
+    padding: 10px 20px;
+    background-color: #ff6b6b;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: bold;
+    transition: background-color 0.3s ease;
+  }
+  
+  .clearButton:hover {
+    background-color: #ff5252;
+  }
+  
+  @media (max-width: 768px) {
+    .favoritesGrid {
+      grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    }
+  }
+  
+  @media (max-width: 480px) {
+    .favoritesGrid {
+      grid-template-columns: 1fr;
+    }
+  }
