@@ -8,6 +8,8 @@ import "./components/FilterPage.css";
 import {DEV_MODE} from "./config"
 import { UserProvider, useUser } from './context/UserContext';
 import { useNavigate } from "react-router-dom";
+import { Filter } from "lucide-react";
+import { motion } from "framer-motion";
 
 const backendURL = (DEV_MODE) ? "http://localhost:5001"  : "http://MealSw-Backe-k0cJtOkGFP3i-29432626.us-west-1.elb.amazonaws.com";
 
@@ -429,6 +431,26 @@ function App() {
     incrementSwipes();
   };
 
+  const styles = {
+    button: {
+      position: "absolute",
+      zIndex: "10",
+      top: "15px",
+      right: "10px",
+      zIndex: 1000,
+      width: "55px",
+      height: "55px",
+      borderRadius: "50%",
+      backgroundColor: "#333", // Tailwind's bg-neutral-800
+      border: "2px solid white",
+      display: "flex",
+      alignItems: "center",
+      justifyContent: "center",
+      transition: "border-color 0.4s ease, background-color 0.4s ease",
+      cursor: "pointer",
+    },
+  }
+
 
   return (
     <div className="App">
@@ -444,22 +466,20 @@ function App() {
         loadTrashed = {loadTrashed}
         loggedIn={loggedIn}
       />
-      <button 
-        style={{ 
-          position: 'absolute', 
-          top: '10px', 
-          right: '10px', 
-          zIndex: 1000, 
-          background: `url(${process.env.PUBLIC_URL + '/filter.png'}) no-repeat center center`, 
-          backgroundSize: 'cover',
-          backgroundColor: 'white',
-          borderRadius: '50%',  
-          border: 'none',
-          width: '50px', 
-          height: '50px' 
-        }} 
+      <motion.button
+        whileHover={{
+          scale: 1.1,
+          rotate: 10,
+          borderColor: "#fff", // Tailwind sky-400
+          backgroundColor: "#3c3c3c", // darker variant
+        }}
+        whileTap={{ scale: 0.95 }}
         onClick={() => setShowFilterPage(true)}
-      />
+        style={styles.button}
+        aria-label="Open Filter"
+        >
+         <Filter size={24} color="#ffffff" />
+      </motion.button>
       <FilterPage
         maxDistance={pendingMaxDistance}
         setMaxDistance={setPendingMaxDistance}

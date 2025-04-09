@@ -47,7 +47,7 @@ const LoginPic = () => {
           />
         ) : (
           <p style={{
-            fontSize: 'big',
+            fontSize: '0.7em',
             fontWeight: 'bold',
             color: 'white',
             textAlign: 'center',
