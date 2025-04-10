@@ -88,63 +88,80 @@ function App() {
     });
     return response;
   }
-
   const loadFavorites = async () => {
-
-    
-    if(user === null) {return;} // We do not want to do anything.
+    if (user === null) return;
+  
     let userid = uid;
-    
-    fetch(`${backendURL}/api/serve/get-user-favorite-restaurants?uid=${userid}`)
-    .then(response => {
-      if(!response.ok) {
+  
+    try {
+      const response = await fetch(`${backendURL}/api/serve/get-user-favorite-restaurants?uid=${userid}`);
+      
+      if (!response.ok) {
         throw new Error("Internal error. Failed to fetch swipe information.");
       }
-      return response.json();
-    })
-    .then(data => {
-      if(!Object.keys(data).length){
-        // No data found for user. Set local storage empty.
+  
+      const data = await response.json();
+  
+      if (!Object.keys(data).length) {
         setFavoriteRestaurants([]);
-      } else {
-        setFavoriteRestaurants([]);
-        data.forEach((result) => {
-          let restaurant_info = fetchRestaurantInfo(result.placeid);
-          restaurant_info.then(result => {
-            setFavoriteRestaurants(prevSwipes => [...prevSwipes, result[0].name])
-          })
-        })
+        return;
       }
-    });
+  
+      // Map to promises
+      const restaurantInfoPromises = data.map((result) => fetchRestaurantInfo(result.placeid));
+  
+      // Wait for all to resolve
+      const restaurantInfoResults = await Promise.all(restaurantInfoPromises);
+  
+      // Extract names
+      const favoritesTEMP = restaurantInfoResults.map(result => result[0].name);
+  
+      // Set state
+      setFavoriteRestaurants(favoritesTEMP);
+  
+      console.log("Favorites: ", favoritesTEMP);
+    } catch (error) {
+      console.error("Error loading favorites:", error);
+    }
   };
   
   const loadTrashed = async () => {
-    if(user === null) {return;} // We do not want to do anything.
-    let userid = uid;
-    
-    fetch(`${backendURL}/api/serve/get-user-trashed-restaurant?uid=${userid}`)
-    .then(response => {
-      if(!response.ok) {
+    if (user === null) return;
+  
+    const userid = uid;
+  
+    try {
+      const response = await fetch(`${backendURL}/api/serve/get-user-trashed-restaurant?uid=${userid}`);
+  
+      if (!response.ok) {
         throw new Error("Internal error. Failed to fetch swipe information.");
       }
-      return response.json();
-    })
-    .then(data => {
-      if(!Object.keys(data).length){
-        // No data found for user. Set local storage empty.
-        // console.log("No restaurants swiped from user.")
+  
+      const data = await response.json();
+  
+      if (!Object.keys(data).length) {
         setTrashedRestaurants([]);
-      } else {
-        setTrashedRestaurants([]);
-        data.forEach((result) => {
-          let restaurant_info = fetchRestaurantInfo(result.placeid);
-          restaurant_info.then(result => {
-            setTrashedRestaurants(prevSwipes => [...prevSwipes, result[0].name])
-          })
-        })
+        return;
       }
-    });
+  
+      // Reset state before setting new values
+      setTrashedRestaurants([]);
+  
+      // Wait for all fetchRestaurantInfo calls to resolve
+      const restaurantInfoPromises = data.map((result) =>
+        fetchRestaurantInfo(result.placeid)
+      );
+  
+      const restaurantInfoResults = await Promise.all(restaurantInfoPromises);
+  
+      const trashedNames = restaurantInfoResults.map(result => result[0].name);
+  
+      setTrashedRestaurants(trashedNames);
+    } catch (error) {
+      console.error("Error loading trashed restaurants:", error);
+    }
   };
+  
 
 
   const applyFilters = () => {

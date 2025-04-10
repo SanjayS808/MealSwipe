@@ -23,7 +23,7 @@ function RestaurantCard({ restaurant}) {
       borderRadius: '10px',
       width: '80%',
       maxWidth: '500px',
-      maxHeight: '80vh',
+      maxHeight: '60vh',
       overflowY: 'auto',
       position: 'relative',
     },
@@ -47,6 +47,8 @@ function RestaurantCard({ restaurant}) {
 
   const [showModal, setShowModal] = useState(false);
   const handleClick = () => {
+    
+    setShowModal(!showModal);
     console.log("Restaurant clicked:", restaurant);
   };
 
@@ -73,7 +75,7 @@ function RestaurantCard({ restaurant}) {
             (<h5>$$$</h5>) : restaurant.price === "PRICE_LEVEL_VERY_EXPENSIVE" ?
             (<h5>$$$$</h5>) : null
           }
-          <button
+          {/* <button
   onClick={() => setShowModal(true)}
   style={{
     marginTop: '0em',
@@ -91,7 +93,7 @@ function RestaurantCard({ restaurant}) {
   onMouseOut={(e) => (e.target.style.backgroundColor = '#A9A9A9')} // Reset hover effect
 >
   View Reviews
-</button>
+</button> */}
 
       {showModal && (
         <div style={modalStyles.overlay}>
