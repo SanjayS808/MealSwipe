@@ -4,10 +4,9 @@ import React, {useState} from "react";
 import "./Card.css";
 import StarRating from "./StarRating";
 import { MapPin, Globe, Phone } from "lucide-react"; 
+import Modal from "./Modal";
 
-
-
-function RestaurantCard({ restaurant}) {
+function RestaurantCard({ restaurant, Modal}) {
 
 
   const modalStyles = {
@@ -42,12 +41,25 @@ function RestaurantCard({ restaurant}) {
     },
   };
 
-
-
-
+ 
+  const [selectedRestaurant, setSelectedRestaurant] = useState(null);
   const [showModal, setShowModal] = useState(false);
+  const openModal = (restaurant) => {
+    setSelectedRestaurant(restaurant);
+  };
+  // Function to handle closing the modal
+  const closeModal = () => {
+    setSelectedRestaurant(null);
+  };
   const handleClick = () => {
     console.log("Restaurant clicked:", restaurant);
+    return(
+      <div>
+    {selectedRestaurant && (
+      <Modal restaurant={selectedRestaurant} onClose={closeModal} />
+    )}
+      </div>
+    );
   };
 
   return (
