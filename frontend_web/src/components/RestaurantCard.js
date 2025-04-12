@@ -69,23 +69,35 @@ function RestaurantCard({ restaurant}) {
         <img src={restaurant.imageUrl} draggable="false" style={{ width: "100%", height: "100%", objectFit: "cover" }} alt={restaurant.name} />
       </div>
       <div className="card-content">
-      <h3>
-          {restaurant.name.length > 30
-            ? restaurant.name.slice(0, 30) + '...'
+      <h3 style= {{fontSize: "1.1em"}}>
+          {restaurant.name.length > 25
+            ? restaurant.name.slice(0, 25) + '...'
             : restaurant.name}
         </h3>
 
         <h5> <MapPin size={14} className="icon"/> {restaurant.distanceFromUser} miles</h5>
-        <div className="restaurant-details">
-          <StarRating rating={restaurant.rating} />
-
-          {
-            restaurant.price === "PRICE_LEVEL_INEXPENSIVE" ? 
-            (<h5>$</h5>) : restaurant.price === "PRICE_LEVEL_MODERATE" ?
-            (<h5>$$</h5>) : restaurant.price === "PRICE_LEVEL_EXPENSIVE" ?
-            (<h5>$$$</h5>) : restaurant.price === "PRICE_LEVEL_VERY_EXPENSIVE" ?
-            (<h5>$$$$</h5>) : null
-          }
+        <div className="restaurant-details" >
+          
+          <div className="info" style={{ display: "flex", justifyContent: "space-evenly" , marginBottom: "1em", marginTop: "0.5em"}}>
+            <div className="info_item" style = {{marginRight: "0.5em"}}>
+              <StarRating rating={restaurant.rating} />
+             
+            </div>
+            <div className="info" style = {{marginRight: "0.5em"}}>
+              <h4>{restaurant.ratingsCount} reviews</h4>
+            </div>
+            <div className="info_item" style = {{marginRight: "0.5em"}}>
+            {
+              restaurant.price === "PRICE_LEVEL_INEXPENSIVE" ? 
+              (<h4>$</h4>) : restaurant.price === "PRICE_LEVEL_MODERATE" ?
+              (<h4>$$</h4>) : restaurant.price === "PRICE_LEVEL_EXPENSIVE" ?
+              (<h4>$$$</h4>) : restaurant.price === "PRICE_LEVEL_VERY_EXPENSIVE" ?
+              (<h4>$$$$</h4>) : null
+            }
+            </div>
+          
+          </div>
+          
           {/* <button
   onClick={() => setShowModal(true)}
   style={{
@@ -110,28 +122,28 @@ function RestaurantCard({ restaurant}) {
         <div style={modalStyles.overlay}>
           <div style={modalStyles.modal}>
           <button 
-  onClick={handleClose} 
-  style={{
-    position: 'fixed',
-    top: '5px',
-    right: '5px',
-    width: '30px',
-    height: '30px',
-    borderRadius: '50%',
-    backgroundColor: '#ff4d4f',
-    border: 'none',
-    color: 'black',
-    fontSize: '1.2em',
-    fontWeight: 'bold',
-    cursor: 'pointer',
-    transition: 'background-color 0.2s ease',
-    zIndex: 9999, // Ensure the button is on top
-  }}
-  onMouseOver={(e) => e.target.style.backgroundColor = '#e60000'}
-  onMouseOut={(e) => e.target.style.backgroundColor = '#ff4d4f'}
->
-  ✕
-</button>
+            onClick={handleClose} 
+            style={{
+              position: 'fixed',
+              top: '5px',
+              right: '5px',
+              width: '30px',
+              height: '30px',
+              borderRadius: '50%',
+              backgroundColor: '#ff4d4f',
+              border: 'none',
+              color: 'black',
+              fontSize: '1.2em',
+              fontWeight: 'bold',
+              cursor: 'pointer',
+              transition: 'background-color 0.2s ease',
+              zIndex: 9999, // Ensure the button is on top
+            }}
+            onMouseOver={(e) => e.target.style.backgroundColor = '#e60000'}
+            onMouseOut={(e) => e.target.style.backgroundColor = '#ff4d4f'}
+          >
+            ✕
+          </button>
 
             <RestaurantModal restaurant={restaurant}  />
             
@@ -140,19 +152,27 @@ function RestaurantCard({ restaurant}) {
       )}
 
         </div>
-        <h5>
-          {restaurant.address.length > 35
-            ? restaurant.address.slice(0, 35) + '...'
-            : restaurant.address}
-        </h5>
-        <div className="card-links">
-            <a href={restaurant.googleMapsLink} target="_blank" rel="noreferrer" className="icon-wrapper">
-              <MapPin size={24} className="icon"/> {/* Google Maps Icon */}
+        
+        <div className="card-links" style={{marginTop: "1em", marginBottom: "1em"}}>
+            <a
+              href={restaurant.googleMapsLink}
+              target="_blank" rel="noreferrer" className="icon-wrapperC" style={{backgroundColor: "#F5F5f5"}}>
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                height="30"
+                viewBox="0 0 24 24"
+                width="36"
+              >
+                <path fill="#4285F4" d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7z" />
+                <circle fill="#34A853" cx="12" cy="9" r="2.5" />
+              </svg>
             </a>
-            <a href={restaurant.website} target="_blank" rel="noreferrer" className="icon-wrapper">
+
+
+            <a href={restaurant.website} target="_blank" rel="noreferrer" className="icon-wrapperC" style={{backgroundColor: "#3399FF"}}>
               <Globe size={24} className="icon"/> {/* Website Icon */}
             </a>
-            <a href={`tel:${restaurant.phoneNumber}` } className="icon-wrapper">
+            <a href={`tel:${restaurant.phoneNumber}` } className="icon-wrapperC" style={{backgroundColor: "#00CC66"}}>
               <Phone size={24} className="icon"/> {/* Call Icon */}
             </a>
           </div>

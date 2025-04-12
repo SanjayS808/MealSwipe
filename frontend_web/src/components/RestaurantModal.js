@@ -119,10 +119,12 @@ function RestaurantModal({ restaurant }) {
                 width: '100%',
                 height: '1px',
                 backgroundColor: '#ccc', // or any color
-                marginTop: '.5em'
+                
             }} />
 
             
+
+
             </div>
 
     )
