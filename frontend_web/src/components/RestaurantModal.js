@@ -2,6 +2,8 @@ import React from "react";
 import "./modal.css";
 import { MapPin, Globe, Phone } from "lucide-react"; 
 import StarRating from "./StarRating";
+
+import ReviewCarousel from './ModalComponents/ReviewCarousel';
 function RestaurantModal({ restaurant }) {
     return (
         <div class="cardModal">
@@ -102,6 +104,8 @@ function RestaurantModal({ restaurant }) {
                 backgroundColor: '#ccc', // or any color
                 marginTop: '.5em'
             }} />
+
+            <ReviewCarousel reviews={restaurant.reviews} />
             </div>
 
     )

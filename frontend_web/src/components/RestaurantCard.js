@@ -25,7 +25,7 @@ function RestaurantCard({ restaurant}) {
       borderRadius: '10px',
       width: '75%',
       maxWidth: '500px',
-      maxHeight: '60vh',
+      maxHeight: '55vh',
       overflowY: 'auto',
       position: 'relative',
     },
@@ -111,7 +111,7 @@ function RestaurantCard({ restaurant}) {
           <button 
   onClick={handleClose} 
   style={{
-    position: 'absolute',
+    position: 'fixed',
     top: '5px',
     right: '5px',
     width: '30px',
