@@ -1,4 +1,4 @@
-import React from "react";
+import React, {useRef} from "react";
 import { Routes, Route, Link, useLocation } from "react-router-dom";
 import { motion } from "framer-motion";
 import { Trash2, Home, Heart } from "lucide-react";
@@ -58,6 +58,19 @@ function Navigation({ backendData, likedRestaurants, trashedRestaurants ,handleS
       backgroundColor: "#fff",
     },
   };
+
+  const logoRef = useRef(null);
+
+  const handleLogoClick = () => {
+    const logo = logoRef.current;
+    console.log("clicked");
+    if (logo) {
+      logo.classList.remove("jiggle");
+      void logo.offsetWidth; // force reflow to restart animation
+      logo.classList.add("jiggle");
+    }
+  };
+
   return (
     <div>
       <div style={{
@@ -66,7 +79,7 @@ function Navigation({ backendData, likedRestaurants, trashedRestaurants ,handleS
         <LoginPic></LoginPic>
         <div className = 'logodiv' style= {{display: 'flex', flexDirection: 'row', alignItems: 'center', justifyContent: 'center'}}>
           <h1 style= {{marginLeft: '0em'}}>mealswipe</h1>
-          <img src= {logo} style={{ width: '25px', height: 'auto' ,marginLeft: '0em'}}></img>
+          <img src= {logo} style={{ width: '25px', height: 'auto' ,marginLeft: '0em'}} className = 'logoimage' onClick={handleLogoClick} ref={logoRef}></img>
         </div>
         
       </div>

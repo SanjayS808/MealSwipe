@@ -149,6 +149,7 @@ function App() {
   };
   
   const loadTrashed = async () => {
+    setIsLoading(true);
     if (user === null) return;
   
     const userid = uid;
@@ -182,6 +183,8 @@ function App() {
       setTrashedRestaurants(trashedNames);
     } catch (error) {
       console.error("Error loading trashed restaurants:", error);
+    } finally{
+      setIsLoading(false);  // ✅ always hide loader
     }
   };
   

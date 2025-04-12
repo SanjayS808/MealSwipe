@@ -14,7 +14,7 @@ function TrashedPage({ trashedRestaurants , clearTrashed, loadTrashed ,loggedIn 
         
         {isLoading ? (
           null ):
-          
+
           trashedRestaurants.length === 0 ? (
           <div className="noRestaurants">
             <h2>props to you for not being picky!</h2>
@@ -28,7 +28,7 @@ function TrashedPage({ trashedRestaurants , clearTrashed, loadTrashed ,loggedIn 
           </ul>
         )}
 
-        {trashedRestaurants.length > 0 ? (
+        {trashedRestaurants.length > 0  && !isLoading? (
           <button onClick={() => clearTrashed()}>Clear Trashed</button>) : null
           }
         
@@ -36,7 +36,8 @@ function TrashedPage({ trashedRestaurants , clearTrashed, loadTrashed ,loggedIn 
     ) : (
       <div className="trashedPage">
         <h2>Trashed Restaurants</h2>
-        <p>Please log in to view your trashed restaurants.</p>
+        {!isLoading ? <p>Log in to view your trashed restaurants.</p> : null}
+
       </div>
     )
   );
