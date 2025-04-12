@@ -14,10 +14,23 @@ class HourInfo{
 
 }
 class Restaurant{
-    constructor(id,name,rating,
-                price,address, generativeSummary, googleMapsLink, 
-                reviews = [],website, ratingsCount ,isOpen, 
-                phoneNumber, photos = [], distanceFromUser = 10.0, cuisineType ,ratingCount, openingHours = []) {
+    constructor(id = '',
+      name = '',
+      rating = 0.0,
+      price = '',
+      address = '',
+      generativeSummary = '',
+      googleMapsLink = '',
+      reviews = [],
+      website = '',
+      ratingsCount = 0,
+      isOpen = false,
+      phoneNumber = '',
+      photos = [],
+      distanceFromUser = 10.0,
+      cuisineType = '',
+      ratingCount = 0,
+      openingHours = []) {
         this.id = id;
         this.name = name;
         this.rating = rating;

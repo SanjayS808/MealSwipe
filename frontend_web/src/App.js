@@ -348,7 +348,7 @@ function App() {
     })
     .then(response => {
       if (!response.ok) {
-        console.err("Backend error: Could not delete data");
+        console.error("Backend error: Could not delete data");
         }
     
       });
