@@ -116,16 +116,26 @@
    
    
    .price-level-btn.selected {
-    background-color: #9198e5;
-    color: white;
-    border-color: #9198e5;
+    background-color: #d9413d;
+    color: 2f2f2f;
+    border-color: #2f2f2f;
    }
    
    
    .apply-filters-button {
     margin-top: auto;
     padding: 10px;
-    background-color: #9198e5;
+    background-color: #6b8e23;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+   }
+
+   .clear-filters-button {
+    margin-top: auto;
+    padding: 10px;
+    background-color: #d9413d;
     color: white;
     border: none;
     border-radius: 5px;
@@ -171,6 +181,7 @@
     align-items: center;
     gap: 0.3rem;
     font-size: 0.95rem;
+
   }
 
   .filter-buttons{
@@ -179,4 +190,7 @@
     justify-content: space-evenly;
     align-items: center;
     margin-top: 20px;
+  }
+  input[type="checkbox"] {
+    accent-color: #d9413d; /* your custom red */
   }
