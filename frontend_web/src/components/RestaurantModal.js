@@ -76,7 +76,7 @@ function RestaurantModal({ restaurant }) {
                 <div className="info_item">
                     
                     <a href={restaurant.googleMapsLink} target="_blank" rel="noreferrer" className="icon-wrapper">
-                    <MapPin size={16} className="icon"/> {/* Google Maps Icon */}
+                        <MapPin size={16} className="icon"/> {/* Google Maps Icon */}
                     </a>
                     
                 </div>

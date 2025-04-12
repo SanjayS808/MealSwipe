@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useCallback } from "react";
+import React, { useEffect, useState, useCallback ,useRef} from "react";
 import Restaurant from "./Restaurant";
 import Navigation from "./Navigation";
 import FilterPage from "./components/FilterPage";
@@ -10,6 +10,8 @@ import { UserProvider, useUser } from './context/UserContext';
 import { useNavigate } from "react-router-dom";
 import { Filter } from "lucide-react";
 import { motion } from "framer-motion";
+import HeartFlash from './components/Heart';
+import TrashFlash from './components/TrashIcon';
 
 const backendURL = (DEV_MODE) ? "http://localhost:5001"  : "http://MealSw-Backe-k0cJtOkGFP3i-29432626.us-west-1.elb.amazonaws.com";
 
@@ -33,7 +35,16 @@ function App() {
   const [showFilterPage, setShowFilterPage] = useState(false);
   const { user, setUser, incrementSwipes } = useUser();  
 
-  const navigate = useNavigate();
+  const heartRef = useRef();
+  const triggerHeart = () => {
+    heartRef.current?.flash();
+  };
+
+  const trashRef = useRef();
+  const triggerTrash = () => {
+    console.log("Trash triggered");
+    trashRef.current?.flash();
+  };
 
   useEffect(() => {
     const onMount = async () => {
@@ -253,10 +264,12 @@ function App() {
   const handleSwipe = (direction, restaurant) => {
     console.log(`You swiped ${direction} on ${restaurant.name}`);
     if (direction === 'right') {
+      triggerHeart();
       setFilteredRestaurants((prev) => prev.filter(r => r.id !== restaurant.id));
       setBackendData((prev) => prev.filter(r => r.id !== restaurant.id));
       toggleFavorite(restaurant);
     } else if (direction === 'left') {
+      triggerTrash();
       setFilteredRestaurants((prev) => prev.filter(r => r.id !== restaurant.id));
       setBackendData((prev) => prev.filter(r => r.id !== restaurant.id));
       toggleTrashed(restaurant);
@@ -475,6 +488,8 @@ function App() {
 
   return (
     <div className="App">
+      <HeartFlash ref={heartRef} />
+      <TrashFlash ref={trashRef} />
       <Navigation
         clearFavorites={clearFavorites}
         clearTrashed={clearTrashed}

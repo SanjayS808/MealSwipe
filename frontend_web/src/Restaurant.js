@@ -46,7 +46,8 @@ class Restaurant{
         };
         this.reviews.push(review);
       }
-      
+    
+
 }
 
 export default Restaurant;

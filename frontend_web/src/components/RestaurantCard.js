@@ -69,13 +69,13 @@ function RestaurantCard({ restaurant}) {
         <img src={restaurant.imageUrl} draggable="false" style={{ width: "100%", height: "100%", objectFit: "cover" }} alt={restaurant.name} />
       </div>
       <div className="card-content">
-      <h3 style= {{fontSize: "1.1em"}}>
+      <h3 style= {{fontSize: "1.1em", marginBottom: "0.25em"}}>
           {restaurant.name.length > 25
             ? restaurant.name.slice(0, 25) + '...'
             : restaurant.name}
         </h3>
-
-        <h5> <MapPin size={14} className="icon"/> {restaurant.distanceFromUser} miles</h5>
+            
+        <h4 style= {{marginBottom: ".5rem"}}> <MapPin size={18} className="icon"/> {restaurant.distanceFromUser} miles</h4>
         <div className="restaurant-details" >
           
           <div className="info" style={{ display: "flex", justifyContent: "space-evenly" , marginBottom: "1em", marginTop: "0.5em"}}>
@@ -84,15 +84,15 @@ function RestaurantCard({ restaurant}) {
              
             </div>
             <div className="info" style = {{marginRight: "0.5em"}}>
-              <h4>{restaurant.ratingsCount} reviews</h4>
+              <h3>{restaurant.ratingsCount} reviews</h3>
             </div>
             <div className="info_item" style = {{marginRight: "0.5em"}}>
             {
               restaurant.price === "PRICE_LEVEL_INEXPENSIVE" ? 
-              (<h4>$</h4>) : restaurant.price === "PRICE_LEVEL_MODERATE" ?
-              (<h4>$$</h4>) : restaurant.price === "PRICE_LEVEL_EXPENSIVE" ?
-              (<h4>$$$</h4>) : restaurant.price === "PRICE_LEVEL_VERY_EXPENSIVE" ?
-              (<h4>$$$$</h4>) : null
+              (<h3>$</h3>) : restaurant.price === "PRICE_LEVEL_MODERATE" ?
+              (<h3>$$</h3>) : restaurant.price === "PRICE_LEVEL_EXPENSIVE" ?
+              (<h3>$$$</h3>) : restaurant.price === "PRICE_LEVEL_VERY_EXPENSIVE" ?
+              (<h3>$$$$</h3>) : null
             }
             </div>
           
@@ -153,7 +153,7 @@ function RestaurantCard({ restaurant}) {
 
         </div>
         
-        <div className="card-links" style={{marginTop: "1em", marginBottom: "1em"}}>
+        <div className="card-links" style={{marginTop: ".5em", marginBottom: "1em"}}>
             <a
               href={restaurant.googleMapsLink}
               target="_blank" rel="noreferrer" className="icon-wrapperC" style={{backgroundColor: "#F5F5f5"}}>
