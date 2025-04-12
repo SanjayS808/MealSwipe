@@ -31,11 +31,13 @@ function App() {
   const [pendingMaxDistance, setPendingMaxDistance] = useState(50);
   const [pendingMinRating, setPendingMinRating] = useState(0);
   const [pendingPriceLevels, setPendingPriceLevels] = useState([]);
+  const [allowedTypes, setAllowedTypes] = useState([]);
+  
   const [uid,setUid] = useState(null);
   const [showFilterPage, setShowFilterPage] = useState(false);
   const { user, setUser, incrementSwipes } = useUser();  
   const [isLoading, setIsLoading] = useState(false);
-
+  
   const heartRef = useRef();
   const triggerHeart = () => {
     heartRef.current?.flash();
@@ -49,9 +51,13 @@ function App() {
 
   useEffect(() => {
     const onMount = async () => {
-    
-  
+      
+      if (uid !== null) {
+        console.log("UID already set. Skipping fetchuid.");
+        return;
+      }
       try {
+        
         let uid = await fetchuid(); 
         
         await fetchRestaurants();
@@ -86,6 +92,7 @@ function App() {
       return response.json();
     });
     setLoggedIn(true);
+    console.log("User ID: ", response[0].userid);
     return response[0].userid;
   };
 
@@ -198,6 +205,7 @@ function App() {
 
   const applyFilters = () => {
     // Update active filter state
+    
     setMaxDistance(pendingMaxDistance);
     setMinRating(pendingMinRating);
     setPriceLevels(pendingPriceLevels);
@@ -210,7 +218,9 @@ function App() {
 
       // Rating filter
       const ratingMatch = restaurant.rating >= pendingMinRating;
-
+      const typeMatch =
+        allowedTypes.length === 0 ||
+        allowedTypes.includes(restaurant.cuisineType);
       // Price level filter
       const priceLevelMatch = pendingPriceLevels.length === 0 || 
         pendingPriceLevels.some(level => {
@@ -224,7 +234,7 @@ function App() {
           return restaurant.price === priceMap[level];
         });
 
-      return distanceMatch && ratingMatch && priceLevelMatch;
+      return distanceMatch && ratingMatch && priceLevelMatch && typeMatch;
     });
 
     // Update the displayed restaurants
@@ -250,12 +260,8 @@ function App() {
       const data = await response.json();
       console.log("Fetched restaurants data:", data);
       // Map the restaurants 
-      setTypes([
-        ...new Set(
-          data.map(r => r.primaryType?.trim().toLowerCase()).filter(Boolean)
-        )
-      ]);
-      console.log("Types: ", types);
+      
+      
       const mappedRestaurants = data.map(r => new Restaurant(
 
         r.id,
@@ -282,12 +288,23 @@ function App() {
       )
       
     );
-
+    
       // Store original and filtered data
       setOriginalBackendData(mappedRestaurants);
       setFilteredRestaurants(mappedRestaurants);
       setBackendData(mappedRestaurants);
-
+      const uniqueTypes = [
+        ...new Set(
+          mappedRestaurants
+            .map(r => r.cuisineType)
+            .filter(Boolean)
+        )
+      ];
+      
+      setTypes(uniqueTypes);
+      setAllowedTypes(uniqueTypes);
+      console.log(mappedRestaurants)
+      console.log("Types: ", uniqueTypes);
       
 
     } catch (error) {
@@ -596,6 +613,9 @@ function App() {
         applyFilters={applyFilters}
         onClose={() => setShowFilterPage(false)}
         isOpen={showFilterPage}
+        types = {types}
+        allowedTypes = {allowedTypes}
+        setAllowedTypes = {setAllowedTypes}
         
       />
     </div>

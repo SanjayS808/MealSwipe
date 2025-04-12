@@ -62,7 +62,10 @@ const FilterPage = ({
  setPriceLevels,
  applyFilters,
  onClose,
- isOpen
+ isOpen,
+ types,
+  allowedTypes,
+  setAllowedTypes
 }) => {
  const togglePriceLevel = (level) => {
    setPriceLevels(prev =>
@@ -71,7 +74,20 @@ const FilterPage = ({
        : [...prev, level]
    );
  };
+ const toggleType = (type) => {
+  const allTypesSelected = allowedTypes.length === types.length;
+  if (allTypesSelected) {
+    setAllowedTypes([type]);
+  } else {
+    setAllowedTypes(prev =>
+      prev.includes(type)
+        ? prev.filter(t => t !== type)
+        : [...prev, type]
+    );
+  }
+};
 
+const allTypesSelected = allowedTypes.length === types.length;
 
  return (
    <div className={`filter-page ${isOpen ? 'open' : ''}`}>
@@ -112,7 +128,22 @@ const FilterPage = ({
            ))}
          </div>
        </div>
-      
+       <div className="filter-section">
+        <label>Types</label>
+        <div className="type-checkboxes">
+          {types.map((type) => (
+            <label key={type} className="type-option">
+              <input
+                type="checkbox"
+                value={type}
+                checked={!allTypesSelected && allowedTypes.includes(type)}
+                onChange={() => toggleType(type)}
+              />
+              {type.charAt(0).toUpperCase() + type.slice(1)}
+            </label>
+          ))}
+        </div>
+      </div>
        <button
          className="apply-filters-button"
          onClick={applyFilters}

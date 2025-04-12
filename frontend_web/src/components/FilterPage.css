@@ -25,9 +25,9 @@
     box-sizing: border-box;
     display: flex;
     flex-direction: column;
-    transform: translateX(100%);
-    transition: transform 0.3s ease-in-out;
-   }
+    overflow-y: auto;       /* <-- Add this */
+    scroll-behavior: smooth; /* optional, for nicer UX */
+  }
    
    
    .filter-page.open .filter-page-content {
@@ -159,3 +159,17 @@
     cursor: pointer;
    }
    
+   .type-checkboxes {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin-top: 0.5rem;
+  }
+  
+  .type-option {
+    display: flex;
+    align-items: center;
+    gap: 0.3rem;
+    font-size: 0.95rem;
+  }
+  
