@@ -89,10 +89,10 @@ function RestaurantCard({ restaurant}) {
             <div className="info_item" style = {{marginRight: "0.5em"}}>
             {
               restaurant.price === "PRICE_LEVEL_INEXPENSIVE" ? 
-              (<h3>$</h3>) : restaurant.price === "PRICE_LEVEL_MODERATE" ?
-              (<h3>$$</h3>) : restaurant.price === "PRICE_LEVEL_EXPENSIVE" ?
-              (<h3>$$$</h3>) : restaurant.price === "PRICE_LEVEL_VERY_EXPENSIVE" ?
-              (<h3>$$$$</h3>) : null
+              (<h3 style = {{color: '#6b8e23',fontWeight: 'bold',} }>$</h3>) : restaurant.price === "PRICE_LEVEL_MODERATE" ?
+              (<h3 style = {{color: '#6b8e23',fontWeight: 'bold'}}>$$</h3>) : restaurant.price === "PRICE_LEVEL_EXPENSIVE" ?
+              (<h3 style = {{color: '#6b8e23',fontWeight: 'bold'}}>$$$</h3>) : restaurant.price === "PRICE_LEVEL_VERY_EXPENSIVE" ?
+              (<h3 style = {{color: '#6b8e23',fontWeight: 'bold'}}>$$$$</h3>) : null
             }
             </div>
           

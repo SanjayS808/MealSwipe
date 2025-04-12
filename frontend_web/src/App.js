@@ -279,6 +279,9 @@ function App() {
       setOriginalBackendData(mappedRestaurants);
       setFilteredRestaurants(mappedRestaurants);
       setBackendData(mappedRestaurants);
+
+      
+
     } catch (error) {
       console.error("Fetch error:", error);
     } finally {

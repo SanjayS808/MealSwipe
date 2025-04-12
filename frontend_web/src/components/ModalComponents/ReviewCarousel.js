@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-
+import "../modal.css";
 function ReviewCarousel({ reviews }) {
   const [current, setCurrent] = useState(0);
   const [expanded, setExpanded] = useState(false);
@@ -35,16 +35,15 @@ function ReviewCarousel({ reviews }) {
       textAlign: 'center',
     },
     button: {
-      position: 'absolute',
-      top: '50%',
-      transform: 'translateY(-50%)',
-      backgroundColor: '#fec195',
+      width: '45%',
+      
       border: 'none',
       padding: '0.5em',
       cursor: 'pointer',
-      borderRadius: '50%',
+      borderRadius: '20%',
       fontSize: '1.2em',
       fontWeight: 'bold',
+      margin: '0 1em',
     },
     leftButton: { left: '-15px' },
     rightButton: { right: '-15px' },
@@ -61,18 +60,23 @@ function ReviewCarousel({ reviews }) {
       fontSize: '0.9em',
       display: 'inline-block',
       marginTop: '0.3em'
+    },
+    reviewButtonWrapper:{
+        marginTop: '1em',
+        display: 'flex',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+
     }
   };
 
   if (!reviews || reviews.length === 0) return <p>No reviews available</p>;
 
   return (
-    <div style={styles.container}>
-      <button onClick={prev} style={{ ...styles.button, ...styles.leftButton }}>
-        ‹
-      </button>
+    <div >
+      
 
-      <div>
+      <div style={styles.container}>
         <p style={styles.text}>
           "{displayedText}"
           {isLong && (
@@ -83,10 +87,15 @@ function ReviewCarousel({ reviews }) {
         </p>
         <p style={styles.author}>– {currentReview.author}</p>
       </div>
-
-      <button onClick={next} style={{ ...styles.button, ...styles.rightButton }}>
-        ›
-      </button>
+      <div className='reviewButtonWrapper' style = {styles.reviewButtonWrapper}>
+      <button onClick={prev} style={{ ...styles.button, ...styles.leftButton }} className="icon-wrapper">
+            ‹
+        </button>
+        <button onClick={next} style={{ ...styles.button, ...styles.rightButton }} className="icon-wrapper">
+            ›
+        </button>
+      </div>
+        
     </div>
   );
 }

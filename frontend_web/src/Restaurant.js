@@ -17,7 +17,7 @@ class Restaurant{
     constructor(id,name,rating,
                 price,address, generativeSummary, googleMapsLink, 
                 reviews = [],website, ratingsCount ,isOpen, 
-                phoneNumber, photos, distanceFromUser = 10.0, cuisineType ,ratingCount, openingHours = []) {
+                phoneNumber, photos = [], distanceFromUser = 10.0, cuisineType ,ratingCount, openingHours = []) {
         this.id = id;
         this.name = name;
         this.rating = rating;
