@@ -9,7 +9,7 @@ import Login from "./pages/Login";
 import ProfilePage from "./pages/ProfilePage";
 import "./styles/navbar.css";
 import LoginPic from "./components/LoginPic";
-
+import logo from "./mealSwipeLogo.png";
 const navItems = [
   { path: "/trashed", icon: Trash2, label: "Trashed" },
   { path: "/", icon: Home, label: "Home" },
@@ -64,7 +64,11 @@ function Navigation({ backendData, likedRestaurants, trashedRestaurants ,handleS
         zIndex: 100,
       }} className="header">
         <LoginPic></LoginPic>
-        <h1>mealswipe!</h1>
+        <div className = 'logodiv' style= {{display: 'flex', flexDirection: 'row', alignItems: 'center', justifyContent: 'center'}}>
+          <h1 style= {{marginLeft: '0em'}}>mealswipe</h1>
+          <img src= {logo} style={{ width: '25px', height: 'auto' ,marginLeft: '0em'}}></img>
+        </div>
+        
       </div>
 
 
