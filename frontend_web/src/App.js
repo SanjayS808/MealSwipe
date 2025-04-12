@@ -24,7 +24,7 @@ function App() {
   const [loggedIn, setLoggedIn ] = useState(false);
   const [minRating, setMinRating] = useState(0); // Default to 0 stars
   const [maxDistance, setMaxDistance] = useState(50); // Adjust the default value as needed
-
+  const [types, setTypes] = useState([]);
   const [priceLevels, setPriceLevels] = useState([]);
   
   // Pending filter state (for FilterPage)
@@ -250,14 +250,20 @@ function App() {
       const data = await response.json();
       console.log("Fetched restaurants data:", data);
       // Map the restaurants 
+      setTypes([
+        ...new Set(
+          data.map(r => r.primaryType?.trim().toLowerCase()).filter(Boolean)
+        )
+      ]);
+      console.log("Types: ", types);
       const mappedRestaurants = data.map(r => new Restaurant(
 
         r.id,
         r.displayName?.text,
         r.rating,
         r.priceLevel,
-        r.formattedAddress,
-        r.generativeSummary?.overview?.text,
+        r.shortFormattedAddress,
+        r.generativeSummary?.overview?.text ?? r.editorialSummary?.text,
         r.googleMapsLinks?.placeUri,
         r.reviews?.map(review => ({
           author: review.authorAttribution.displayName,
@@ -270,10 +276,12 @@ function App() {
         r.nationalPhoneNumber,
         r.photos,
         r.distanceFromCenter || 0,
-        r.types[0] || "Unknown", 
+        r.primaryType || "Unknown", 
         r.userRatingCount,
         r.regularOpeningHours?.periods || [],   
-      ));
+      )
+      
+    );
 
       // Store original and filtered data
       setOriginalBackendData(mappedRestaurants);
