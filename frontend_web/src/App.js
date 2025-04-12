@@ -309,7 +309,7 @@ function App() {
 
   const clearFavorites = async () => {
 
-    localStorage.removeItem("favorites");
+    
     setFavoriteRestaurants([]);
     if(user === null) {return ;} // We do not want to load API if we have no user.
     const userid = await fetchuid();
@@ -326,10 +326,10 @@ function App() {
   };
 
   const clearTrashed = async () => {
-    localStorage.removeItem("trashed");
+    
     setTrashedRestaurants([]);
      // Deletes from db
-     if(user === null) {return ;} // We do not want to load API if we have no user.
+     if(user === null) {return ;} 
      const userid = await fetchuid();
      await fetch(`${backendURL}/api/serve/delete-trashed-swipe-with-uid?uid=${userid}`, {
       method: 'DELETE',
@@ -341,6 +341,31 @@ function App() {
      })
   };
 
+  const deleteRestaurantFromTrash = async (restaurant) => {
+
+    await fetch(`${backendURL}/api/serve/delete-trashed-swipe-with-rid-uid?rid=${restaurant.id}&uid=${uid}`, {
+      method: 'DELETE',
+    })
+    .then(response => {
+      if (!response.ok) {
+        console.err("Backend error: Could not delete data");
+        }
+    
+      });
+  };
+
+  const deleteRestaurantFromFavorites = async (restaurant) => {
+
+    await fetch(`${backendURL}/api/serve/delete-favorite-swipe-with-rid-uid?rid=${restaurant.id}&uid=${uid}`, {
+      method: 'DELETE',
+    })
+    .then(response => {
+      if (!response.ok) {
+        console.err("Backend error: Could not delete data");
+        }
+    
+      });
+  };
   const toggleFavorite = async (restaurant) => {
     let api_body_data = {
       rid: restaurant.id,
@@ -416,6 +441,7 @@ function App() {
     .catch((error) => {
       console.log("Internal error. Could not add swipe" + error)
     });
+    deleteRestaurantFromTrash(restaurant);
   };
 
   const toggleTrashed = async (restaurant) => {
@@ -493,7 +519,7 @@ function App() {
     .catch((error) => {
       console.log("Internal error. Could not add swipe" + error)
     });
-
+    deleteRestaurantFromFavorites(restaurant);
     incrementSwipes();
   };
 
