@@ -216,6 +216,7 @@ function App() {
       console.log("Fetched restaurants data:", data);
       // Map the restaurants 
       const mappedRestaurants = data.map(r => new Restaurant(
+
         r.id,
         r.displayName?.text,
         r.rating,
@@ -233,7 +234,9 @@ function App() {
         r.currentOpeningHours?.openNow ?? false,
         r.nationalPhoneNumber,
         r.photos,
-        r.distanceFromCenter || 0
+        r.distanceFromCenter || 0,
+        r.types[0] || "Unknown", 
+        r.userRatingCount
       ));
 
       // Store original and filtered data
