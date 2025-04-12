@@ -12,7 +12,7 @@ import { Filter } from "lucide-react";
 import { motion } from "framer-motion";
 import HeartFlash from './components/Heart';
 import TrashFlash from './components/TrashIcon';
-
+import Loader from "./components/Loader";
 const backendURL = (DEV_MODE) ? "http://localhost:5001"  : "http://MealSw-Backe-k0cJtOkGFP3i-29432626.us-west-1.elb.amazonaws.com";
 
 function App() {
@@ -34,6 +34,7 @@ function App() {
   const [uid,setUid] = useState(null);
   const [showFilterPage, setShowFilterPage] = useState(false);
   const { user, setUser, incrementSwipes } = useUser();  
+  const [isLoading, setIsLoading] = useState(false);
 
   const heartRef = useRef();
   const triggerHeart = () => {
@@ -89,6 +90,9 @@ function App() {
   };
 
   const fetchRestaurantInfo = async (rid) => {
+
+     // ✅ always hide loader
+    console.log(isLoading);
     let response = await fetch(`${backendURL}/api/serve/get-rinfo-with-rid?rid=${rid}`)
     .then(response => {
       if(!response.ok) {
@@ -96,9 +100,12 @@ function App() {
       }
       return response.json();
     });
+    
     return response;
   }
   const loadFavorites = async () => {
+    setIsLoading(true);
+    
     if (user === null) return;
   
     let userid = uid;
@@ -127,11 +134,17 @@ function App() {
       const favoritesTEMP = restaurantInfoResults.map(result => result[0].name);
   
       // Set state
+      
       setFavoriteRestaurants(favoritesTEMP);
+      
   
       console.log("Favorites: ", favoritesTEMP);
     } catch (error) {
+      
       console.error("Error loading favorites:", error);
+    
+    } finally {
+      setIsLoading(false);  // ✅ always hide loader
     }
   };
   
@@ -220,6 +233,9 @@ function App() {
   };
 
   const fetchRestaurants = async () => {
+
+    setIsLoading(true);  // ✅ always hide loader
+  
     try {
       // Fetch restaurants without any filtering on the backend
       const response = await fetch(`${backendURL}/api/serve/get-all-restaurants?maxDistance=50`);
@@ -262,7 +278,10 @@ function App() {
       setBackendData(mappedRestaurants);
     } catch (error) {
       console.error("Fetch error:", error);
+    } finally {
+      setIsLoading(false);  // ✅ always hide loader
     }
+
   };
 
   // Modify handleSwipe to use filteredRestaurants
@@ -497,6 +516,7 @@ function App() {
     <div className="App">
       <HeartFlash ref={heartRef} />
       <TrashFlash ref={trashRef} />
+      
       <Navigation
         clearFavorites={clearFavorites}
         clearTrashed={clearTrashed}
@@ -508,7 +528,10 @@ function App() {
         loadFavorites={loadFavorites}
         loadTrashed = {loadTrashed}
         loggedIn={loggedIn}
+        isLoading={isLoading}
       />
+      {isLoading && <Loader />}
+
       <motion.button
         whileHover={{
           scale: 1.1,
