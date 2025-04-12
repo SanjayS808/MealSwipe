@@ -9,7 +9,7 @@ const StarRating = ({ rating }) => {
   const halfStars = rating - fullStars >= 0.5 ? 1 : 0;
   const emptyStars = 5 - (fullStars + halfStars);
   const starStyle = {
-    color: '#FFD700',
+    color: '#d9413d',
     textShadow: '0 0 5px black'
   };
   const renderStars = () => {

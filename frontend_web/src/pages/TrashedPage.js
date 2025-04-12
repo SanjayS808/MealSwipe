@@ -10,16 +10,24 @@ function TrashedPage({ trashedRestaurants , clearTrashed, loadTrashed ,loggedIn 
     loggedIn ? (
       <div className="trashedPage">
         <h2>Trashed Restaurants</h2>
-        <ul>
-          {trashedRestaurants.length === 0 ? (
-            <p>No trashed restaurants yet.</p>
-          ) : (
-            trashedRestaurants.map((restaurant, index) => (
+        
+        {trashedRestaurants.length === 0 ? (
+          <div className="noRestaurants">
+            <h2>props to you for not being picky!</h2>
+              
+          </div>
+        ) : (
+          <ul>
+            {trashedRestaurants.map((restaurant, index) => (
               <li key={index}>{restaurant}</li>
-            ))
-          )}
-        </ul>
-        <button onClick={() => clearTrashed()}>Clear Trashed</button>
+            ))}
+          </ul>
+        )}
+
+        {trashedRestaurants.length > 0 ? (
+          <button onClick={() => clearTrashed()}>Clear Trashed</button>) : null
+          }
+        
       </div>
     ) : (
       <div className="trashedPage">

@@ -37,9 +37,11 @@ const styles = {
     pointerEvents: 'none',
     zIndex: 9999,
   },
+  
   heart: {
     fontSize: '5rem',
-    color: 'red',
+    color: '#d9413d',
+    
     animation: 'pulse 0.6s ease-in-out',
   }
 };

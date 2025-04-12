@@ -29,7 +29,7 @@ function ReviewCarousel({ reviews }) {
     container: {
       position: 'relative',
       padding: '1em',
-      backgroundColor: '#f9f9f9',
+      backgroundColor: '#fff0e2',
       borderRadius: '10px',
       marginTop: '1em',
       textAlign: 'center',
@@ -38,7 +38,7 @@ function ReviewCarousel({ reviews }) {
       position: 'absolute',
       top: '50%',
       transform: 'translateY(-50%)',
-      backgroundColor: '#eee',
+      backgroundColor: '#fec195',
       border: 'none',
       padding: '0.5em',
       cursor: 'pointer',

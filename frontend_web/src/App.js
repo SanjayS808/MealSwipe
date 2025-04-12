@@ -48,13 +48,12 @@ function App() {
 
   useEffect(() => {
     const onMount = async () => {
-      console.log("Application is mounted.");
-      console.log("User:", user);
+    
   
       try {
         let uid = await fetchuid(); 
-        console.log("Fetched UID:", uid);
-        fetchRestaurants();
+        
+        await fetchRestaurants();
         if (uid) {
           setUid(uid);
           
@@ -173,7 +172,13 @@ function App() {
     }
   };
   
+  const resetBackendData = () => {
 
+    fetchRestaurants();
+    setPendingMaxDistance(50);
+    setPendingMinRating(0);
+    setPendingPriceLevels([]);
+  };
 
   const applyFilters = () => {
     // Update active filter state
@@ -493,7 +498,7 @@ function App() {
       <Navigation
         clearFavorites={clearFavorites}
         clearTrashed={clearTrashed}
-        resetBackendData={fetchRestaurants}
+        resetBackendData={resetBackendData}
         backendData={backendData}
         handleSwipe={handleSwipe}
         likedRestaurants={favoriteRestaurants}

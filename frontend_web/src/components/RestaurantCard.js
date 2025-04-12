@@ -20,7 +20,7 @@ function RestaurantCard({ restaurant}) {
       width: '100%',
     },
     modal: {
-      background: 'white',
+      background: '#ffe1c7',
       padding: '2em',
       borderRadius: '10px',
       width: '75%',

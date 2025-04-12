@@ -5,15 +5,11 @@ import React, { useRef } from 'react';
 import RestaurantCard from "./RestaurantCard";
 import TinderCard from "react-tinder-card";
 
-
+import "./restaurantList.css";
 function RestaurantList({ restaurants, onSwipe ,resetBackendData}) {
   
 
-  const onCardLeftScreen = () => {
-    console.log("adding: ");
-    
-    
-  }
+  
   
   
   return (
@@ -22,7 +18,7 @@ function RestaurantList({ restaurants, onSwipe ,resetBackendData}) {
     <div className="cardContainer">
         {restaurants.length === 0 ? (
           <div className="noRestaurants">
-            <p>No restaurants available.</p>
+            <h3>No restaurants available :(</h3>
             <button onClick={resetBackendData}>Refresh</button>
           </div>
         ) : (

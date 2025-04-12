@@ -1,6 +1,6 @@
 /* From Uiverse.io by MuhammadHasann */ 
 .cardModal {
-    --bg-card: #FFFFFF;
+    --bg-card: #ffe1c7;
     --primary: #6d28d9;
     --primary-800: #4c1d95;
     --primary-shadow: #2e1065;
@@ -52,14 +52,14 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    
+    background-color: #fec195;
     border-radius: 10%;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
     transition: transform 0.3s ease, background-color 0.3s ease;
   }
   .icon-wrapper:hover {
     transform: scale(1.1);
-    background-color: #e0e0e0;
+    background-color: #d9413d;
   }
   
   .image_container {

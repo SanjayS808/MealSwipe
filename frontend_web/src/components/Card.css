@@ -12,6 +12,8 @@
     border-radius: 10px;
     background-size: cover;
     background-position: center;
+    
+    
   }
   .restaurant-name {
       font-size: 1rem;
@@ -23,11 +25,12 @@
     flex-direction: column;
     
     padding: 1rem;
-    background-color: #D3D3D3;
-    border-bottom-left-radius: 20px;
-    border-bottom-right-radius: 20px;
+    background-color: #fec195;
+    border-bottom-left-radius: 10px;
+    border-bottom-right-radius: 10px;
     text-align: left;
     padding: 2px;
+    
   }
 
   .card-content > * {
