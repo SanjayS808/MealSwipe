@@ -1,6 +1,6 @@
 import React from 'react';
 import './FilterPage.css';
-
+import { useNavigate } from 'react-router-dom';
 
 const StarRating = ({ rating, onRatingChange }) => {
  const handleStarClick = (event, starValue) => {
@@ -65,8 +65,10 @@ const FilterPage = ({
  isOpen,
  types,
   allowedTypes,
-  setAllowedTypes
+  setAllowedTypes,
+  fetchRestaurants
 }) => {
+  const navigate = useNavigate();
  const togglePriceLevel = (level) => {
    setPriceLevels(prev =>
      prev.includes(level)
@@ -103,6 +105,9 @@ const allTypesSelected = allowedTypes.length === types.length;
            max="50"
            value={maxDistance}
            onChange={e => setMaxDistance(parseInt(e.target.value, 10))}
+           style={{
+            accentColor: '#d9413d' 
+          }}
          />
        </div>
       
@@ -111,6 +116,7 @@ const allTypesSelected = allowedTypes.length === types.length;
          <StarRating
            rating={minRating}
            onRatingChange={setMinRating}
+           
          />
        </div>
       
@@ -144,12 +150,26 @@ const allTypesSelected = allowedTypes.length === types.length;
           ))}
         </div>
       </div>
-       <button
-         className="apply-filters-button"
-         onClick={applyFilters}
-       >
-         Apply Filters
-       </button>
+        <div className="filter-buttons">
+          <button
+          className="apply-filters-button"
+          onClick={applyFilters}
+        >
+          Apply Filters
+        </button>
+          <button className='clear-filters-button' onClick={() => {
+            setMaxDistance(50);
+            setMinRating(0);
+            setPriceLevels([]);
+            setAllowedTypes(types);
+            fetchRestaurants();
+            onClose();
+            
+          }}>
+            Clear Filters
+        </button>
+      </div>
+       
      </div>
    </div>
  );

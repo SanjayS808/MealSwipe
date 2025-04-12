@@ -616,6 +616,7 @@ function App() {
         types = {types}
         allowedTypes = {allowedTypes}
         setAllowedTypes = {setAllowedTypes}
+        fetchRestaurants={fetchRestaurants}
         
       />
     </div>
