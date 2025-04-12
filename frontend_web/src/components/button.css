@@ -1,0 +1,47 @@
+.button {
+    position: relative;
+    padding: 12px 35px;
+    background: #fec195;
+    font-size: 17px;
+    font-weight: 500;
+    color: #181818;
+    border: 3px solid black;
+    border-radius: 8px;
+    box-shadow: 0 0 0 #fec1958c;
+    transition: all 0.3s ease-in-out;
+    cursor: pointer;
+  }
+  
+  .button:hover {
+    background: transparent;
+    color: #fec195;
+    box-shadow: 0 0 25px #fec1958c;
+  }
+  
+  .fil0 {
+    fill: gold;
+  }
+  
+  /* Default star positions */
+  .star-1, .star-2, .star-3, .star-4, .star-5, .star-6 {
+    position: absolute;
+    filter: drop-shadow(0 0 0 #fffdef);
+    z-index: -5;
+    transition: all 0.8s ease;
+  }
+  
+  .star-1 { top: 20%; left: 20%; width: 25px; }
+  .star-2 { top: 45%; left: 45%; width: 15px; }
+  .star-3 { top: 40%; left: 40%; width: 5px; }
+  .star-4 { top: 20%; left: 40%; width: 8px; }
+  .star-5 { top: 25%; left: 45%; width: 15px; }
+  .star-6 { top: 5%; left: 50%; width: 5px; }
+  
+  /* Hover star animations */
+  button:hover .star-1 { top: -80%; left: -30%; filter: drop-shadow(0 0 10px #fffdef); z-index: 2; }
+  button:hover .star-2 { top: -25%; left: 10%; filter: drop-shadow(0 0 10px #fffdef); z-index: 2; }
+  button:hover .star-3 { top: 55%; left: 25%; filter: drop-shadow(0 0 10px #fffdef); z-index: 2; }
+  button:hover .star-4 { top: 30%; left: 80%; filter: drop-shadow(0 0 10px #fffdef); z-index: 2; }
+  button:hover .star-5 { top: 25%; left: 115%; filter: drop-shadow(0 0 10px #fffdef); z-index: 2; }
+  button:hover .star-6 { top: 5%; left: 60%; filter: drop-shadow(0 0 10px #fffdef); z-index: 2; }
+  

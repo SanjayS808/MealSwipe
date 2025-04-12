@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useCallback } from "react";
+import React, { useEffect, useState, useCallback ,useRef} from "react";
 import Restaurant from "./Restaurant";
 import Navigation from "./Navigation";
 import FilterPage from "./components/FilterPage";
@@ -10,6 +10,8 @@ import { UserProvider, useUser } from './context/UserContext';
 import { useNavigate } from "react-router-dom";
 import { Filter } from "lucide-react";
 import { motion } from "framer-motion";
+import HeartFlash from './components/Heart';
+import TrashFlash from './components/TrashIcon';
 
 const backendURL = (DEV_MODE) ? "http://localhost:5001"  : "http://MealSw-Backe-k0cJtOkGFP3i-29432626.us-west-1.elb.amazonaws.com";
 
@@ -33,17 +35,25 @@ function App() {
   const [showFilterPage, setShowFilterPage] = useState(false);
   const { user, setUser, incrementSwipes } = useUser();  
 
-  const navigate = useNavigate();
+  const heartRef = useRef();
+  const triggerHeart = () => {
+    heartRef.current?.flash();
+  };
+
+  const trashRef = useRef();
+  const triggerTrash = () => {
+    console.log("Trash triggered");
+    trashRef.current?.flash();
+  };
 
   useEffect(() => {
     const onMount = async () => {
-      console.log("Application is mounted.");
-      console.log("User:", user);
+    
   
       try {
         let uid = await fetchuid(); 
-        console.log("Fetched UID:", uid);
-        fetchRestaurants();
+        
+        await fetchRestaurants();
         if (uid) {
           setUid(uid);
           
@@ -88,64 +98,87 @@ function App() {
     });
     return response;
   }
-
   const loadFavorites = async () => {
-
-    
-    if(user === null) {return;} // We do not want to do anything.
+    if (user === null) return;
+  
     let userid = uid;
-    
-    fetch(`${backendURL}/api/serve/get-user-favorite-restaurants?uid=${userid}`)
-    .then(response => {
-      if(!response.ok) {
+  
+    try {
+      const response = await fetch(`${backendURL}/api/serve/get-user-favorite-restaurants?uid=${userid}`);
+      
+      if (!response.ok) {
         throw new Error("Internal error. Failed to fetch swipe information.");
       }
-      return response.json();
-    })
-    .then(data => {
-      if(!Object.keys(data).length){
-        // No data found for user. Set local storage empty.
+  
+      const data = await response.json();
+  
+      if (!Object.keys(data).length) {
         setFavoriteRestaurants([]);
-      } else {
-        setFavoriteRestaurants([]);
-        data.forEach((result) => {
-          let restaurant_info = fetchRestaurantInfo(result.placeid);
-          restaurant_info.then(result => {
-            setFavoriteRestaurants(prevSwipes => [...prevSwipes, result[0].name])
-          })
-        })
+        return;
       }
-    });
+  
+      // Map to promises
+      const restaurantInfoPromises = data.map((result) => fetchRestaurantInfo(result.placeid));
+  
+      // Wait for all to resolve
+      const restaurantInfoResults = await Promise.all(restaurantInfoPromises);
+  
+      // Extract names
+      const favoritesTEMP = restaurantInfoResults.map(result => result[0].name);
+  
+      // Set state
+      setFavoriteRestaurants(favoritesTEMP);
+  
+      console.log("Favorites: ", favoritesTEMP);
+    } catch (error) {
+      console.error("Error loading favorites:", error);
+    }
   };
   
   const loadTrashed = async () => {
-    if(user === null) {return;} // We do not want to do anything.
-    let userid = uid;
-    
-    fetch(`${backendURL}/api/serve/get-user-trashed-restaurant?uid=${userid}`)
-    .then(response => {
-      if(!response.ok) {
+    if (user === null) return;
+  
+    const userid = uid;
+  
+    try {
+      const response = await fetch(`${backendURL}/api/serve/get-user-trashed-restaurant?uid=${userid}`);
+  
+      if (!response.ok) {
         throw new Error("Internal error. Failed to fetch swipe information.");
       }
-      return response.json();
-    })
-    .then(data => {
-      if(!Object.keys(data).length){
-        // No data found for user. Set local storage empty.
-        // console.log("No restaurants swiped from user.")
+  
+      const data = await response.json();
+  
+      if (!Object.keys(data).length) {
         setTrashedRestaurants([]);
-      } else {
-        setTrashedRestaurants([]);
-        data.forEach((result) => {
-          let restaurant_info = fetchRestaurantInfo(result.placeid);
-          restaurant_info.then(result => {
-            setTrashedRestaurants(prevSwipes => [...prevSwipes, result[0].name])
-          })
-        })
+        return;
       }
-    });
+  
+      // Reset state before setting new values
+      setTrashedRestaurants([]);
+  
+      // Wait for all fetchRestaurantInfo calls to resolve
+      const restaurantInfoPromises = data.map((result) =>
+        fetchRestaurantInfo(result.placeid)
+      );
+  
+      const restaurantInfoResults = await Promise.all(restaurantInfoPromises);
+  
+      const trashedNames = restaurantInfoResults.map(result => result[0].name);
+  
+      setTrashedRestaurants(trashedNames);
+    } catch (error) {
+      console.error("Error loading trashed restaurants:", error);
+    }
   };
+  
+  const resetBackendData = () => {
 
+    fetchRestaurants();
+    setPendingMaxDistance(50);
+    setPendingMinRating(0);
+    setPendingPriceLevels([]);
+  };
 
   const applyFilters = () => {
     // Update active filter state
@@ -199,6 +232,7 @@ function App() {
       console.log("Fetched restaurants data:", data);
       // Map the restaurants 
       const mappedRestaurants = data.map(r => new Restaurant(
+
         r.id,
         r.displayName?.text,
         r.rating,
@@ -216,7 +250,10 @@ function App() {
         r.currentOpeningHours?.openNow ?? false,
         r.nationalPhoneNumber,
         r.photos,
-        r.distanceFromCenter || 0
+        r.distanceFromCenter || 0,
+        r.types[0] || "Unknown", 
+        r.userRatingCount,
+        r.regularOpeningHours?.periods || [],   
       ));
 
       // Store original and filtered data
@@ -232,10 +269,12 @@ function App() {
   const handleSwipe = (direction, restaurant) => {
     console.log(`You swiped ${direction} on ${restaurant.name}`);
     if (direction === 'right') {
+      triggerHeart();
       setFilteredRestaurants((prev) => prev.filter(r => r.id !== restaurant.id));
       setBackendData((prev) => prev.filter(r => r.id !== restaurant.id));
       toggleFavorite(restaurant);
     } else if (direction === 'left') {
+      triggerTrash();
       setFilteredRestaurants((prev) => prev.filter(r => r.id !== restaurant.id));
       setBackendData((prev) => prev.filter(r => r.id !== restaurant.id));
       toggleTrashed(restaurant);
@@ -454,10 +493,12 @@ function App() {
 
   return (
     <div className="App">
+      <HeartFlash ref={heartRef} />
+      <TrashFlash ref={trashRef} />
       <Navigation
         clearFavorites={clearFavorites}
         clearTrashed={clearTrashed}
-        resetBackendData={fetchRestaurants}
+        resetBackendData={resetBackendData}
         backendData={backendData}
         handleSwipe={handleSwipe}
         likedRestaurants={favoriteRestaurants}

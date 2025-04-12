@@ -26,9 +26,9 @@ const LoginPic = () => {
       }}
       >
       <div style={{
-        width: 40,
-        height: 40,
-        padding: '.5em',
+        width: 50,
+        height: 50,
+        padding: 0,
         margin: '.1em',
         borderRadius: 50,
         overflow: 'hidden',
