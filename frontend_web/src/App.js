@@ -236,7 +236,8 @@ function App() {
         r.photos,
         r.distanceFromCenter || 0,
         r.types[0] || "Unknown", 
-        r.userRatingCount
+        r.userRatingCount,
+        r.regularOpeningHours?.periods || [],   
       ));
 
       // Store original and filtered data

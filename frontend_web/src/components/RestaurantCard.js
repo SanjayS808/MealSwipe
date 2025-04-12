@@ -50,6 +50,7 @@ function RestaurantCard({ restaurant}) {
 
   const [showModal, setShowModal] = useState(false);
   const handleClick = () => {
+    console.log({restaurant});
     if (!showModal){
       setShowModal(true);
       console.log(showModal);

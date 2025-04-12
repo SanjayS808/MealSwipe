@@ -4,11 +4,12 @@ import { MapPin, Globe, Phone } from "lucide-react";
 import StarRating from "./StarRating";
 
 import ReviewCarousel from './ModalComponents/ReviewCarousel';
+import OpeningHours from './ModalComponents/OpeningHours';
 function RestaurantModal({ restaurant }) {
     return (
-        <div class="cardModal">
+        <div className="cardModal">
             
-            <div class="image_container">
+            <div className="image_container">
             <img 
                 src={restaurant.imageUrl} 
                 alt={restaurant.name} 
@@ -16,7 +17,7 @@ function RestaurantModal({ restaurant }) {
                 />
             </div>
             
-            <div class="title">
+            <div className="title">
                 <h4>{restaurant.name}</h4>
                 <h6>{restaurant.address}</h6>
             </div>
@@ -28,7 +29,7 @@ function RestaurantModal({ restaurant }) {
                 backgroundColor: '#ccc', // or any color
                 
             }} />
-            <div class="description" style= {{margin:0}}>
+            <div className="description" style= {{margin:0}}>
                 <p style= {{margin:0, fontStyle: 'italic' }}>{restaurant.generativeSummary}</p>
             </div>
             <div style={{
@@ -37,21 +38,21 @@ function RestaurantModal({ restaurant }) {
                 backgroundColor: '#ccc', // or any color
                 
             }} />
-            <div class = "info">
-                <div class="info_item">
+            <div className = "info">
+                <div className="info_item">
                     
                     <p>{restaurant.distanceFromUser} miles</p>
                 </div>
-                <div class="info_item">
+                <div className="info_item">
                     
                 <StarRating rating={restaurant.rating} />
                 <p>{restaurant.ratingsCount}</p>
                 </div>
-                <div class="info_item">
+                <div className="info_item">
                     
                     
                 </div>
-                <div class="info_item">
+                <div className="info_item">
                     
                     {
                         restaurant.price === "PRICE_LEVEL_INEXPENSIVE" ? 
@@ -71,22 +72,22 @@ function RestaurantModal({ restaurant }) {
                 marginBottom: '.5em'
             }} />
 
-            <div class = "info">
-                <div class="info_item">
+            <div className = "info">
+                <div className="info_item">
                     
                     <a href={restaurant.googleMapsLink} target="_blank" rel="noreferrer" className="icon-wrapper">
                     <MapPin size={16} className="icon"/> {/* Google Maps Icon */}
                     </a>
                     
                 </div>
-                <div class="info_item">
+                <div className="info_item">
                     
                 <a href={restaurant.website} target="_blank" rel="noreferrer" className="icon-wrapper">
                     <Globe size={16} className="icon"/> {/* Website Icon */}
                     </a>
                     
                 </div>
-                <div class="info_item">
+                <div className="info_item">
                     
                 <a href={`tel:${restaurant.phoneNumber}` } className="icon-wrapper">
                     
@@ -106,6 +107,22 @@ function RestaurantModal({ restaurant }) {
             }} />
 
             <ReviewCarousel reviews={restaurant.reviews} />
+            <div style={{
+                width: '100%',
+                height: '1px',
+                backgroundColor: '#ccc', // or any color
+                marginTop: '.5em'
+            }} />
+            <OpeningHours openingHours={restaurant.openingHours} />
+
+            <div style={{
+                width: '100%',
+                height: '1px',
+                backgroundColor: '#ccc', // or any color
+                marginTop: '.5em'
+            }} />
+
+            
             </div>
 
     )
