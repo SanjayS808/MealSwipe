@@ -323,7 +323,8 @@ function App() {
       price: restaurant.price,
       rating: restaurant.rating,
       weburl: restaurant.website,
-      gmapurl: restaurant.googleMapsLink
+      gmapurl: restaurant.googleMapsLink,
+      address: restaurant.address
     };
 
     let json_body_data = JSON.stringify(api_body_data);
@@ -399,7 +400,8 @@ function App() {
       price: restaurant.price,
       rating: restaurant.rating,
       weburl: restaurant.website,
-      gmapurl: restaurant.googleMapsLink
+      gmapurl: restaurant.googleMapsLink,
+      address: restaurant.address
     };
 
     let json_body_data = JSON.stringify(api_body_data);

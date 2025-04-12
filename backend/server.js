@@ -213,7 +213,7 @@ app.post("/api/serve/add-restaurant", async (req, res) => {
     // Check and insert all information needed for creating new user.
     const hasNullValue = (array) => array.some(element => element === undefined);
     const uinfo = [req.body.rid, req.body.rname, req.body.price, req.body.rating,
-        req.body.weburl, req.body.gmapurl];
+        req.body.weburl, req.body.gmapurl, req.body.address];
     if(hasNullValue(uinfo)) {
         console.error('Could not create user. User information is missing.');
         res.status(400).json({error: 'Could not create user. User information is missing.'});
@@ -245,7 +245,7 @@ app.post("/api/serve/add-restaurant", async (req, res) => {
 
     const add_query = `INSERT INTO Restaurants 
     VALUES ('${req.body.rid}', '${sanitize_text(req.body.rname)}', ${num_price_level}, ${req.body.rating},
-    '${req.body.weburl}', '${req.body.gmapurl}');`;
+    '${req.body.weburl}', '${req.body.gmapurl}', '${req.body.address}');`;
 
     const get_query = `SELECT * FROM Restaurants WHERE name='${sanitize_text(req.body.rname)}'`;
 
@@ -366,6 +366,8 @@ app.post("/api/serve/add-user-favorite-restaurant", async (req, res) => {
      const add_query = `INSERT INTO liked_swipes 
      VALUES ((SELECT userid FROM Users WHERE userid='${req.body.uid}'), 
      (SELECT placeid FROM Restaurants WHERE placeid='${req.body.rid}'));`;
+
+     console.log(add_query)
  
      try {
          // If not add, user.
@@ -374,7 +376,6 @@ app.post("/api/serve/add-user-favorite-restaurant", async (req, res) => {
             res.status(200).json({warning: `Username ${req.body.rname} already exists.`});
             return;
         }
-
 
          const add_result = await pool.query(add_query);
          if(add_result.rowCount != 1) {

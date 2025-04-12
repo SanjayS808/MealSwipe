@@ -29,6 +29,7 @@
     "react-router-dom": "^7.2.0",
     "react-scripts": "^5.0.1",
     "react-tinder-card": "^1.6.4",
+    "styled-components": "^6.1.17",
     "web-vitals": "^2.1.4"
   },
   "scripts": {
