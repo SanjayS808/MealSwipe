@@ -6,8 +6,8 @@ const Loader = () => {
         
     <div class="mainPizza">
     <svg
-        width="168"
-        height="158"
+        width="5em"
+        height="5em"
         viewBox="0 0 168 158"
         fill="none"
         xmlns="http://www.w3.org/2000/svg"
