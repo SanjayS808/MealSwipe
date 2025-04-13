@@ -33,3 +33,13 @@
     text-align: center;
     padding: px 0;
   }
+
+  .logodiv{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+  }
+  .logodiv > *{
+    margin: 0;
+  }

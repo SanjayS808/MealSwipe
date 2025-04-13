@@ -12,6 +12,13 @@
   }
   body {
     overflow: hidden; /* Disable scrolling on the whole page */
+    background-image: url('./pizza_background.png');
+    background-repeat: repeat;
+    background-size: 300px 200px;
+    background-color: rgba(255, 255, 255, 0.5); /* fade layer */
+    background-blend-mode: lighten;
+    
+    
   }
   
   .App {
