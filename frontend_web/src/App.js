@@ -113,7 +113,6 @@ function App() {
     setIsLoading(true);  // ✅ always hide loader
     console.log("Loading favorites...");
     if (user === null) return;
-  
     let userid = uid;
   
     try {
