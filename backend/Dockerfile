@@ -18,8 +18,21 @@ ENV DB_URL_PATH=${DB_URL_PATH}
 # Use production node environment by default.
 ENV NODE_ENV production
 
-
 WORKDIR /usr/src/app
+
+ARG NODE_ENV=development
+ARG DB_PASSWORD_DEV
+ARG DB_PASSWORD_PROD
+ARG DB_USER_DEV
+ARG DB_USER_PROD
+ARG DB_URL_PATH
+
+ENV NODE_ENV=${NODE_ENV}
+ENV DB_PASSWORD_DEV=${DB_PASSWORD_DEV}
+ENV DB_PASSWORD_PROD=${DB_PASSWORD_PROD}
+ENV DB_USER_DEV=${DB_USER_DEV}
+ENV DB_USER_PROD=${DB_USER_PROD}
+ENV DB_URL_PATH=${DB_URL_PATH}
 
 # Download dependencies as a separate step to take advantage of Docker's caching.
 # Leverage a cache mount to /root/.npm to speed up subsequent builds.

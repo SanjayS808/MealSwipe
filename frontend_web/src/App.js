@@ -333,10 +333,7 @@ function App() {
     }
   };
 
-
   const clearFavorites = async () => {
-
-    
     setFavoriteRestaurants([]);
     if(user === null) {return ;} // We do not want to load API if we have no user.
     const userid = await fetchuid();
