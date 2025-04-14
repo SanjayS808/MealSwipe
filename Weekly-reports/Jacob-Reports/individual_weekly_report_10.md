@@ -4,7 +4,7 @@ Jacob Miller:
 
 MealSwipe:
 
-04/07:
+04/14:
 
 ## Current Status
 
@@ -12,19 +12,20 @@ MealSwipe:
 
 | Task | Status | Time Spent |
 | :---- | :---- | :---- |
-| Make modal fill up whole screen and display more information | in progress | 3 hours |
+| Add toggle to switch from miles to kilometers | Complete | 3 hours |
 |  |  |  |
 |  |  |  |
 
 *Include screenshots/diagrams/figures/etc. to illustrate what you did this past week.*  
 *![][image1]*
-![ModalCode](https://github.com/user-attachments/assets/a9ee348b-3432-4d83-a89f-dfe4c215dde4)
+![Filterkilometres](https://github.com/user-attachments/assets/ae9109f9-12ea-4335-b4d9-538779a597e6)
+![Filtermiles](https://github.com/user-attachments/assets/868e4aa6-307d-4fbb-b0de-d0ca2b5e3cb9)
 
 
 ### What problems did you run into? What is your plan for them?
 
-Errors pushing to branch on gitHub
-.db file was accidentaly deleted.
+Errors when pulling from dev on GitHub
+Distance slider wasn't working as expected when switching from miles to kilometers (issue resolved).
 
 ### What is the current overall project status from your perspective?
 
