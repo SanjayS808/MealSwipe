@@ -42,50 +42,17 @@ jobs:
         with:
           node-version: '18'
 
-      - name: Debug Docker Build Args
+      - name: Build Backend Docker Image
         run: |
-          # Create a test Dockerfile that prints the build args
-          cat > debug.Dockerfile << 'EOF'
-          FROM alpine
-          ARG DB_PASSWORD_DEV
-          ARG DB_PASSWORD_PROD
-          ARG DB_USER_DEV
-          ARG DB_USER_PROD
-          ARG DB_URL_PATH
+          echo "Building with NODE_ENV: ${{ github.ref == 'refs/heads/main' && 'production' || 'development' }}"
           
-          RUN echo "DB_PASSWORD_DEV exists: $(if [ -n "$DB_PASSWORD_DEV" ]; then echo "YES"; else echo "NO"; fi)"
-          RUN echo "DB_PASSWORD_PROD exists: $(if [ -n "$DB_PASSWORD_PROD" ]; then echo "YES"; else echo "NO"; fi)"
-          RUN echo "DB_USER_DEV exists: $(if [ -n "$DB_USER_DEV" ]; then echo "YES"; else echo "NO"; fi)"
-          RUN echo "DB_USER_PROD exists: $(if [ -n "$DB_USER_PROD" ]; then echo "YES"; else echo "NO"; fi)"
-          RUN echo "DB_URL_PATH exists: $(if [ -n "$DB_URL_PATH" ]; then echo "YES"; else echo "NO"; fi)"
-          EOF
-          
-          # Build with the same args to test
           docker build \
+            --build-arg NODE_ENV=${{ github.ref == 'refs/heads/main' && 'production' || 'development' }} \
             --build-arg DB_PASSWORD_DEV="${{ secrets.DB_PASSWORD_DEV }}" \
             --build-arg DB_PASSWORD_PROD="${{ secrets.DB_PASSWORD_PROD }}" \
             --build-arg DB_USER_DEV="${{ secrets.DB_USER_DEV }}" \
             --build-arg DB_USER_PROD="${{ secrets.DB_USER_PROD }}" \
             --build-arg DB_URL_PATH="${{ secrets.DB_URL_PATH }}" \
-            -f debug.Dockerfile .
-
-      - name: Build Backend Docker Image
-        env:
-          # Pass environment-specific variables as build arguments
-          NODE_ENV: ${{ github.ref == 'refs/heads/main' && 'production' || 'development' }}
-          DB_PASSWORD_DEV: ${{ secrets.DB_PASSWORD_DEV }}
-          DB_PASSWORD_PROD: ${{ secrets.DB_PASSWORD_PROD }}
-          DB_USER_DEV: ${{ secrets.DB_USER_DEV }}
-          DB_USER_PROD: ${{ secrets.DB_USER_PROD }}
-          DB_URL_PATH: ${{ secrets.DB_URL_PATH }}
-        run: |
-          docker build \
-            --build-arg NODE_ENV=$NODE_ENV \
-            --build-arg DB_PASSWORD_DEV=$DB_PASSWORD_DEV \
-            --build-arg DB_PASSWORD_PROD=$DB_PASSWORD_PROD \
-            --build-arg DB_USER_DEV=$DB_USER_DEV \
-            --build-arg DB_USER_PROD=$DB_USER_PROD \
-            --build-arg DB_URL_PATH=$DB_URL_PATH \
             -t $ECR_BACKEND_REPO:latest ./backend
 
       - name: Build Frontend
