@@ -2,9 +2,7 @@ require('dotenv').config();
 const { Pool } = require('pg');
 
 // Determine credentials based on environment
-const dbPassword = process.env.NODE_ENV === 'production' 
-    ? process.env.DB_PASSWORD_PROD 
-    : process.env.DB_PASSWORD_DEV;
+const dbPassword = process.env.DB_PASSWORD_DEV;
 
     const dbUser = process.env.NODE_ENV === 'production'
     ? process.env.DB_USER_PROD

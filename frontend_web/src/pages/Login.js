@@ -2,7 +2,6 @@ import { View, Text, TouchableOpacity, StyleSheet, Dimensions, Image, ScrollView
 import { Link } from 'react-router-dom';
 import pizzaimg from './login-img/login-pizza.png';
 import GoogleLoginButton from './GoogleLoginButton';
-
 const { width, height } = Dimensions.get("window");
 
 const Login = () => {
