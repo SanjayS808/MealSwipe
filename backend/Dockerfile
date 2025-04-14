@@ -10,6 +10,11 @@ ARG NODE_VERSION=18.19.1
 
 FROM node:${NODE_VERSION}-alpine
 
+ENV DB_PASSWORD_PRDD=${DB_PASSWORD_PRDD}
+ENV  DB_USER_PROD=${DB_USER_PROD}
+ENV DB_URL_PATH=${DB_URL_PATH}
+
+
 # Use production node environment by default.
 ENV NODE_ENV production
 

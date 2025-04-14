@@ -17,6 +17,13 @@ jobs:
       CDK_STACK: MealSwipeAppService
       ECR_BACKEND_REPO: mealswipe/backend-repo
       S3_FRONTEND_BUCKET: mealswipe-frontend
+
+      DB_PASSWORD_PRDD: ${{ secrets.DB_PASSWORD_PRDD }}
+      DB_USER_PROD: ${{ secrets.DB_USER_PROD }}
+      DB_URL_PATH: ${{ secrets.DB_URL_PATH }}
+      REACT_APP_GOOGLE_WEB_CLIENT_ID: ${{ secrets.REACT_APP_GOOGLE_WEB_CLIENT_ID }}
+      REACT_APP_GOOGLE_CLIENT_SECRET: ${{ secrets.REACT_APP_GOOGLE_CLIENT_SECRET }}
+
     steps:
       - name: Checkout Code
         uses: actions/checkout@v3
