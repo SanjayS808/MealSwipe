@@ -1,0 +1,110 @@
+{
+    "VpcEndpoints": [
+        {
+            "VpcEndpointId": "vpce-0031d982a332dab6c",
+            "VpcEndpointType": "Interface",
+            "VpcId": "vpc-089ef37028c15194c",
+            "ServiceName": "com.amazonaws.us-west-1.ecr.api",
+            "State": "available",
+            "PolicyDocument": "{\n  \"Statement\": [\n    {\n      \"Action\": \"*\", \n      \"Effect\": \"Allow\", \n      \"Principal\": \"*\", \n      \"Resource\": \"*\"\n    }\n  ]\n}",
+            "RouteTableIds": [],
+            "SubnetIds": [
+                "subnet-06866f8b3dd8882f3"
+            ],
+            "Groups": [
+                {
+                    "GroupId": "sg-0b290b1c9143b86b6",
+                    "GroupName": "MealSwipeAppService-EcrEndpointSecurityGroupEFD0E50B-bNbYPBmDNHrq"
+                }
+            ],
+            "IpAddressType": "ipv4",
+            "DnsOptions": {
+                "DnsRecordIpType": "ipv4"
+            },
+            "PrivateDnsEnabled": true,
+            "RequesterManaged": false,
+            "NetworkInterfaceIds": [
+                "eni-03c1f18fa4db86a9f"
+            ],
+            "DnsEntries": [
+                {
+                    "DnsName": "vpce-0031d982a332dab6c-vtb8ramq.api.ecr.us-west-1.vpce.amazonaws.com",
+                    "HostedZoneId": "Z12I86A8N7VCZO"
+                },
+                {
+                    "DnsName": "vpce-0031d982a332dab6c-vtb8ramq-us-west-1c.api.ecr.us-west-1.vpce.amazonaws.com",
+                    "HostedZoneId": "Z12I86A8N7VCZO"
+                },
+                {
+                    "DnsName": "api.ecr.us-west-1.amazonaws.com",
+                    "HostedZoneId": "Z06972153SE2M3U7Z1E3C"
+                },
+                {
+                    "DnsName": "ecr.us-west-1.api.aws",
+                    "HostedZoneId": "Z06972101U2R31VRGY26E"
+                }
+            ],
+            "CreationTimestamp": "2025-04-10T14:56:42.060000+00:00",
+            "Tags": [],
+            "OwnerId": "490004633305",
+            "ServiceRegion": "us-west-1"
+        },
+        {
+            "VpcEndpointId": "vpce-061c557c88395b6ae",
+            "VpcEndpointType": "Interface",
+            "VpcId": "vpc-089ef37028c15194c",
+            "ServiceName": "com.amazonaws.us-west-1.ecr.dkr",
+            "State": "available",
+            "PolicyDocument": "{\n  \"Statement\": [\n    {\n      \"Action\": \"*\", \n      \"Effect\": \"Allow\", \n      \"Principal\": \"*\", \n      \"Resource\": \"*\"\n    }\n  ]\n}",
+            "RouteTableIds": [],
+            "SubnetIds": [
+                "subnet-06866f8b3dd8882f3"
+            ],
+            "Groups": [
+                {
+                    "GroupId": "sg-0762fe92f15b3128b",
+                    "GroupName": "MealSwipeAppService-EcrDockerEndpointSecurityGroup5A4BC357-43t32USXZXPV"
+                }
+            ],
+            "IpAddressType": "ipv4",
+            "DnsOptions": {
+                "DnsRecordIpType": "ipv4"
+            },
+            "PrivateDnsEnabled": true,
+            "RequesterManaged": false,
+            "NetworkInterfaceIds": [
+                "eni-02bc591748a56cbc2"
+            ],
+            "DnsEntries": [
+                {
+                    "DnsName": "vpce-061c557c88395b6ae-h2f49e14.dkr.ecr.us-west-1.vpce.amazonaws.com",
+                    "HostedZoneId": "Z12I86A8N7VCZO"
+                },
+                {
+                    "DnsName": "vpce-061c557c88395b6ae-h2f49e14-us-west-1c.dkr.ecr.us-west-1.vpce.amazonaws.com",
+                    "HostedZoneId": "Z12I86A8N7VCZO"
+                },
+                {
+                    "DnsName": "dkr.ecr.us-west-1.amazonaws.com",
+                    "HostedZoneId": "Z0577819I9C1A0F2O7GA"
+                },
+                {
+                    "DnsName": "*.dkr.ecr.us-west-1.amazonaws.com",
+                    "HostedZoneId": "Z0577819I9C1A0F2O7GA"
+                },
+                {
+                    "DnsName": "dkr-ecr.us-west-1.on.aws",
+                    "HostedZoneId": "Z06000892HZEI35YVGGS2"
+                },
+                {
+                    "DnsName": "*.dkr-ecr.us-west-1.on.aws",
+                    "HostedZoneId": "Z06000892HZEI35YVGGS2"
+                }
+            ],
+            "CreationTimestamp": "2025-04-10T14:56:47.002000+00:00",
+            "Tags": [],
+            "OwnerId": "490004633305",
+            "ServiceRegion": "us-west-1"
+        }
+    ]
+}
