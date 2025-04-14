@@ -16,7 +16,7 @@ const navItems = [
   { path: "/favorites", icon: Heart, label: "Favorites" },
 ];
 
-function Navigation({ backendData, likedRestaurants, trashedRestaurants ,handleSwipe, resetBackendData, clearFavorites, clearTrashed,loadFavorites, loadTrashed ,loggedIn,isLoading}) {
+function Navigation({ backendData, likedRestaurants, trashedRestaurants ,handleSwipe, resetBackendData, clearFavorites, clearTrashed,loadFavorites, loadTrashed ,loggedIn,isLoading,deleteRestaurantFromFavorites, deleteRestaurantFromTrash}) {
   const location = useLocation();
   const styles = {
     navContainer: {
@@ -86,9 +86,9 @@ function Navigation({ backendData, likedRestaurants, trashedRestaurants ,handleS
 
 
       <Routes>
-            <Route path="/favorites" element={<FavoritesPage likedRestaurants={likedRestaurants} clearFavorites = {clearFavorites} loadFavorites = {loadFavorites} loggedIn = {loggedIn} isLoading= {isLoading}/>} />
+            <Route path="/favorites" element={<FavoritesPage likedRestaurants={likedRestaurants} clearFavorites = {clearFavorites} loadFavorites = {loadFavorites} loggedIn = {loggedIn} isLoading= {isLoading} deleteRestaurantFromFavorites={deleteRestaurantFromFavorites}/>} />
         <Route path="/" element={<RestaurantList restaurants={backendData} onSwipe={handleSwipe} resetBackendData={resetBackendData} isLoading= {isLoading}/>} />
-            <Route path="/trashed" element={<TrashedPage trashedRestaurants={trashedRestaurants} clearTrashed = {clearTrashed} loadTrashed = {loadTrashed} loggedIn = {loggedIn} isLoading= {isLoading}/>} />
+            <Route path="/trashed" element={<TrashedPage trashedRestaurants={trashedRestaurants} clearTrashed = {clearTrashed} loadTrashed = {loadTrashed} loggedIn = {loggedIn} isLoading= {isLoading} deleteRestaurantFromTrashed={deleteRestaurantFromTrash}/>} />
         <Route path="/login" element={<Login />} />
         <Route path="/profile" element={<ProfilePage/>}/>
       </Routes>
