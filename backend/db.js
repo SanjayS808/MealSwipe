@@ -20,4 +20,17 @@ const pool = new Pool({
     ssl: process.env.NODE_ENV === 'production' ? { rejectUnauthorized: false } : false
 });
 
+console.log(dbPassword)
+console.log(dbUser)
+console.log(
+    {
+    user: dbUser,
+    host: process.env.DB_URL_PATH,
+    database: 'dev',
+    password: dbPassword,
+    port: 5432,  // Default PostgreSQL port
+    ssl: process.env.NODE_ENV === 'production' ? { rejectUnauthorized: false } : false
+}
+)
+
 module.exports = pool;
