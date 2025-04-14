@@ -4,7 +4,7 @@ import { useUser } from "../context/UserContext"
 import { useNavigate } from "react-router-dom";
 import { DEV_MODE } from "../config"
 
-const backendURL = (DEV_MODE) ? "http://localhost:5001"  : "http://MealSw-Backe-k0cJtOkGFP3i-29432626.us-west-1.elb.amazonaws.com";
+const backendURL = (DEV_MODE) ? "http://localhost:5001"  : "https://backend.app-mealswipe.com/";
 
 const ProfilePage = () => {
   const [name, setName] = useState("John Doe");

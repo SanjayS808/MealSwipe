@@ -12,7 +12,7 @@ import { motion } from "framer-motion";
 import HeartFlash from './components/Heart';
 import TrashFlash from './components/TrashIcon';
 import Loader from "./components/Loader";
-const backendURL = (DEV_MODE) ? "http://localhost:5001"  : "http://MealSw-Backe-k0cJtOkGFP3i-29432626.us-west-1.elb.amazonaws.com";
+const backendURL = (DEV_MODE) ? "http://localhost:5001"  : "https://backend.app-mealswipe.com";
 
 function App() {
   const [originalBackendData, setOriginalBackendData] = useState([]);
