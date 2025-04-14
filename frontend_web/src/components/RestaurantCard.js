@@ -4,7 +4,6 @@ import React, {useState} from "react";
 import "./Card.css";
 import StarRating from "./StarRating";
 import { MapPin, Globe, Phone } from "lucide-react"; 
-import Modal from "./Modal";
 
 import RestaurantModal from "./RestaurantModal";
 
