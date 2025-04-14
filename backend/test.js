@@ -9,6 +9,10 @@ jest.mock('./db', () => ({
   query: jest.fn()
 }));
 
+beforeEach(() => {
+  jest.clearAllMocks();
+});
+
 // Test ): Get all the restaurants..
 describe('GET /api/serve/get-all-restaurants', () => {
   it('GET should return a list of all restaurants from maxDistance', async () => {
@@ -284,7 +288,8 @@ describe('API Endpoints', () => {
         price: 'PRICE_LEVEL_MODERATE',
         rating: 4.5,
         weburl: 'http://example.com',
-        gmapurl: 'http://maps.google.com'
+        gmapurl: 'http://maps.google.com',
+        address: '123 Silly Street'
       };
 
       const response = await request(app)
@@ -318,7 +323,8 @@ describe('API Endpoints', () => {
         price: 'PRICE_LEVEL_MODERATE',
         rating: 4.5,
         weburl: 'http://example.com',
-        gmapurl: 'http://maps.google.com'
+        gmapurl: 'http://maps.google.com',
+        address: '123 Silly St.'
       };
 
       const response = await request(app)
@@ -429,7 +435,7 @@ describe('API Endpoints', () => {
         .send(data);
 
       expect(response.status).toBe(200);
-      expect(response.body).toEqual({ warning: `Username ${data.rname} already exists.` });
+      expect(response.body).toEqual({ warning: `Swipe with ${data.rname} already exists.` });
       expect(pool.query).toHaveBeenCalledTimes(1);
     });
   });
@@ -739,11 +745,6 @@ describe('API Endpoints', () => {
       expect(response.body).toEqual({ "restaurants": ["resOne", "resTwo"] });
     });
   });
-});
-
-
-beforeEach(() => {
-  jest.clearAllMocks();
 });
 
 afterAll(() => {
