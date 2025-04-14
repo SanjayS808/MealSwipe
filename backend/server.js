@@ -527,10 +527,12 @@ if (DEV_MODE) {
 } else {
     // Node.js Express example
     server = app.use(cors({
-        origin: '',
-        methods: ['GET', 'POST', 'PUT', 'DELETE'],
-        allowedHeaders: ['Content-Type', 'Authorization']
-    })).listen(5001, () => console.log("Server started on port 5001"));
+        origin: '*', // Consider restricting this in production
+        methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
+        credentials: true,
+        optionsSuccessStatus: 204,
+        exposedHeaders: ['Content-Length', 'X-Requested-With']
+      }));
 }
 
 // Exporting app for testing.
