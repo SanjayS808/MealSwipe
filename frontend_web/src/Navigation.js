@@ -71,51 +71,66 @@ function Navigation({ backendData, likedRestaurants, trashedRestaurants ,handleS
   };
 
   return (
-    <div>
-      <div style={{
-        zIndex: 100,
-      }} className="header">
-        <LoginPic></LoginPic>
-        <div className = 'logodiv' style= {{display: 'flex', flexDirection: 'row', alignItems: 'center', justifyContent: 'center'}}>
-          <h1 style= {{marginLeft: '0em'}}>mealswipe</h1>
-          <img src= {logo} alt="noimage" style={{ width: '25px', height: 'auto' ,marginLeft: '0em'}} className = 'logoimage' onClick={handleLogoClick} ref={logoRef}></img>
+    <div style={{ 
+      display: 'flex', 
+      flexDirection: 'column', 
+      height: '100vh' // Full height of the viewport
+    }}>
+      {/* Fixed Header */}
+      <div className="header" style={{ zIndex: 100 }}>
+        <LoginPic />
+        <div className="logodiv" style={{ display: 'flex', flexDirection: 'row', alignItems: 'center', justifyContent: 'center' }}>
+          <h1 style={{ marginLeft: '0em' }}>mealswipe</h1>
+          <img
+            src={logo}
+            alt="noimage"
+            style={{ width: '25px', height: 'auto', marginLeft: '0em' }}
+            className="logoimage"
+            onClick={handleLogoClick}
+            ref={logoRef}
+          />
         </div>
-        
       </div>
-
-
-      <Routes>
-            <Route path="/favorites" element={<FavoritesPage likedRestaurants={likedRestaurants} clearFavorites = {clearFavorites} loadFavorites = {loadFavorites} loggedIn = {loggedIn} isLoading= {isLoading} deleteRestaurantFromFavorites={deleteRestaurantFromFavorites}/>} />
-        <Route path="/" element={<RestaurantList restaurants={backendData} onSwipe={handleSwipe} resetBackendData={resetBackendData} isLoading= {isLoading}/>} />
-            <Route path="/trashed" element={<TrashedPage trashedRestaurants={trashedRestaurants} clearTrashed = {clearTrashed} loadTrashed = {loadTrashed} loggedIn = {loggedIn} isLoading= {isLoading} deleteRestaurantFromTrashed={deleteRestaurantFromTrash}/>} />
-        <Route path="/login" element={<Login />} />
-        <Route path="/profile" element={<ProfilePage/>}/>
-      </Routes>
-
-
+    
+      {/* Scrollable Content Area */}
+      <div style={{
+        flex: 1, // fills the remaining vertical space
+        overflowY: 'auto',
+        paddingBottom: '64px', // make room for the footer height
+      }}>
+        <Routes>
+          <Route path="/favorites" element={<FavoritesPage likedRestaurants={likedRestaurants} clearFavorites={clearFavorites} loadFavorites={loadFavorites} loggedIn={loggedIn} isLoading={isLoading} deleteRestaurantFromFavorites={deleteRestaurantFromFavorites} />} />
+          <Route path="/" element={<RestaurantList restaurants={backendData} onSwipe={handleSwipe} resetBackendData={resetBackendData} isLoading={isLoading} />} />
+          <Route path="/trashed" element={<TrashedPage trashedRestaurants={trashedRestaurants} clearTrashed={clearTrashed} loadTrashed={loadTrashed} loggedIn={loggedIn} isLoading={isLoading} deleteRestaurantFromTrashed={deleteRestaurantFromTrash} />} />
+          <Route path="/login" element={<Login />} />
+          <Route path="/profile" element={<ProfilePage />} />
+        </Routes>
+      </div>
+    
+      {/* Fixed Footer */}
       <nav style={styles.navContainer}>
-      {navItems.map(({ path, icon: Icon, label }) => {
-        const isActive = location.pathname === path;
-
-        return (
-          <Link to={path} key={path} aria-label={label} style={styles.link}>
-            <div style={styles.iconWrapper}>
-              <Icon
-                size={24}
-                color={isActive ? "#ffffff" : "#9ca3af"}
-                style={styles.icon}
-              />
-              {isActive && (
-                <motion.div
-                  layoutId="active-indicator"
-                  style={styles.activeIndicator}
+        {navItems.map(({ path, icon: Icon, label }) => {
+          const isActive = location.pathname === path;
+    
+          return (
+            <Link to={path} key={path} aria-label={label} style={styles.link}>
+              <div style={styles.iconWrapper}>
+                <Icon
+                  size={24}
+                  color={isActive ? "#ffffff" : "#9ca3af"}
+                  style={styles.icon}
                 />
-              )}
-            </div>
-          </Link>
-        );
-      })}
-    </nav>
+                {isActive && (
+                  <motion.div
+                    layoutId="active-indicator"
+                    style={styles.activeIndicator}
+                  />
+                )}
+              </div>
+            </Link>
+          );
+        })}
+      </nav>
     </div>
   );
 }

@@ -1,14 +1,11 @@
-// This Component is used to display a restaurant card in the Tinder-like interface.
-
-import React, {useState} from "react";
+import React, { useState } from "react";
 import "./Card.css";
 import StarRating from "./StarRating";
-import { MapPin, Globe, Phone } from "lucide-react"; 
-
+import { MapPin, Globe, Phone, MoreHorizontal } from "lucide-react";
 import RestaurantModal from "./RestaurantModal";
 
 function RestaurantCard({ restaurant, allowSwipe, setAllowSwipe }) {
-  
+  const [showModal, setShowModal] = useState(false);
 
   const modalStyles = {
     overlay: {
@@ -29,165 +26,150 @@ function RestaurantCard({ restaurant, allowSwipe, setAllowSwipe }) {
       overflowY: 'auto',
       position: 'relative',
     },
-    closeButton: {
-      position: 'absolute',
-      top: '10px',
-      right: '10px',
-      border: 'none',
-      fontSize: '1.2em',
-      cursor: 'pointer',
-      zIndex: 9999       // DEBUG
-    },
-    reviewItem: {
-      margin: '1em 0',
-      borderBottom: '1px solid #ddd',
-      paddingBottom: '0.5em',
-    },
   };
 
-
-
-
-  const [showModal, setShowModal] = useState(false);
   const handleClick = () => {
-    console.log({restaurant});
-    if (!showModal){
+    if (!showModal) {
       setShowModal(true);
       setAllowSwipe(false);
-      console.log(showModal);
     }
-    
-    
   };
+
   const handleClose = () => {
     setShowModal(false);
     setAllowSwipe(true);
-    console.log("off");
-  }
+  };
 
   return (
-    <div className="card" onClick={handleClick} onTouchStart={handleClick}style={{ cursor: "pointer" }}>
+    <div className="card">
       <div className="card-image">
-        <img src={restaurant.imageUrl} draggable="false" style={{ width: "100%", height: "100%", objectFit: "cover" }} alt={restaurant.name} />
+        <img
+          src={restaurant.imageUrl}
+          draggable="false"
+          alt={restaurant.name}
+          style={{ width: "100%", height: "100%", objectFit: "cover" }}
+        />
       </div>
-      <div className="card-content">
-      <h3 style= {{fontSize: "1.1em", marginBottom: "0.25em"}}>
+
+      <div
+        className="card-content"
+        style={{
+          display: 'grid',
+          gridTemplateRows: 'auto auto auto auto',
+          gap: '0.5rem',
+        }}
+      >
+        {/* Title */}
+        <h3 style={{ fontSize: "1.1em" }}>
           {restaurant.name.length > 25
-            ? restaurant.name.slice(0, 25) + '...'
+            ? restaurant.name.slice(0, 25) + "..."
             : restaurant.name}
         </h3>
-            
-        <h4 style= {{marginBottom: ".5rem"}}> <MapPin size={18} className="icon"/> {restaurant.distanceFromUser} miles</h4>
-        <div className="restaurant-details" >
-          
-          <div className="info" style={{ display: "flex", justifyContent: "space-evenly" , marginBottom: "1em", marginTop: "0.5em"}}>
-            <div className="info_item" style = {{marginRight: "0.5em"}}>
-              <StarRating rating={restaurant.rating} />
-             
-            </div>
-            <div className="info" style = {{marginRight: "0.5em"}}>
-              <h3>{restaurant.ratingsCount} reviews</h3>
-            </div>
-            <div className="info_item" style = {{marginRight: "0.5em"}}>
-            {
-              restaurant.price === "PRICE_LEVEL_INEXPENSIVE" ? 
-              (<h3 style = {{color: '#6b8e23',fontWeight: 'bold',} }>$</h3>) : restaurant.price === "PRICE_LEVEL_MODERATE" ?
-              (<h3 style = {{color: '#6b8e23',fontWeight: 'bold'}}>$$</h3>) : restaurant.price === "PRICE_LEVEL_EXPENSIVE" ?
-              (<h3 style = {{color: '#6b8e23',fontWeight: 'bold'}}>$$$</h3>) : restaurant.price === "PRICE_LEVEL_VERY_EXPENSIVE" ?
-              (<h3 style = {{color: '#6b8e23',fontWeight: 'bold'}}>$$$$</h3>) : null
-            }
-            </div>
-          
-          </div>
-          
-          {/* <button
-  onClick={() => setShowModal(true)}
-  style={{
-    marginTop: '0em',
-    padding: '5px 10px',               // Padding for button size
-    fontSize: '10px',                    // Font size
-    fontWeight: 'bold',                  // Bold text
-    backgroundColor: '#A9A9A9',         // Green background
-    color: 'white',                     // White text
-    border: 'none',                     // No border
-    borderRadius: '25px',               // Rounded corners
-    cursor: 'pointer',                  // Pointer on hover
-    transition: 'background-color 0.3s ease', // Smooth transition for hover
-  }}
-  onMouseOver={(e) => (e.target.style.backgroundColor = '#899499')} // Hover effect
-  onMouseOut={(e) => (e.target.style.backgroundColor = '#A9A9A9')} // Reset hover effect
->
-  View Reviews
-</button> */}
 
-      {showModal && (
-        <div 
-        style={modalStyles.overlay}
-        onClick={handleClose} // Click on backdrop closes modal
-        >
-          <div 
-            style={modalStyles.modal}
-            onClick={(e) => e.stopPropagation()} // Prevent close when clicking modal content
+        {/* Distance */}
+        <div style={{ display: "flex", alignItems: "center", gap: "0.3em" }}>
+          <MapPin size={18} className="icon" />
+          <span style={{ fontSize: "0.95em" }}>{restaurant.distanceFromUser} miles</span>
+        </div>
+
+        {/* Rating / Reviews / Price */}
+        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap" }}>
+          <StarRating rating={restaurant.rating} />
+          <span style={{ fontSize: "0.9em", marginLeft: "0.5em" }}>{restaurant.ratingsCount} reviews</span>
+          {restaurant.price && (
+            <span style={{ color: '#6b8e23', fontWeight: 'bold', marginLeft: "auto" }}>
+              {"$".repeat(
+                {
+                  PRICE_LEVEL_INEXPENSIVE: 1,
+                  PRICE_LEVEL_MODERATE: 2,
+                  PRICE_LEVEL_EXPENSIVE: 3,
+                  PRICE_LEVEL_VERY_EXPENSIVE: 4,
+                }[restaurant.price] || 0
+              )}
+            </span>
+          )}
+        </div>
+
+        {/* Icons */}
+        <div style={{ display: "flex", justifyContent: "space-around", alignItems: "center", marginTop: "0.5rem" }}>
+          <a
+            href={restaurant.googleMapsLink}
+            target="_blank"
+            rel="noreferrer"
+            className="icon-wrapperC"
+            style={{ backgroundColor: "#F5F5f5" }}
           >
-          <button 
-            onClick={handleClose} 
+            <svg xmlns="http://www.w3.org/2000/svg" height="30" viewBox="0 0 24 24" width="36">
+              <path fill="#4285F4" d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7z" />
+              <circle fill="#34A853" cx="12" cy="9" r="2.5" />
+            </svg>
+          </a>
+
+          <a href={restaurant.website} target="_blank" rel="noreferrer" className="icon-wrapperC" style={{ backgroundColor: "#3399FF" }}>
+            <Globe size={24} className="icon" />
+          </a>
+
+          <a href={`tel:${restaurant.phoneNumber}`} className="icon-wrapperC" style={{ backgroundColor: "#00CC66" }}>
+            <Phone size={24} className="icon" />
+          </a>
+
+          <button
+            onClick={handleClick}
+            onTouchStart={handleClick}
+            className="icon-wrapperC"
             style={{
-              position: 'fixed',
-              top: '5px',
-              right: '5px',
-              width: '30px',
-              height: '30px',
-              borderRadius: '50%',
-              backgroundColor: '#ff4d4f',
-              border: 'none',
-              color: 'black',
-              fontSize: '1.2em',
-              fontWeight: 'bold',
-              cursor: 'pointer',
-              transition: 'background-color 0.2s ease',
-              zIndex: 9999, // Ensure the button is on top
+              backgroundColor: "#FFD700",
+              border: "none",
+              borderRadius: "50%",
+              padding: "0.4em",
+              cursor: "pointer"
             }}
-            onMouseOver={(e) => e.target.style.backgroundColor = '#e60000'}
-            onMouseOut={(e) => e.target.style.backgroundColor = '#ff4d4f'}
           >
-            ✕
+            <MoreHorizontal size={24} className="icon" />
           </button>
+        </div>
+      </div>
 
-            <RestaurantModal restaurant={restaurant}  />
-            
+      {/* Restaurant Modal */}
+      {showModal && (
+        <div
+          style={modalStyles.overlay}
+          onClick={handleClose}
+          onTouchStart={handleClose}
+        >
+          <div
+            style={modalStyles.modal}
+            onClick={(e) => e.stopPropagation()}
+          >
+            <button
+              onClick={handleClose}
+              onTouchStart={handleClose}
+              style={{
+                position: 'absolute',
+                top: '10px',
+                right: '10px',
+                width: '30px',
+                height: '30px',
+                borderRadius: '50%',
+                backgroundColor: '#ff4d4f',
+                border: 'none',
+                color: 'black',
+                fontSize: '1.2em',
+                fontWeight: 'bold',
+                cursor: 'pointer',
+              }}
+              onMouseOver={(e) => (e.target.style.backgroundColor = '#e60000')}
+              onMouseOut={(e) => (e.target.style.backgroundColor = '#ff4d4f')}
+            >
+              ✕
+            </button>
+
+            <RestaurantModal restaurant={restaurant} />
           </div>
         </div>
       )}
-
-        </div>
-        
-        <div className="card-links" style={{marginTop: ".5em", marginBottom: "1em"}}>
-            <a
-              href={restaurant.googleMapsLink}
-              target="_blank" rel="noreferrer" className="icon-wrapperC" style={{backgroundColor: "#F5F5f5"}}>
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                height="30"
-                viewBox="0 0 24 24"
-                width="36"
-              >
-                <path fill="#4285F4" d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7z" />
-                <circle fill="#34A853" cx="12" cy="9" r="2.5" />
-              </svg>
-            </a>
-
-
-            <a href={restaurant.website} target="_blank" rel="noreferrer" className="icon-wrapperC" style={{backgroundColor: "#3399FF"}}>
-              <Globe size={24} className="icon"/> {/* Website Icon */}
-            </a>
-            <a href={`tel:${restaurant.phoneNumber}` } className="icon-wrapperC" style={{backgroundColor: "#00CC66"}}>
-              <Phone size={24} className="icon"/> {/* Call Icon */}
-            </a>
-          </div>
-      </div>
-     </div>
+    </div>
   );
-  
 }
 
 export default RestaurantCard;

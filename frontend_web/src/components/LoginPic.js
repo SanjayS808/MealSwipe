@@ -37,7 +37,7 @@ const LoginPic = () => {
       }}>
         {user && user.picture ? (
           <img
-            src={user.picture}
+            src={user.name}
             alt="Profile"
             style={{
               width: '100%',
