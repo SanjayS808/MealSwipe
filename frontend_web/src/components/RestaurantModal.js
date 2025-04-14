@@ -54,13 +54,13 @@ function RestaurantModal({ restaurant }) {
                 </div>
                 <div className="info_item">
                     
-                    {
-                        restaurant.price === "PRICE_LEVEL_INEXPENSIVE" ? 
-                        (<p>$</p>) : restaurant.price === "PRICE_LEVEL_MODERATE" ?
-                        (<p>$$</p>) : restaurant.price === "PRICE_LEVEL_EXPENSIVE" ?
-                        (<p>$$$</p>) : restaurant.price === "PRICE_LEVEL_VERY_EXPENSIVE" ?
-                        (<p>$$$$</p>) : null
-                    }
+                {
+              restaurant.price === "PRICE_LEVEL_INEXPENSIVE" ? 
+              (<h3 style = {{color: '#6b8e23',fontWeight: 'bold',} }>$</h3>) : restaurant.price === "PRICE_LEVEL_MODERATE" ?
+              (<h3 style = {{color: '#6b8e23',fontWeight: 'bold'}}>$$</h3>) : restaurant.price === "PRICE_LEVEL_EXPENSIVE" ?
+              (<h3 style = {{color: '#6b8e23',fontWeight: 'bold'}}>$$$</h3>) : restaurant.price === "PRICE_LEVEL_VERY_EXPENSIVE" ?
+              (<h3 style = {{color: '#6b8e23',fontWeight: 'bold'}}>$$$$</h3>) : null
+            }
                 </div>
                 
                 

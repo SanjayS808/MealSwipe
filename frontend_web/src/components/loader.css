@@ -1,0 +1,182 @@
+/* From Uiverse.io by AkshatDaxini */ 
+.mainPizza {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-27%, -50%);
+    z-index: 9999; 
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    scale: 1.6;
+    
+    
+  }
+  .mainPizza > div{
+    margin: 0;
+  }
+  
+  #pizza {
+    background-color: transparent;
+    transform-origin: center center;
+    animation: rotate 5s linear infinite;
+    -webkit-animation: rotate 5s linear infinite;
+  }
+  
+  #slice1 {
+    animation: slice1 1s ease-in-out infinite;
+    -webkit-animation: slice1 1s ease-in-out infinite;
+  }
+  
+  #slice2 {
+    animation: slice2 1s ease-in-out infinite;
+    animation-delay: .2s;
+    -webkit-animation: slice2 1s ease-in-out infinite;
+  }
+  
+  #slice3 {
+    animation: slice3 1s ease-in-out infinite;
+    animation-delay: .2s;
+    -webkit-animation: slice3 1s ease-in-out infinite;
+  }
+  
+  #slice4 {
+    animation: slice4 1s ease-in-out infinite;
+    animation-delay: .2s;
+    -webkit-animation: slice4 1s ease-in-out infinite;
+  }
+  
+  #slice5 {
+    animation: slice5 1s ease-in-out infinite;
+    animation-delay: .2s;
+    -webkit-animation: slice5 1s ease-in-out infinite;
+  }
+  
+  #slice6 {
+    animation: slice6 1s ease-in-out infinite;
+    animation-delay: .2s;
+    -webkit-animation: slice6 1s ease-in-out infinite;
+  }
+  
+  @keyframes rotate {
+    0% {
+      transform: rotate(0deg);
+    }
+    100% {
+      transform: rotate(360deg);
+      -webkit-transform: rotate(360deg);
+      -moz-transform: rotate(360deg);
+      -ms-transform: rotate(360deg);
+      -o-transform: rotate(360deg);
+    }
+  }
+  
+  @keyframes slice1 {
+    0%,
+    100% {
+      transform: translate(0, 0);
+      -webkit-transform: translate(0, 0);
+      -moz-transform: translate(0, 0);
+      -ms-transform: translate(0, 0);
+      -o-transform: translate(0, 0);
+    }
+    50% {
+      transform: translate(5%, 5%);
+      -webkit-transform: translate(5%, 5%);
+      -moz-transform: translate(5%, 5%);
+      -ms-transform: translate(5%, 5%);
+      -o-transform: translate(5%, 5%);
+    }
+  }
+  
+  @keyframes slice2 {
+    0%,
+    100% {
+      transform: translate(0, 0);
+      -webkit-transform: translate(0, 0);
+      -moz-transform: translate(0, 0);
+      -ms-transform: translate(0, 0);
+      -o-transform: translate(0, 0);
+    }
+    50% {
+      transform: translate(0%, 7%);
+      -webkit-transform: translate(0%, 7%);
+      -moz-transform: translate(0%, 7%);
+      -ms-transform: translate(0%, 7%);
+      -o-transform: translate(0%, 7%);
+    }
+  }
+  
+  @keyframes slice3 {
+    0%,
+    100% {
+      transform: translate(0, 0);
+      -webkit-transform: translate(0, 0);
+      -moz-transform: translate(0, 0);
+      -ms-transform: translate(0, 0);
+      -o-transform: translate(0, 0);
+    }
+    50% {
+      transform: translate(-5%, 5%);
+      -webkit-transform: translate(-5%, 5%);
+      -moz-transform: translate(-5%, 5%);
+      -ms-transform: translate(-5%, 5%);
+      -o-transform: translate(-5%, 5%);
+    }
+  }
+  
+  @keyframes slice4 {
+    0%,
+    100% {
+      transform: translate(0, 0);
+      -webkit-transform: translate(0, 0);
+      -moz-transform: translate(0, 0);
+      -ms-transform: translate(0, 0);
+      -o-transform: translate(0, 0);
+    }
+    50% {
+      transform: translate(-5%, 0%);
+      -webkit-transform: translate(-5%, 0%);
+      -moz-transform: translate(-5%, 0%);
+      -ms-transform: translate(-5%, 0%);
+      -o-transform: translate(-5%, 0%);
+    }
+  }
+  
+  @keyframes slice5 {
+    0%,
+    100% {
+      transform: translate(0, 0);
+      -webkit-transform: translate(0, 0);
+      -moz-transform: translate(0, 0);
+      -ms-transform: translate(0, 0);
+      -o-transform: translate(0, 0);
+    }
+    50% {
+      transform: translate(0%, -3%);
+      -webkit-transform: translate(0%, -3%);
+      -moz-transform: translate(0%, -3%);
+      -ms-transform: translate(0%, -3%);
+      -o-transform: translate(0%, -3%);
+    }
+  }
+  
+  @keyframes slice6 {
+    0%,
+    100% {
+      transform: translate(0, 0);
+      -webkit-transform: translate(0, 0);
+      -moz-transform: translate(0, 0);
+      -ms-transform: translate(0, 0);
+      -o-transform: translate(0, 0);
+    }
+    50% {
+      transform: translate(5%, 0%);
+      -webkit-transform: translate(5%, 0%);
+      -moz-transform: translate(5%, 0%);
+      -ms-transform: translate(5%, 0%);
+      -o-transform: translate(5%, 0%);
+    }
+  }
+  

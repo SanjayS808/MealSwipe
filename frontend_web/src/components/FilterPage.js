@@ -1,6 +1,6 @@
 import React from 'react';
 import './FilterPage.css';
-
+import { useNavigate } from 'react-router-dom';
 
 const StarRating = ({ rating, onRatingChange }) => {
  const handleStarClick = (event, starValue) => {
@@ -62,8 +62,13 @@ const FilterPage = ({
  setPriceLevels,
  applyFilters,
  onClose,
- isOpen
+ isOpen,
+ types,
+  allowedTypes,
+  setAllowedTypes,
+  fetchRestaurants
 }) => {
+  const navigate = useNavigate();
  const togglePriceLevel = (level) => {
    setPriceLevels(prev =>
      prev.includes(level)
@@ -71,7 +76,20 @@ const FilterPage = ({
        : [...prev, level]
    );
  };
+ const toggleType = (type) => {
+  const allTypesSelected = allowedTypes.length === types.length;
+  if (allTypesSelected) {
+    setAllowedTypes([type]);
+  } else {
+    setAllowedTypes(prev =>
+      prev.includes(type)
+        ? prev.filter(t => t !== type)
+        : [...prev, type]
+    );
+  }
+};
 
+const allTypesSelected = allowedTypes.length === types.length;
 
  return (
    <div className={`filter-page ${isOpen ? 'open' : ''}`}>
@@ -87,6 +105,9 @@ const FilterPage = ({
            max="50"
            value={maxDistance}
            onChange={e => setMaxDistance(parseInt(e.target.value, 10))}
+           style={{
+            accentColor: '#d9413d' 
+          }}
          />
        </div>
       
@@ -95,6 +116,7 @@ const FilterPage = ({
          <StarRating
            rating={minRating}
            onRatingChange={setMinRating}
+           
          />
        </div>
       
@@ -112,13 +134,42 @@ const FilterPage = ({
            ))}
          </div>
        </div>
-      
-       <button
-         className="apply-filters-button"
-         onClick={applyFilters}
-       >
-         Apply Filters
-       </button>
+       <div className="filter-section">
+        <label>Types</label>
+        <div className="type-checkboxes">
+          {types.map((type) => (
+            <label key={type} className="type-option">
+              <input
+                type="checkbox"
+                value={type}
+                checked={!allTypesSelected && allowedTypes.includes(type)}
+                onChange={() => toggleType(type)}
+              />
+              {type.charAt(0).toUpperCase() + type.slice(1)}
+            </label>
+          ))}
+        </div>
+      </div>
+        <div className="filter-buttons">
+          <button
+          className="apply-filters-button"
+          onClick={applyFilters}
+        >
+          Apply Filters
+        </button>
+          <button className='clear-filters-button' onClick={() => {
+            setMaxDistance(50);
+            setMinRating(0);
+            setPriceLevels([]);
+            setAllowedTypes(types);
+            fetchRestaurants();
+            onClose();
+            
+          }}>
+            Clear Filters
+        </button>
+      </div>
+       
      </div>
    </div>
  );
