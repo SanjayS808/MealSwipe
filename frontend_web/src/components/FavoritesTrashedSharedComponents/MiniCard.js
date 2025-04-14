@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import "./styles/miniCard.css";
 
 
-export default function MiniCard({ restaurant, removeRestaurant}) {
+export default function MiniCard({ restaurant, removeRestaurant, text}) {
   const [showModal, setShowModal] = useState(false);
 
   
@@ -82,7 +82,7 @@ export default function MiniCard({ restaurant, removeRestaurant}) {
               ✕
             </button>
               <div>
-                <h4>Are you sure you want to remove {restaurant.name} from your favorites?</h4>
+                <h4>Are you sure you want to remove {restaurant.name} from your {text}?</h4>
               </div>
 
             

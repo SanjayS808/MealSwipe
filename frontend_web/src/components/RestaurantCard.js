@@ -7,8 +7,8 @@ import { MapPin, Globe, Phone } from "lucide-react";
 
 import RestaurantModal from "./RestaurantModal";
 
-function RestaurantCard({ restaurant}) {
-
+function RestaurantCard({ restaurant, allowSwipe, setAllowSwipe }) {
+  
 
   const modalStyles = {
     overlay: {
@@ -53,6 +53,7 @@ function RestaurantCard({ restaurant}) {
     console.log({restaurant});
     if (!showModal){
       setShowModal(true);
+      setAllowSwipe(false);
       console.log(showModal);
     }
     
@@ -60,6 +61,7 @@ function RestaurantCard({ restaurant}) {
   };
   const handleClose = () => {
     setShowModal(false);
+    setAllowSwipe(true);
     console.log("off");
   }
 
@@ -119,8 +121,14 @@ function RestaurantCard({ restaurant}) {
 </button> */}
 
       {showModal && (
-        <div style={modalStyles.overlay}>
-          <div style={modalStyles.modal}>
+        <div 
+        style={modalStyles.overlay}
+        onClick={handleClose} // Click on backdrop closes modal
+        >
+          <div 
+            style={modalStyles.modal}
+            onClick={(e) => e.stopPropagation()} // Prevent close when clicking modal content
+          >
           <button 
             onClick={handleClose} 
             style={{

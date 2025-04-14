@@ -40,7 +40,7 @@ function FavoritesPage({ likedRestaurants, clearFavorites, loadFavorites, logged
                   key={index}
                   restaurant={restaurant}
                   removeRestaurant={deleteAction}
-                  
+                  text = "favorites"
                 />
               ))}
               

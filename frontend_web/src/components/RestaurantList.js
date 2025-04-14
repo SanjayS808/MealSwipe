@@ -1,13 +1,14 @@
 // This component takes the list of restaurants and generates the restaurant cards to be displayed in the Tinder-like interface.
 
 
-import React, { useRef } from 'react';
+import React, { useRef ,useState} from 'react';
 import RestaurantCard from "./RestaurantCard";
 import TinderCard from "react-tinder-card";
 
 import "./restaurantList.css";
 function RestaurantList({ restaurants, onSwipe ,resetBackendData,isLoading}) {
   
+  const [allowSwipe, setAllowSwipe] = useState(true);
 
   
   
@@ -29,7 +30,7 @@ function RestaurantList({ restaurants, onSwipe ,resetBackendData,isLoading}) {
               onSwipe={(dir) => onSwipe(dir, restaurant)}
               preventSwipe={["up", "down"]}
             >
-              <RestaurantCard restaurant={restaurant} />
+              <RestaurantCard restaurant={restaurant} allowSwipe= {allowSwipe} setAllowSwipe={setAllowSwipe}/>
             </TinderCard>
           ))
         )}

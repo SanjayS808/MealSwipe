@@ -1,45 +1,63 @@
-import React, {useEffect} from "react";
-import "./trash.css"
-function TrashedPage({ trashedRestaurants , clearTrashed, loadTrashed ,loggedIn = {loggedIn},isLoading= {isLoading}}) {
+import React, { useEffect } from "react";
+import { useNavigate } from 'react-router-dom';
+import Button from "../components/Button";
+import "./favorites.css";
+import MiniCard from "../components/FavoritesTrashedSharedComponents/MiniCard";
+function TrashedPage({ trashedRestaurants , clearTrashed, loadTrashed , loggedIn, isLoading ,deleteRestaurantFromTrashed}) {
+  const navigate = useNavigate();
+
+  const swipeClick = () => {
+    console.log("swipeClick");
+    navigate("/");
+  };
+
   useEffect(() => {
-    console.log("Loading trashed restaurants...");
+    console.log("Loading trashed...");
+    loadTrashed();
+  }, []);
+
+  const deleteAction = (placeid) => {
+    console.log("Deleting restaurant with placeid:", placeid);
+    deleteRestaurantFromTrashed(placeid);
     loadTrashed();
   }
-  , []); // Load trashed restaurants on component mount
-  return (
-    
-    loggedIn ? (
-      <div className="trashedPage">
-        <h2>Trashed Restaurants</h2>
-        
-        {isLoading ? (
-          null ):
 
-          trashedRestaurants.length === 0 ? (
+  return loggedIn ? (
+    <div className="favoritesPage">
+      <h2>Trashed Restaurants</h2>
+
+      {isLoading ? null : (
+        trashedRestaurants.length === 0 ? (
           <div className="noRestaurants">
-            <h2>props to you for not being picky!</h2>
-              
+             <h2>props to you for not being picky!</h2>
+            <Button text="Back to Swiping" onClick={swipeClick} />
           </div>
         ) : (
-          <ul>
-            {trashedRestaurants.map((restaurant, index) => (
-              <li key={index}>{restaurant}</li>
-            ))}
-          </ul>
-        )}
-
-        {trashedRestaurants.length > 0  && !isLoading? (
-          <button onClick={() => clearTrashed()}>Clear Trashed</button>) : null
-          }
-        
-      </div>
-    ) : (
-      <div className="trashedPage">
-        <h2>Trashed Restaurants</h2>
-        {!isLoading ? <p>Log in to view your trashed restaurants.</p> : null}
-
-      </div>
-    )
+          <>
+          <div className="favoritesList">
+              {trashedRestaurants.map((restaurant, index) => (
+                <MiniCard
+                  key={index}
+                  restaurant={restaurant}
+                  removeRestaurant={deleteAction}
+                  text = "trashed"
+                />
+              ))}
+              
+            </div>
+            <button className="clearFavorites" onClick={clearTrashed}>
+              Clear All
+            </button>
+          </>
+          
+        )
+      )}
+    </div>
+  ) : (
+    <div className="favoritesPage">
+      <h2>Trash</h2>
+      <p>Please log in to view your trashed restaurants.</p>
+    </div>
   );
 }
 

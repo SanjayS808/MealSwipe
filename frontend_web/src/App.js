@@ -186,7 +186,7 @@ function App() {
   
       const restaurantInfoResults = await Promise.all(restaurantInfoPromises);
   
-      const trashedNames = restaurantInfoResults.map(result => result[0].name);
+      const trashedNames = restaurantInfoResults.map(result => result[0]);
   
       setTrashedRestaurants(trashedNames);
     } catch (error) {
@@ -382,7 +382,7 @@ function App() {
   };
 
   const deleteRestaurantFromFavorites = async (restaurantID) => {
-    console.log("Deleting restaurant from favorites: ", restaurantID);
+    
     await fetch(`${backendURL}/api/serve/delete-favorite-swipe-with-rid-uid?rid=${restaurantID}&uid=${uid}`, {
       method: 'DELETE',
     })
@@ -393,7 +393,7 @@ function App() {
         }
         
       });
-      //loadFavorites();
+      
   };
   const toggleFavorite = async (restaurant) => {
     let api_body_data = {
@@ -591,6 +591,7 @@ function App() {
         loggedIn={loggedIn}
         isLoading={isLoading}
         deleteRestaurantFromFavorites={deleteRestaurantFromFavorites}
+        deleteRestaurantFromTrash={deleteRestaurantFromTrash}
       />
       {isLoading && <Loader />}
 
