@@ -1,7 +1,7 @@
 // This component takes the list of restaurants and generates the restaurant cards to be displayed in the Tinder-like interface.
 
 
-import React, { useRef ,useState} from 'react';
+import React, { useState } from 'react';
 import RestaurantCard from "./RestaurantCard";
 import TinderCard from "react-tinder-card";
 

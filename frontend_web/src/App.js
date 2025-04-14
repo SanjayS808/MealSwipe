@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useCallback ,useRef} from "react";
+import React, { useEffect, useState, useCallback, useRef} from "react";
 import Restaurant from "./Restaurant";
 import Navigation from "./Navigation";
 import FilterPage from "./components/FilterPage";
@@ -6,8 +6,7 @@ import "./components/FilterPage.css";
 import "./App.css";
 import "./components/FilterPage.css";
 import {DEV_MODE} from "./config"
-import { UserProvider, useUser } from './context/UserContext';
-import { useNavigate } from "react-router-dom";
+import { useUser } from './context/UserContext';
 import { Filter } from "lucide-react";
 import { motion } from "framer-motion";
 import HeartFlash from './components/Heart';
@@ -18,14 +17,14 @@ const backendURL = (DEV_MODE) ? "http://localhost:5001"  : "http://MealSw-Backe-
 function App() {
   const [originalBackendData, setOriginalBackendData] = useState([]);
   const [backendData, setBackendData] = useState([]);
-  const [filteredRestaurants, setFilteredRestaurants] = useState([]);
+  const [, setFilteredRestaurants] = useState([]);
   const [favoriteRestaurants, setFavoriteRestaurants] = useState([]);
   const [trashedRestaurants, setTrashedRestaurants] = useState([]);
   const [loggedIn, setLoggedIn ] = useState(false);
-  const [minRating, setMinRating] = useState(0); // Default to 0 stars
-  const [maxDistance, setMaxDistance] = useState(50); // Adjust the default value as needed
+  const [, setMinRating] = useState(0); // Default to 0 stars
+  const [, setMaxDistance] = useState(50); // Adjust the default value as needed
   const [types, setTypes] = useState([]);
-  const [priceLevels, setPriceLevels] = useState([]);
+  const [setPriceLevels] = useState([]);
   
   // Pending filter state (for FilterPage)
   const [pendingMaxDistance, setPendingMaxDistance] = useState(50);
@@ -35,7 +34,7 @@ function App() {
   
   const [uid,setUid] = useState(null);
   const [showFilterPage, setShowFilterPage] = useState(false);
-  const { user, setUser, incrementSwipes } = useUser();  
+  const { user, incrementSwipes } = useUser();  
   const [isLoading, setIsLoading] = useState(false);
   
   const heartRef = useRef();
@@ -48,6 +47,23 @@ function App() {
     console.log("Trash triggered");
     trashRef.current?.flash();
   };
+
+  const fetchuid = useCallback( async () => {
+    if (user === null || user === undefined) {
+      console.error("User is not logged in. Cannot fetch user ID.");
+      return null;
+    }
+    let response = await fetch(`${backendURL}/api/serve/get-userid-with-uname?uname=${user.name}`)
+    .then(response => {
+      if(!response.ok) {
+        throw new Error("Backend error. Failed to fetch user information.");
+      }
+      return response.json();
+    });
+    setLoggedIn(true);
+    console.log("User ID: ", response[0].userid);
+    return response[0].userid;
+  }, [user]);
 
   useEffect(() => {
     const onMount = async () => {
@@ -77,24 +93,7 @@ function App() {
     return () => {
       console.log("App component is unmounting.");
     };
-  }, [user]);
-
-  const fetchuid = async () => {
-    if (user === null || user === undefined) {
-      console.error("User is not logged in. Cannot fetch user ID.");
-      return null;
-    }
-    let response = await fetch(`${backendURL}/api/serve/get-userid-with-uname?uname=${user.name}`)
-    .then(response => {
-      if(!response.ok) {
-        throw new Error("Backend error. Failed to fetch user information.");
-      }
-      return response.json();
-    });
-    setLoggedIn(true);
-    console.log("User ID: ", response[0].userid);
-    return response[0].userid;
-  };
+  }, [user, fetchuid, uid]);
 
   const fetchRestaurantInfo = async (rid) => {
 
@@ -552,7 +551,6 @@ function App() {
   const styles = {
     button: {
       position: "absolute",
-      zIndex: "10",
       top: "15px",
       right: "10px",
       zIndex: 1000,

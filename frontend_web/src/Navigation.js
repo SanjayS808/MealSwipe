@@ -33,7 +33,6 @@ function Navigation({ backendData, likedRestaurants, trashedRestaurants ,handleS
       borderTopLeftRadius: "16px",
       borderTopRightRadius: "16px",
       boxShadow: "0 -2px 6px rgba(0, 0, 0, 0.2)",
-      zIndex: 100,
     },
     link: {
       textDecoration: "none",
@@ -79,7 +78,7 @@ function Navigation({ backendData, likedRestaurants, trashedRestaurants ,handleS
         <LoginPic></LoginPic>
         <div className = 'logodiv' style= {{display: 'flex', flexDirection: 'row', alignItems: 'center', justifyContent: 'center'}}>
           <h1 style= {{marginLeft: '0em'}}>mealswipe</h1>
-          <img src= {logo} style={{ width: '25px', height: 'auto' ,marginLeft: '0em'}} className = 'logoimage' onClick={handleLogoClick} ref={logoRef}></img>
+          <img src= {logo} alt="noimage" style={{ width: '25px', height: 'auto' ,marginLeft: '0em'}} className = 'logoimage' onClick={handleLogoClick} ref={logoRef}></img>
         </div>
         
       </div>

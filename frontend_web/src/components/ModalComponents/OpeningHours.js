@@ -24,7 +24,7 @@ export default function OpeningHours({ openingHours }) {
         "Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"
     ];
     const is24_7 = Array.isArray(openingHours) && openingHours.length === 1 && !openingHours[0]?.close;
-    const period = openingHours?.[0];
+    // const period = openingHours?.[0];
     return (
         <div>
         <h3>Opening Hours</h3>

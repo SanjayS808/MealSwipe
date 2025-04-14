@@ -1,6 +1,6 @@
 import React from 'react';
 import './FilterPage.css';
-import { useNavigate } from 'react-router-dom';
+// import { useNavigate } from 'react-router-dom';
 
 const StarRating = ({ rating, onRatingChange }) => {
  const handleStarClick = (event, starValue) => {
@@ -68,7 +68,7 @@ const FilterPage = ({
   setAllowedTypes,
   fetchRestaurants
 }) => {
-  const navigate = useNavigate();
+  // const navigate = useNavigate();
  const togglePriceLevel = (level) => {
    setPriceLevels(prev =>
      prev.includes(level)
