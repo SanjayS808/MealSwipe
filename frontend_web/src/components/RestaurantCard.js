@@ -7,8 +7,8 @@ import { MapPin, Globe, Phone } from "lucide-react";
 
 import RestaurantModal from "./RestaurantModal";
 
-function RestaurantCard({ restaurant}) {
-
+function RestaurantCard({ restaurant, allowSwipe, setAllowSwipe }) {
+  
 
   const modalStyles = {
     overlay: {
@@ -59,6 +59,7 @@ function RestaurantCard({ restaurant}) {
     console.log({restaurant});
     if (!showModal){
       setShowModal(true);
+      setAllowSwipe(false);
       console.log(showModal);
     }
     
@@ -66,6 +67,7 @@ function RestaurantCard({ restaurant}) {
   };
   const handleClose = () => {
     setShowModal(false);
+    setAllowSwipe(true);
     console.log("off");
   }
 
@@ -95,10 +97,10 @@ function RestaurantCard({ restaurant}) {
             <div className="info_item" style = {{marginRight: "0.5em"}}>
             {
               restaurant.price === "PRICE_LEVEL_INEXPENSIVE" ? 
-              (<h3>$</h3>) : restaurant.price === "PRICE_LEVEL_MODERATE" ?
-              (<h3>$$</h3>) : restaurant.price === "PRICE_LEVEL_EXPENSIVE" ?
-              (<h3>$$$</h3>) : restaurant.price === "PRICE_LEVEL_VERY_EXPENSIVE" ?
-              (<h3>$$$$</h3>) : null
+              (<h3 style = {{color: '#6b8e23',fontWeight: 'bold',} }>$</h3>) : restaurant.price === "PRICE_LEVEL_MODERATE" ?
+              (<h3 style = {{color: '#6b8e23',fontWeight: 'bold'}}>$$</h3>) : restaurant.price === "PRICE_LEVEL_EXPENSIVE" ?
+              (<h3 style = {{color: '#6b8e23',fontWeight: 'bold'}}>$$$</h3>) : restaurant.price === "PRICE_LEVEL_VERY_EXPENSIVE" ?
+              (<h3 style = {{color: '#6b8e23',fontWeight: 'bold'}}>$$$$</h3>) : null
             }
             </div>
           
@@ -125,8 +127,14 @@ function RestaurantCard({ restaurant}) {
 </button> */}
 
       {showModal && (
-        <div style={modalStyles.overlay}>
-          <div style={modalStyles.modal}>
+        <div 
+        style={modalStyles.overlay}
+        onClick={handleClose} // Click on backdrop closes modal
+        >
+          <div 
+            style={modalStyles.modal}
+            onClick={(e) => e.stopPropagation()} // Prevent close when clicking modal content
+          >
           <button 
             onClick={handleClose} 
             style={{

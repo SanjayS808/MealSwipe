@@ -1,56 +1,89 @@
-import React, {useEffect} from "react";
+import React, { useEffect,useState } from "react";
 import { useNavigate } from 'react-router-dom';
-
 import Button from "../components/Button";
-import "./favorites.css"
-function FavoritesPage({ likedRestaurants, clearFavorites, loadFavorites , loggedIn = {loggedIn}}) {
-
-  
+import "./favorites.css";
+import MiniCard from "../components/FavoritesTrashedSharedComponents/MiniCard";
+function FavoritesPage({ likedRestaurants, clearFavorites, loadFavorites, loggedIn, isLoading ,deleteRestaurantFromFavorites}) {
   const navigate = useNavigate();
+  const [showConfirmModal, setShowConfirmModal] = useState(false);
+  const handleClearClick = () => {
+    setShowConfirmModal(true);
+  };
+  
+  const confirmClearFavorites = () => {
+    clearFavorites();
+    setShowConfirmModal(false);
+  };
+  
+  const cancelClearFavorites = () => {
+    setShowConfirmModal(false);
+  };
+  
   const swipeClick = () => {
     console.log("swipeClick");
     navigate("/");
-  }
+  };
+
   useEffect(() => {
     console.log("Loading favorites...");
     loadFavorites();
-  }
-  
+  }, []);
 
-  , []); 
-  return (
-    loggedIn ? (
-      <div className="favoritesPage">
-        <h2>Liked Restaurants</h2>
-        
-        {likedRestaurants.length === 0 ? (
+  const deleteAction = (placeid) => {
+    console.log("Deleting restaurant with placeid:", placeid);
+    deleteRestaurantFromFavorites(placeid);
+    loadFavorites();
+  }
+
+  return loggedIn ? (
+    <div className="favoritesPage">
+      <h2>Liked Restaurants</h2>
+
+      {isLoading ? null : (
+        likedRestaurants.length === 0 ? (
           <div className="noRestaurants">
             <h2>it's lonely in here :(</h2>
-              <Button text="Start Swiping" onClick={swipeClick} />
-              
+            <Button text="Start Swiping" onClick={swipeClick} />
           </div>
         ) : (
-          <ul>
-            {likedRestaurants.map((restaurant, index) => (
-              <li key={index}>{restaurant}</li>
-            ))}
-          </ul>
-        )}
-
-        {likedRestaurants.length > 0 ? (
-          <button onClick={() => clearFavorites()}>Clear Favorites</button>) : null
-
+          <>
+          <div className="favoritesList">
+              {likedRestaurants.map((restaurant, index) => (
+                <MiniCard
+                  key={index}
+                  restaurant={restaurant}
+                  removeRestaurant={deleteAction}
+                  text = "favorites"
+                />
+              ))}
+              
+            </div>
+            <button className="clearFavorites" onClick={handleClearClick}>
+              Clear Favorites
+            </button>
+            {showConfirmModal && (
+            <div className="modal-overlay">
+              <div className="modal-content">
+                <p>Are you sure you want to clear all favorites?</p>
+                <div className="modal-buttons">
+                  <button onClick={confirmClearFavorites}>Yes</button>
+                  <button onClick={cancelClearFavorites}>Cancel</button>
+                </div>
+              </div>
+            </div>
+          )}
+          </>
           
-          }
-        
-      </div>
-    ) : (
-      <div className="favoritesPage">
-        <h2>Favorites</h2>
-        <p>Please log in to view your favorites.</p>
-      </div>
-    )
+          
+        )
+      )}
+    </div>
+  ) : (
+    <div className="favoritesPage">
+      <h2>Favorites</h2>
+      <p>Please log in to view your favorites.</p>
+    </div>
   );
-}  
+}
 
 export default FavoritesPage;

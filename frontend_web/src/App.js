@@ -12,7 +12,7 @@ import { Filter } from "lucide-react";
 import { motion } from "framer-motion";
 import HeartFlash from './components/Heart';
 import TrashFlash from './components/TrashIcon';
-
+import Loader from "./components/Loader";
 const backendURL = (DEV_MODE) ? "http://localhost:5001"  : "http://MealSw-Backe-k0cJtOkGFP3i-29432626.us-west-1.elb.amazonaws.com";
 
 function App() {
@@ -24,17 +24,20 @@ function App() {
   const [loggedIn, setLoggedIn ] = useState(false);
   const [minRating, setMinRating] = useState(0); // Default to 0 stars
   const [maxDistance, setMaxDistance] = useState(50); // Adjust the default value as needed
-
+  const [types, setTypes] = useState([]);
   const [priceLevels, setPriceLevels] = useState([]);
   
   // Pending filter state (for FilterPage)
   const [pendingMaxDistance, setPendingMaxDistance] = useState(50);
   const [pendingMinRating, setPendingMinRating] = useState(0);
   const [pendingPriceLevels, setPendingPriceLevels] = useState([]);
+  const [allowedTypes, setAllowedTypes] = useState([]);
+  
   const [uid,setUid] = useState(null);
   const [showFilterPage, setShowFilterPage] = useState(false);
   const { user, setUser, incrementSwipes } = useUser();  
-
+  const [isLoading, setIsLoading] = useState(false);
+  
   const heartRef = useRef();
   const triggerHeart = () => {
     heartRef.current?.flash();
@@ -48,9 +51,13 @@ function App() {
 
   useEffect(() => {
     const onMount = async () => {
-    
-  
+      
+      if (uid !== null) {
+        console.log("UID already set. Skipping fetchuid.");
+        return;
+      }
       try {
+        
         let uid = await fetchuid(); 
         
         await fetchRestaurants();
@@ -85,10 +92,14 @@ function App() {
       return response.json();
     });
     setLoggedIn(true);
+    console.log("User ID: ", response[0].userid);
     return response[0].userid;
   };
 
   const fetchRestaurantInfo = async (rid) => {
+
+     // ✅ always hide loader
+    console.log(isLoading);
     let response = await fetch(`${backendURL}/api/serve/get-rinfo-with-rid?rid=${rid}`)
     .then(response => {
       if(!response.ok) {
@@ -96,9 +107,12 @@ function App() {
       }
       return response.json();
     });
+    
     return response;
   }
   const loadFavorites = async () => {
+    setIsLoading(true);  // ✅ always hide loader
+    console.log("Loading favorites...");
     if (user === null) return;
   
     let userid = uid;
@@ -124,18 +138,26 @@ function App() {
       const restaurantInfoResults = await Promise.all(restaurantInfoPromises);
   
       // Extract names
-      const favoritesTEMP = restaurantInfoResults.map(result => result[0].name);
+      const favoritesTEMP = restaurantInfoResults.map(result => result[0]);
   
       // Set state
+      
       setFavoriteRestaurants(favoritesTEMP);
+      
   
       console.log("Favorites: ", favoritesTEMP);
     } catch (error) {
+      
       console.error("Error loading favorites:", error);
+    
+    } finally {
+      setIsLoading(false);  // ✅ always hide loader
     }
   };
   
   const loadTrashed = async () => {
+    setIsLoading(true);  // ✅ always hide loader
+    console.log("Loading trashed...");
     if (user === null) return;
   
     const userid = uid;
@@ -164,11 +186,13 @@ function App() {
   
       const restaurantInfoResults = await Promise.all(restaurantInfoPromises);
   
-      const trashedNames = restaurantInfoResults.map(result => result[0].name);
+      const trashedNames = restaurantInfoResults.map(result => result[0]);
   
       setTrashedRestaurants(trashedNames);
     } catch (error) {
       console.error("Error loading trashed restaurants:", error);
+    } finally{
+      setIsLoading(false);  // ✅ always hide loader
     }
   };
   
@@ -182,6 +206,7 @@ function App() {
 
   const applyFilters = () => {
     // Update active filter state
+    
     setMaxDistance(pendingMaxDistance);
     setMinRating(pendingMinRating);
     setPriceLevels(pendingPriceLevels);
@@ -194,7 +219,9 @@ function App() {
 
       // Rating filter
       const ratingMatch = restaurant.rating >= pendingMinRating;
-
+      const typeMatch =
+        allowedTypes.length === 0 ||
+        allowedTypes.includes(restaurant.cuisineType);
       // Price level filter
       const priceLevelMatch = pendingPriceLevels.length === 0 || 
         pendingPriceLevels.some(level => {
@@ -208,7 +235,7 @@ function App() {
           return restaurant.price === priceMap[level];
         });
 
-      return distanceMatch && ratingMatch && priceLevelMatch;
+      return distanceMatch && ratingMatch && priceLevelMatch && typeMatch;
     });
 
     // Update the displayed restaurants
@@ -220,6 +247,10 @@ function App() {
   };
 
   const fetchRestaurants = async () => {
+
+    setIsLoading(true);  // ✅ always hide loader
+    console.log("Fetching restaurants...");
+  
     try {
       // Fetch restaurants without any filtering on the backend
       const response = await fetch(`${backendURL}/api/serve/get-all-restaurants?maxDistance=50`);
@@ -231,14 +262,16 @@ function App() {
       const data = await response.json();
       console.log("Fetched restaurants data:", data);
       // Map the restaurants 
+      
+      
       const mappedRestaurants = data.map(r => new Restaurant(
 
         r.id,
         r.displayName?.text,
         r.rating,
         r.priceLevel,
-        r.formattedAddress,
-        r.generativeSummary?.overview?.text,
+        r.shortFormattedAddress,
+        r.generativeSummary?.overview?.text ?? r.editorialSummary?.text,
         r.googleMapsLinks?.placeUri,
         r.reviews?.map(review => ({
           author: review.authorAttribution.displayName,
@@ -251,18 +284,37 @@ function App() {
         r.nationalPhoneNumber,
         r.photos,
         r.distanceFromCenter || 0,
-        r.types[0] || "Unknown", 
+        r.primaryType || "Unknown", 
         r.userRatingCount,
         r.regularOpeningHours?.periods || [],   
-      ));
-
+      )
+      
+    );
+    
       // Store original and filtered data
       setOriginalBackendData(mappedRestaurants);
       setFilteredRestaurants(mappedRestaurants);
       setBackendData(mappedRestaurants);
+      const uniqueTypes = [
+        ...new Set(
+          mappedRestaurants
+            .map(r => r.cuisineType)
+            .filter(Boolean)
+        )
+      ];
+      
+      setTypes(uniqueTypes);
+      setAllowedTypes(uniqueTypes);
+      console.log(mappedRestaurants)
+      console.log("Types: ", uniqueTypes);
+      
+
     } catch (error) {
       console.error("Fetch error:", error);
+    } finally {
+      setIsLoading(false);  // ✅ always hide loader
     }
+
   };
 
   // Modify handleSwipe to use filteredRestaurants
@@ -284,7 +336,7 @@ function App() {
 
   const clearFavorites = async () => {
 
-    localStorage.removeItem("favorites");
+    
     setFavoriteRestaurants([]);
     if(user === null) {return ;} // We do not want to load API if we have no user.
     const userid = await fetchuid();
@@ -301,10 +353,10 @@ function App() {
   };
 
   const clearTrashed = async () => {
-    localStorage.removeItem("trashed");
+    
     setTrashedRestaurants([]);
      // Deletes from db
-     if(user === null) {return ;} // We do not want to load API if we have no user.
+     if(user === null) {return ;} 
      const userid = await fetchuid();
      await fetch(`${backendURL}/api/serve/delete-trashed-swipe-with-uid?uid=${userid}`, {
       method: 'DELETE',
@@ -316,6 +368,33 @@ function App() {
      })
   };
 
+  const deleteRestaurantFromTrash = async (restaurantID) => {
+
+    await fetch(`${backendURL}/api/serve/delete-trashed-swipe-with-rid-uid?rid=${restaurantID}&uid=${uid}`, {
+      method: 'DELETE',
+    })
+    .then(response => {
+      if (!response.ok) {
+        console.error("Backend error: Could not delete data");
+        }
+    
+      });
+  };
+
+  const deleteRestaurantFromFavorites = async (restaurantID) => {
+    
+    await fetch(`${backendURL}/api/serve/delete-favorite-swipe-with-rid-uid?rid=${restaurantID}&uid=${uid}`, {
+      method: 'DELETE',
+    })
+    .then(response => {
+      
+      if (!response.ok) {
+        console.err("Backend error: Could not delete data");
+        }
+        
+      });
+      
+  };
   const toggleFavorite = async (restaurant) => {
     let api_body_data = {
       rid: restaurant.id,
@@ -326,7 +405,7 @@ function App() {
       gmapurl: restaurant.googleMapsLink,
       address: restaurant.address
     };
-
+    console.log("API body data: ", api_body_data);
     let json_body_data = JSON.stringify(api_body_data);
 
     // Returns a 200 + warning if restaurant is already added.
@@ -391,6 +470,7 @@ function App() {
     .catch((error) => {
       console.log("Internal error. Could not add swipe" + error)
     });
+    deleteRestaurantFromTrash(restaurant);
   };
 
   const toggleTrashed = async (restaurant) => {
@@ -468,7 +548,7 @@ function App() {
     .catch((error) => {
       console.log("Internal error. Could not add swipe" + error)
     });
-
+    deleteRestaurantFromFavorites(restaurant.id);
     incrementSwipes();
   };
 
@@ -497,6 +577,7 @@ function App() {
     <div className="App">
       <HeartFlash ref={heartRef} />
       <TrashFlash ref={trashRef} />
+      
       <Navigation
         clearFavorites={clearFavorites}
         clearTrashed={clearTrashed}
@@ -508,7 +589,12 @@ function App() {
         loadFavorites={loadFavorites}
         loadTrashed = {loadTrashed}
         loggedIn={loggedIn}
+        isLoading={isLoading}
+        deleteRestaurantFromFavorites={deleteRestaurantFromFavorites}
+        deleteRestaurantFromTrash={deleteRestaurantFromTrash}
       />
+      {isLoading && <Loader />}
+
       <motion.button
         whileHover={{
           scale: 1.1,
@@ -533,6 +619,10 @@ function App() {
         applyFilters={applyFilters}
         onClose={() => setShowFilterPage(false)}
         isOpen={showFilterPage}
+        types = {types}
+        allowedTypes = {allowedTypes}
+        setAllowedTypes = {setAllowedTypes}
+        fetchRestaurants={fetchRestaurants}
         
       />
     </div>

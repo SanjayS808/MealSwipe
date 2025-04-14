@@ -1,6 +1,6 @@
 import React, {useState} from 'react';
 import './FilterPage.css';
-
+import { useNavigate } from 'react-router-dom';
 
 const StarRating = ({ rating, onRatingChange }) => {
  const handleStarClick = (event, starValue) => {
@@ -62,7 +62,11 @@ const FilterPage = ({
  setPriceLevels,
  applyFilters,
  onClose,
- isOpen
+ isOpen,
+ types,
+  allowedTypes,
+  setAllowedTypes,
+  fetchRestaurants
 }) => {
   const [isKm, setIsKm] = useState(false); // Track whether it's in kilometers or miles
 
@@ -83,6 +87,7 @@ const FilterPage = ({
  const sliderMin = 1; // Min is adjusted for kilometers (multiply by 1.61 for km)
  const sliderMax = 50; // Max is adjusted for kilometers (multiply by 1.61 for km)
 
+ const navigate = useNavigate();
  const togglePriceLevel = (level) => {
    setPriceLevels(prev =>
      prev.includes(level)
@@ -90,7 +95,20 @@ const FilterPage = ({
        : [...prev, level]
    );
  };
+ const toggleType = (type) => {
+  const allTypesSelected = allowedTypes.length === types.length;
+  if (allTypesSelected) {
+    setAllowedTypes([type]);
+  } else {
+    setAllowedTypes(prev =>
+      prev.includes(type)
+        ? prev.filter(t => t !== type)
+        : [...prev, type]
+    );
+  }
+};
 
+const allTypesSelected = allowedTypes.length === types.length;
 
  return (
    <div className={`filter-page ${isOpen ? 'open' : ''}`}>
@@ -106,6 +124,9 @@ const FilterPage = ({
            max={sliderMax}
            value={maxDistance}
            onChange={handleDistanceChange}
+           style={{
+            accentColor: '#d9413d' 
+          }}
          />
          <div className="toggle-container">
             <label className="switch">
@@ -121,6 +142,7 @@ const FilterPage = ({
          <StarRating
            rating={minRating}
            onRatingChange={setMinRating}
+           
          />
        </div>
       
@@ -138,13 +160,42 @@ const FilterPage = ({
            ))}
          </div>
        </div>
-      
-       <button
-         className="apply-filters-button"
-         onClick={applyFilters}
-       >
-         Apply Filters
-       </button>
+       <div className="filter-section">
+        <label>Types</label>
+        <div className="type-checkboxes">
+          {types.map((type) => (
+            <label key={type} className="type-option">
+              <input
+                type="checkbox"
+                value={type}
+                checked={!allTypesSelected && allowedTypes.includes(type)}
+                onChange={() => toggleType(type)}
+              />
+              {type.charAt(0).toUpperCase() + type.slice(1)}
+            </label>
+          ))}
+        </div>
+      </div>
+        <div className="filter-buttons">
+          <button
+          className="apply-filters-button"
+          onClick={applyFilters}
+        >
+          Apply Filters
+        </button>
+          <button className='clear-filters-button' onClick={() => {
+            setMaxDistance(50);
+            setMinRating(0);
+            setPriceLevels([]);
+            setAllowedTypes(types);
+            fetchRestaurants();
+            onClose();
+            
+          }}>
+            Clear Filters
+        </button>
+      </div>
+       
      </div>
    </div>
  );
