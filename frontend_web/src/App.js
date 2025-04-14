@@ -24,7 +24,7 @@ function App() {
   const [, setMinRating] = useState(0); // Default to 0 stars
   const [, setMaxDistance] = useState(50); // Adjust the default value as needed
   const [types, setTypes] = useState([]);
-  const [setPriceLevels] = useState([]);
+  const [, setPriceLevels] = useState([]);
   
   // Pending filter state (for FilterPage)
   const [pendingMaxDistance, setPendingMaxDistance] = useState(50);
