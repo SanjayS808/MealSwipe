@@ -1,0 +1,72 @@
+{
+    "VpcEndpoints": [
+        {
+            "VpcEndpointId": "vpce-048da372589fd0d8f",
+            "VpcEndpointType": "Interface",
+            "VpcId": "vpc-089ef37028c15194c",
+            "ServiceName": "com.amazonaws.us-west-1.ecr.api",
+            "State": "deleting",
+            "PolicyDocument": "{\n  \"Statement\": [\n    {\n      \"Action\": \"*\", \n      \"Effect\": \"Allow\", \n      \"Principal\": \"*\", \n      \"Resource\": \"*\"\n    }\n  ]\n}",
+            "RouteTableIds": [],
+            "SubnetIds": [
+                "subnet-0016c006ec7c8d282",
+                "subnet-06866f8b3dd8882f3"
+            ],
+            "Groups": [
+                {
+                    "GroupId": "sg-0b290b1c9143b86b6",
+                    "GroupName": "MealSwipeAppService-EcrEndpointSecurityGroupEFD0E50B-bNbYPBmDNHrq"
+                }
+            ],
+            "IpAddressType": "ipv4",
+            "DnsOptions": {
+                "DnsRecordIpType": "ipv4"
+            },
+            "PrivateDnsEnabled": true,
+            "RequesterManaged": false,
+            "NetworkInterfaceIds": [
+                "eni-04221b37c2577e681",
+                "eni-0c50af5fff075fe0a"
+            ],
+            "DnsEntries": [],
+            "CreationTimestamp": "2025-04-08T14:55:42.996000+00:00",
+            "Tags": [],
+            "OwnerId": "490004633305",
+            "ServiceRegion": "us-west-1"
+        },
+        {
+            "VpcEndpointId": "vpce-0dbab2a00dc0a9794",
+            "VpcEndpointType": "Interface",
+            "VpcId": "vpc-089ef37028c15194c",
+            "ServiceName": "com.amazonaws.us-west-1.ecr.dkr",
+            "State": "deleting",
+            "PolicyDocument": "{\n  \"Statement\": [\n    {\n      \"Action\": \"*\", \n      \"Effect\": \"Allow\", \n      \"Principal\": \"*\", \n      \"Resource\": \"*\"\n    }\n  ]\n}",
+            "RouteTableIds": [],
+            "SubnetIds": [
+                "subnet-0016c006ec7c8d282",
+                "subnet-06866f8b3dd8882f3"
+            ],
+            "Groups": [
+                {
+                    "GroupId": "sg-0762fe92f15b3128b",
+                    "GroupName": "MealSwipeAppService-EcrDockerEndpointSecurityGroup5A4BC357-43t32USXZXPV"
+                }
+            ],
+            "IpAddressType": "ipv4",
+            "DnsOptions": {
+                "DnsRecordIpType": "ipv4"
+            },
+            "PrivateDnsEnabled": true,
+            "RequesterManaged": false,
+            "NetworkInterfaceIds": [
+                "eni-09cae41a874768a65",
+                "eni-084331cd4f3659da1"
+            ],
+            "DnsEntries": [],
+            "CreationTimestamp": "2025-04-08T14:55:43.498000+00:00",
+            "Tags": [],
+            "OwnerId": "490004633305",
+            "ServiceRegion": "us-west-1"
+        }
+    ]
+}

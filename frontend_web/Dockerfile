@@ -16,6 +16,9 @@ RUN npm run build --verbose
 # Production image
 FROM node:18-slim AS production
 
+ENV REACT_APP_GOOGLE_WEB_CLIENT_ID=${REACT_APP_GOOGLE_WEB_CLIENT_ID}
+ENV REACT_APP_GOOGLE_CLIENT_SECRET=${REACT_APP_GOOGLE_CLIENT_SECRET}
+
 WORKDIR /app
 
 COPY package.json package-lock.json ./
