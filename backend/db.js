@@ -6,9 +6,7 @@ const dbPassword = process.env.NODE_ENV === 'production'
     ? process.env.DB_PASSWORD_PROD 
     : process.env.DB_PASSWORD_DEV;
 
-    const dbUser = process.env.NODE_ENV === 'production'
-    ? process.env.DB_USER_PROD
-    : process.env.DB_USER_DEV;
+    const dbUser = process.env.DB_USER_DEV;
 
 // Database configuration
 const pool = new Pool({

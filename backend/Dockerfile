@@ -1,13 +1,5 @@
 # syntax=docker/dockerfile:1
 
-# Comments are provided throughout this file to help you get started.
-# If you need more help, visit the Dockerfile reference guide at
-# https://docs.docker.com/go/dockerfile-reference/
-
-# Want to help us make this template better? Share your feedback here: https://forms.gle/ybq9Krt8jtBL3iCk7
-
-# syntax=docker/dockerfile:1
-
 ARG NODE_VERSION=18.19.1
 FROM node:${NODE_VERSION}-alpine
 
@@ -33,11 +25,11 @@ ENV DB_URL_PATH=${DB_URL_PATH}
 # Copy package files
 COPY package*.json ./
 
-# Install dependencies (choose ONE approach)
-RUN npm ci --only=production
+# Install dependencies
+RUN npm install
 
-# For development environments, install nodemon
-RUN if [ "$NODE_ENV" = "development" ]; then npm install -g nodemon; fi
+# Install nodemon for development
+RUN npm install -g nodemon
 
 # Copy application code
 COPY . .
@@ -46,4 +38,4 @@ COPY . .
 EXPOSE 5001
 
 # Run the application
-CMD if [ "$NODE_ENV" = "development" ]; then nodemon index.js; else npm start; fi
+CMD [ "sh", "-c", "if [ \"$NODE_ENV\" = \"development\" ]; then nodemon index.js; else npm start; fi" ]
