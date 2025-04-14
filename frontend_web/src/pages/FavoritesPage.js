@@ -2,8 +2,8 @@ import React, { useEffect } from "react";
 import { useNavigate } from 'react-router-dom';
 import Button from "../components/Button";
 import "./favorites.css";
-
-function FavoritesPage({ likedRestaurants, clearFavorites, loadFavorites, loggedIn, isLoading }) {
+import MiniCard from "../components/FavoritesTrashedSharedComponents/MiniCard";
+function FavoritesPage({ likedRestaurants, clearFavorites, loadFavorites, loggedIn, isLoading ,deleteRestaurantFromFavorites}) {
   const navigate = useNavigate();
 
   const swipeClick = () => {
@@ -15,6 +15,12 @@ function FavoritesPage({ likedRestaurants, clearFavorites, loadFavorites, logged
     console.log("Loading favorites...");
     loadFavorites();
   }, []);
+
+  const deleteAction = (placeid) => {
+    console.log("Deleting restaurant with placeid:", placeid);
+    deleteRestaurantFromFavorites(placeid);
+    loadFavorites();
+  }
 
   return loggedIn ? (
     <div className="favoritesPage">
@@ -28,13 +34,22 @@ function FavoritesPage({ likedRestaurants, clearFavorites, loadFavorites, logged
           </div>
         ) : (
           <>
-            <ul>
+          <div className="favoritesList">
               {likedRestaurants.map((restaurant, index) => (
-                <li key={index}>{restaurant}</li>
+                <MiniCard
+                  key={index}
+                  restaurant={restaurant}
+                  removeRestaurant={deleteAction}
+                  
+                />
               ))}
-            </ul>
-            <button onClick={clearFavorites}>Clear Favorites</button>
+              
+            </div>
+            <button className="clearFavorites" onClick={clearFavorites}>
+              Clear All
+            </button>
           </>
+          
         )
       )}
     </div>

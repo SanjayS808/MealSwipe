@@ -1,10 +1,43 @@
-.favoritesPage{
-    padding-top: 80px;
-    height: 100vh;
-    display: flex;
-    flex-direction: column;
-    
-    align-items: center;
+.favoritesPage {
+  padding-top: 80px;
+  height: 100vh;
+  width: 80vw;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin: auto;
+}
 
+
+.favoritesList {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, 150px);
+  gap: 1rem;
+  width: 100%;
+  justify-content: center;
+  overflow-y: auto;
+  padding-bottom: 5rem; /* ensures last row isn't clipped */
+}
+
+.favoritesCard {
+  height: 150px;
+  width: 150px;
+  display: grid;
+  grid-template-rows: 70% 30%;
+  background-color: #f0f0f0;
+  border-radius: 10px;
+  overflow: hidden;
+  cursor: pointer;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.favoritesCard:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15);
+}
+
+.favoritesCard:active {
+  transform: scale(0.96) translateY(-2px);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
 }
 

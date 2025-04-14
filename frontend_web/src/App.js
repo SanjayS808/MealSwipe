@@ -111,8 +111,8 @@ function App() {
     return response;
   }
   const loadFavorites = async () => {
-    setIsLoading(true);
-    
+    setIsLoading(true);  // ✅ always hide loader
+    console.log("Loading favorites...");
     if (user === null) return;
   
     let userid = uid;
@@ -138,7 +138,7 @@ function App() {
       const restaurantInfoResults = await Promise.all(restaurantInfoPromises);
   
       // Extract names
-      const favoritesTEMP = restaurantInfoResults.map(result => result[0].name);
+      const favoritesTEMP = restaurantInfoResults.map(result => result[0]);
   
       // Set state
       
@@ -156,7 +156,8 @@ function App() {
   };
   
   const loadTrashed = async () => {
-    setIsLoading(true);
+    setIsLoading(true);  // ✅ always hide loader
+    console.log("Loading trashed...");
     if (user === null) return;
   
     const userid = uid;
@@ -248,6 +249,7 @@ function App() {
   const fetchRestaurants = async () => {
 
     setIsLoading(true);  // ✅ always hide loader
+    console.log("Fetching restaurants...");
   
     try {
       // Fetch restaurants without any filtering on the backend
@@ -366,9 +368,9 @@ function App() {
      })
   };
 
-  const deleteRestaurantFromTrash = async (restaurant) => {
+  const deleteRestaurantFromTrash = async (restaurantID) => {
 
-    await fetch(`${backendURL}/api/serve/delete-trashed-swipe-with-rid-uid?rid=${restaurant.id}&uid=${uid}`, {
+    await fetch(`${backendURL}/api/serve/delete-trashed-swipe-with-rid-uid?rid=${restaurantID}&uid=${uid}`, {
       method: 'DELETE',
     })
     .then(response => {
@@ -379,17 +381,19 @@ function App() {
       });
   };
 
-  const deleteRestaurantFromFavorites = async (restaurant) => {
-
-    await fetch(`${backendURL}/api/serve/delete-favorite-swipe-with-rid-uid?rid=${restaurant.id}&uid=${uid}`, {
+  const deleteRestaurantFromFavorites = async (restaurantID) => {
+    console.log("Deleting restaurant from favorites: ", restaurantID);
+    await fetch(`${backendURL}/api/serve/delete-favorite-swipe-with-rid-uid?rid=${restaurantID}&uid=${uid}`, {
       method: 'DELETE',
     })
     .then(response => {
+      
       if (!response.ok) {
         console.err("Backend error: Could not delete data");
         }
-    
+        
       });
+      //loadFavorites();
   };
   const toggleFavorite = async (restaurant) => {
     let api_body_data = {
@@ -544,7 +548,7 @@ function App() {
     .catch((error) => {
       console.log("Internal error. Could not add swipe" + error)
     });
-    deleteRestaurantFromFavorites(restaurant);
+    deleteRestaurantFromFavorites(restaurant.id);
     incrementSwipes();
   };
 
@@ -586,6 +590,7 @@ function App() {
         loadTrashed = {loadTrashed}
         loggedIn={loggedIn}
         isLoading={isLoading}
+        deleteRestaurantFromFavorites={deleteRestaurantFromFavorites}
       />
       {isLoading && <Loader />}
 
