@@ -405,7 +405,7 @@ function App() {
       gmapurl: restaurant.googleMapsLink,
       address: restaurant.address
     };
-
+    console.log("API body data: ", api_body_data);
     let json_body_data = JSON.stringify(api_body_data);
 
     // Returns a 200 + warning if restaurant is already added.

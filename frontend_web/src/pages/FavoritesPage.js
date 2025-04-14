@@ -1,11 +1,24 @@
-import React, { useEffect } from "react";
+import React, { useEffect,useState } from "react";
 import { useNavigate } from 'react-router-dom';
 import Button from "../components/Button";
 import "./favorites.css";
 import MiniCard from "../components/FavoritesTrashedSharedComponents/MiniCard";
 function FavoritesPage({ likedRestaurants, clearFavorites, loadFavorites, loggedIn, isLoading ,deleteRestaurantFromFavorites}) {
   const navigate = useNavigate();
-
+  const [showConfirmModal, setShowConfirmModal] = useState(false);
+  const handleClearClick = () => {
+    setShowConfirmModal(true);
+  };
+  
+  const confirmClearFavorites = () => {
+    clearFavorites();
+    setShowConfirmModal(false);
+  };
+  
+  const cancelClearFavorites = () => {
+    setShowConfirmModal(false);
+  };
+  
   const swipeClick = () => {
     console.log("swipeClick");
     navigate("/");
@@ -45,10 +58,22 @@ function FavoritesPage({ likedRestaurants, clearFavorites, loadFavorites, logged
               ))}
               
             </div>
-            <button className="clearFavorites" onClick={clearFavorites}>
-              Clear All
+            <button className="clearFavorites" onClick={handleClearClick}>
+              Clear Favorites
             </button>
+            {showConfirmModal && (
+            <div className="modal-overlay">
+              <div className="modal-content">
+                <p>Are you sure you want to clear all favorites?</p>
+                <div className="modal-buttons">
+                  <button onClick={confirmClearFavorites}>Yes</button>
+                  <button onClick={cancelClearFavorites}>Cancel</button>
+                </div>
+              </div>
+            </div>
+          )}
           </>
+          
           
         )
       )}

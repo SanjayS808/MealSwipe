@@ -1,11 +1,24 @@
-import React, { useEffect } from "react";
+import React, { useEffect,useState  } from "react";
 import { useNavigate } from 'react-router-dom';
 import Button from "../components/Button";
 import "./favorites.css";
 import MiniCard from "../components/FavoritesTrashedSharedComponents/MiniCard";
 function TrashedPage({ trashedRestaurants , clearTrashed, loadTrashed , loggedIn, isLoading ,deleteRestaurantFromTrashed}) {
   const navigate = useNavigate();
+  const [showConfirmModal, setShowConfirmModal] = useState(false);
 
+  const handleClearClick = () => {
+    setShowConfirmModal(true);
+  };
+  
+  const confirmClearFavorites = () => {
+    clearTrashed();
+    setShowConfirmModal(false);
+  };
+  
+  const cancelClearFavorites = () => {
+    setShowConfirmModal(false);
+  };
   const swipeClick = () => {
     console.log("swipeClick");
     navigate("/");
@@ -45,9 +58,20 @@ function TrashedPage({ trashedRestaurants , clearTrashed, loadTrashed , loggedIn
               ))}
               
             </div>
-            <button className="clearFavorites" onClick={clearTrashed}>
-              Clear All
+            <button className="clearFavorites" onClick={handleClearClick}>
+              Clear Trashed
             </button>
+            {showConfirmModal && (
+            <div className="modal-overlay">
+              <div className="modal-content">
+                <p>Are you sure you want to clear your trash?</p>
+                <div className="modal-buttons">
+                  <button onClick={confirmClearFavorites}>Yes</button>
+                  <button onClick={cancelClearFavorites}>Cancel</button>
+                </div>
+              </div>
+            </div>
+          )}
           </>
           
         )
