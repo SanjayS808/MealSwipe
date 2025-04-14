@@ -100,6 +100,12 @@ jobs:
 
       - name: Deploy CDK Stack
         working-directory: infra
+        env:
+          DB_PASSWORD_PROD: ${{ secrets.DB_PASSWORD_PROD }}
+          DB_PASSWORD_DEV: ${{ secrets.DB_PASSWORD_DEV }}
+          DB_USER_PROD: ${{ secrets.DB_USER_PROD }}
+          DB_USER_DEV: ${{ secrets.DB_USER_DEV }}
+          DB_URL_PATH: ${{ secrets.DB_URL_PATH }}
         run: |
           ACCOUNT_ID=$(aws sts get-caller-identity --query Account --output text)
           npx cdk bootstrap aws://$ACCOUNT_ID/$AWS_REGION
