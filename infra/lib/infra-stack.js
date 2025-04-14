@@ -73,7 +73,7 @@ class MealSwipeAppService extends cdk.Stack {
         image: ecs.ContainerImage.fromEcrRepository(backendRepo, 'latest'),
         containerPort: 5001,
         environment: {
-          NODE_ENV: 'production'
+          NODE_ENV: 'production',
           DB_PASSWORD_PROD: process.env.DB_PASSWORD_PROD || '',
           DB_PASSWORD_DEV: process.env.DB_PASSWORD_DEV || '',
           DB_USER_PROD: process.env.DB_USER_PROD || '',
