@@ -14,7 +14,9 @@ import HeartFlash from './components/Heart';
 import TrashFlash from './components/TrashIcon';
 import Loader from "./components/Loader";
 const backendURL = (DEV_MODE) ? "http://localhost:5001"  : "http://MealSw-Backe-k0cJtOkGFP3i-29432626.us-west-1.elb.amazonaws.com";
-
+window.addEventListener("error", (e) => {
+  console.log("Global error caught:", e.message, e.filename, e.lineno);
+});
 function App() {
   const [originalBackendData, setOriginalBackendData] = useState([]);
   const [backendData, setBackendData] = useState([]);
@@ -113,7 +115,12 @@ function App() {
   const loadFavorites = async () => {
     setIsLoading(true);  // ✅ always hide loader
     console.log("Loading favorites...");
-    if (user === null) return;
+    if (user === null) {
+      setIsLoading(false);  // ✅ always hide loader
+      return;
+    }
+      
+      
   
     let userid = uid;
   
@@ -158,7 +165,10 @@ function App() {
   const loadTrashed = async () => {
     setIsLoading(true);  // ✅ always hide loader
     console.log("Loading trashed...");
-    if (user === null) return;
+    if (user === null) {
+      setIsLoading(false);  // ✅ always hide loader
+      return;
+    }
   
     const userid = uid;
   
@@ -402,9 +412,9 @@ function App() {
       gmapurl: restaurant.googleMapsLink,
       address: restaurant.address
     };
-    console.log("API body data: ", api_body_data);
+    
     let json_body_data = JSON.stringify(api_body_data);
-
+    
     // Returns a 200 + warning if restaurant is already added.
     fetch(`${backendURL}/api/serve/add-restaurant`, {
       method: 'POST',
@@ -413,14 +423,15 @@ function App() {
       },
       body: json_body_data
     })
-    .then(response => response.json())
+    .then(response => response.json() )
+    
     .then(data => {
       if(data) {
         console.log("Restaurant succesfully added.");
       }
     })
     .catch((error) => {
-      console.log("Internal error. Could not add restaurant.")
+      console.log(error)
     })
 
     if(user === null) {return ;} // We do not want to load API if we have no user.

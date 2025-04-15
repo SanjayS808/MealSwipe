@@ -16,7 +16,8 @@
   width: 100%;
   justify-content: center;
   overflow-y: auto;
-  padding-bottom: 5rem; /* ensures last row isn't clipped */
+  padding-bottom: 10rem; /* ensures last row isn't clipped */
+  padding-top: 1rem;
 }
 
 .favoritesCard {
@@ -29,6 +30,7 @@
   overflow: hidden;
   cursor: pointer;
   transition: transform 0.2s ease, box-shadow 0.2s ease;
+
 }
 
 .favoritesCard:hover {
@@ -74,3 +76,64 @@
     background-color: #555;
   }
   
+
+  @keyframes bounceIn {
+    0% {
+      opacity: 0;
+      transform: scale(0.8);
+    }
+    50% {
+      opacity: 1;
+      transform: scale(1.05);
+    }
+    100% {
+      transform: scale(1);
+    }
+  }
+  
+  
+  .modal-animateFavorites {
+    animation: bounceIn 0.2s ease-in-out;
+    scrollbar-width: none; /* Firefox */
+
+  }
+  
+ 
+  @keyframes zoomOut {
+    0% {
+      opacity: 1;
+      transform: scale(1);
+    }
+    100% {
+      opacity: 0;
+      transform: scale(0.2);
+    }
+  }
+
+  .modal-animateFavoritesOut {
+    animation: zoomOut 0.2s ease-in-out;
+    scrollbar-width: none; /* Firefox */
+    
+  }
+
+  .clearFavorites {
+  background-color: #d9413d;
+  color: white;
+  border: none;
+  padding: 10px 16px;
+  font-size: 0.95rem;
+  font-weight: bold;
+  border-radius: 10px;
+  cursor: pointer;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+  transition: background-color 0.25s ease, transform 0.2s ease;
+}
+
+.clearFavorites:hover {
+  background-color: #a1221c;
+  transform: scale(0.97);
+}
+
+.clearFavorites:active {
+  transform: scale(0.97);
+}
