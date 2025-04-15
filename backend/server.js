@@ -9,6 +9,12 @@ const CENTER_LNG = -96.334404; // College Station longitude
 const app = express();
 
 const API_URI = "https://mealswipe-flask-service.75ct69eg04jk6.us-west-2.cs.amazonlightsail.com/v1/places:searchNearby";
+const GOOGLE_API_KEY = process.env.GOOGLE_PLACES_API;
+
+// USED FOR CACHING IMAGING.
+const imageCache = new Map(); // { data: Buffer, timestamp: Date }
+const contentTypeCache = new Map();
+const CACHE_EXPIRATION_TIME = 60 * 60 * 1000;
 
 app.use(cors());  // Enable CORS
 app.use(express.json()); // This enables JSON body parsing
@@ -102,6 +108,62 @@ app.get("/api/serve/get-all-restaurants", (req, res) => {
         }
     });
 });
+
+app.get("/api/serve/get-restaurant-photo", async (req, res) => {
+    const { rinfo } = req.query;
+    if (!rinfo) {
+      console.error("Could not retrieve image. Restaurant info is missing.");
+      return res.status(400).json({ error: "Missing restaurant photo reference (rinfo)." });
+    }
+  
+    // Creating and checking a cache in order to ensure that we do not call the Google API multiple times.
+    if (imageCache.has(rinfo)) {
+      const cachedData = imageCache.get(rinfo);
+      const cachedType = contentTypeCache.get(rinfo);
+  
+      // Check if cache is expired
+      const currentTime = Date.now();
+      const cacheAge = currentTime - cachedData.timestamp;
+  
+      if (cacheAge < CACHE_EXPIRATION_TIME) {
+        console.log("Cache is valid, serving cached image.")
+        res.setHeader("Content-Type", cachedType);
+        return res.send(cachedData.data);
+      } else {
+        // If cache is expired, remove it
+        imageCache.delete(rinfo);
+        contentTypeCache.delete(rinfo);
+        console.log(`Cache expired for ${rinfo}. Fetching a fresh image.`);
+      }
+    }
+    const gplaces_query = `https://places.googleapis.com/v1/${rinfo}/media?maxHeightPx=400&maxWidthPx=400&key=${GOOGLE_API_KEY}`;
+  
+    try {
+      const photoRes = await fetch(gplaces_query, { method: "GET" });
+  
+      if (!photoRes.ok) {
+        throw new Error(`Google API responded with status ${photoRes.status}`);
+      }
+  
+      const contentType = photoRes.headers.get("content-type");
+      const arrayBuffer = await photoRes.arrayBuffer();
+      const buffer = Buffer.from(arrayBuffer);
+      const cacheData = {
+        data: buffer,
+        timestamp: Date.now(),
+      };
+  
+      imageCache.set(rinfo, cacheData);
+      contentTypeCache.set(rinfo, contentType);
+  
+      // Send the newly fetched image
+      res.setHeader("Content-Type", contentType);
+      res.send(buffer);
+    } catch (error) {
+      console.error("Error fetching image:", error.message);
+      res.status(500).send("Failed to fetch image");
+    }
+  });
 
 // Get userid via username
 app.get("/api/serve/get-userid-with-uname", async (req, res) => {
@@ -213,7 +275,7 @@ app.post("/api/serve/add-restaurant", async (req, res) => {
     // Check and insert all information needed for creating new user.
     const hasNullValue = (array) => array.some(element => element === undefined);
     const uinfo = [req.body.rid, req.body.rname, req.body.price, req.body.rating,
-        req.body.weburl, req.body.gmapurl, req.body.address];
+        req.body.weburl, req.body.gmapurl, req.body.address, req.body.photoUrl];
     if(hasNullValue(uinfo)) {
         console.error('Could not create user. User information is missing.');
         res.status(400).json({error: 'Could not create user. User information is missing.'});
@@ -245,7 +307,7 @@ app.post("/api/serve/add-restaurant", async (req, res) => {
 
     const add_query = `INSERT INTO Restaurants 
     VALUES ('${req.body.rid}', '${sanitize_text(req.body.rname)}', ${num_price_level}, ${req.body.rating},
-    '${req.body.weburl}', '${req.body.gmapurl}', '${req.body.address}');`;
+    '${req.body.weburl}', '${req.body.gmapurl}', '${req.body.address}', '${req.body.photoUrl}');`;
 
     const get_query = `SELECT * FROM Restaurants WHERE name='${sanitize_text(req.body.rname)}'`;
 

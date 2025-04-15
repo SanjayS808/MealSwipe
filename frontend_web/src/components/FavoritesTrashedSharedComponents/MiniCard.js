@@ -1,11 +1,13 @@
 import React, { useEffect, useState } from "react";
 import "./styles/miniCard.css";
+import {DEV_MODE} from "../../config"
 
 
 export default function MiniCard({ restaurant, removeRestaurant, text}) {
   const [showModal, setShowModal] = useState(false);
-
   const [isClosing, setIsClosing] = useState(false);
+
+  const backendURL = (DEV_MODE) ? "http://localhost:5001"  : "https://backend.app-mealswipe.com";
 
   const handleClick = () => {
     console.log({ restaurant });
@@ -52,7 +54,7 @@ export default function MiniCard({ restaurant, removeRestaurant, text}) {
       <div className="favoritesCard" onClick={handleClick}>
         <div className="card-image">
           <img
-            src="https://images.unsplash.com/photo-1504674900247-0877df9cc836?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1470&q=80"
+            src={`${backendURL}/api/serve/get-restaurant-photo?rinfo=${restaurant.photourl}`}
             draggable="false"
             style={{ width: "100%", height: "100%", objectFit: "cover" }}
             alt={restaurant.name}

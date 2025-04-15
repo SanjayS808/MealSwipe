@@ -5,7 +5,7 @@ import { useNavigate } from 'react-router-dom';
 import { DEV_MODE } from '../config'; // Assuming 'user' is not needed here
 import { useUser } from '../context/UserContext'; 
 
-const backendURL = DEV_MODE ? "http://localhost:5001" : "http://MealSw-Backe-k0cJtOkGFP3i-29432626.us-west-1.elb.amazonaws.com";
+const backendURL = DEV_MODE ? "http://localhost:5001" : "https://backend.app-mealswipe.com";
 
 const GoogleLoginButton = () => {
     const navigate = useNavigate();
