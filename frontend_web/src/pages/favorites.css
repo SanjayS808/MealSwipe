@@ -115,3 +115,25 @@
     scrollbar-width: none; /* Firefox */
     
   }
+
+  .clearFavorites {
+  background-color: #d9413d;
+  color: white;
+  border: none;
+  padding: 10px 16px;
+  font-size: 0.95rem;
+  font-weight: bold;
+  border-radius: 10px;
+  cursor: pointer;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+  transition: background-color 0.25s ease, transform 0.2s ease;
+}
+
+.clearFavorites:hover {
+  background-color: #a1221c;
+  transform: scale(0.97);
+}
+
+.clearFavorites:active {
+  transform: scale(0.97);
+}
