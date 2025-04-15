@@ -115,7 +115,12 @@ function App() {
   const loadFavorites = async () => {
     setIsLoading(true);  // ✅ always hide loader
     console.log("Loading favorites...");
-    if (user === null) return;
+    if (user === null) {
+      setIsLoading(false);  // ✅ always hide loader
+      return;
+    }
+      
+      
   
     let userid = uid;
   
