@@ -7,7 +7,7 @@ import { MapPin, Globe, Phone } from "lucide-react";
 
 import RestaurantModal from "./RestaurantModal";
 
-function RestaurantCard({ restaurant, allowSwipe, setAllowSwipe }) {
+function RestaurantCard({ restaurant, isKm, allowSwipe, setAllowSwipe }) {
   
 
   const modalStyles = {
@@ -83,7 +83,10 @@ function RestaurantCard({ restaurant, allowSwipe, setAllowSwipe }) {
             : restaurant.name}
         </h3>
             
-        <h4 style= {{marginBottom: ".5rem"}}> <MapPin size={18} className="icon"/> {restaurant.distanceFromUser} miles</h4>
+        <h4>
+          <MapPin size={18} className="icon"/> 
+          {isKm ? (restaurant.distanceFromUser * 1.61).toFixed(1) : restaurant.distanceFromUser} {isKm ? 'km' : 'miles'}
+        </h4>
         <div className="restaurant-details" >
           
           <div className="info" style={{ display: "flex", justifyContent: "space-evenly" , marginBottom: "1em", marginTop: "0.5em"}}>
@@ -159,7 +162,7 @@ function RestaurantCard({ restaurant, allowSwipe, setAllowSwipe }) {
             ✕
           </button>
 
-            <RestaurantModal restaurant={restaurant}  />
+            <RestaurantModal restaurant={restaurant} isKm={isKm} />
             
           </div>
         </div>

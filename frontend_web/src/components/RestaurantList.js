@@ -6,7 +6,7 @@ import RestaurantCard from "./RestaurantCard";
 import TinderCard from "react-tinder-card";
 
 import "./restaurantList.css";
-function RestaurantList({ restaurants, onSwipe ,resetBackendData,isLoading}) {
+function RestaurantList({ restaurants, isKm, onSwipe ,resetBackendData,isLoading}) {
   
   const [allowSwipe, setAllowSwipe] = useState(true);
 
@@ -30,7 +30,7 @@ function RestaurantList({ restaurants, onSwipe ,resetBackendData,isLoading}) {
               onSwipe={(dir) => onSwipe(dir, restaurant)}
               preventSwipe={["up", "down"]}
             >
-              <RestaurantCard restaurant={restaurant} allowSwipe= {allowSwipe} setAllowSwipe={setAllowSwipe}/>
+              <RestaurantCard restaurant={restaurant} isKm = {isKm} allowSwipe= {allowSwipe} setAllowSwipe={setAllowSwipe}/>
             </TinderCard>
           ))
         )}

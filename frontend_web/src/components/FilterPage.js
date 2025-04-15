@@ -54,6 +54,8 @@ const StarRating = ({ rating, onRatingChange }) => {
 
 
 const FilterPage = ({
+ isKm,
+ setIsKm,
  maxDistance,
  setMaxDistance,
  minRating,
@@ -68,7 +70,6 @@ const FilterPage = ({
   setAllowedTypes,
   fetchRestaurants
 }) => {
-  const [isKm, setIsKm] = useState(false); // Track whether it's in kilometers or miles
 
   // Function to handle unit toggle
   const toggleUnit = () => {
