@@ -4,75 +4,12 @@ import React, {useState} from "react";
 import "./Card.css";
 import StarRating from "./StarRating";
 import { MapPin, Globe, Phone } from "lucide-react"; 
+import { Info } from 'lucide-react'
+import googlemapsIcon from "./Google_Maps_icon_(2020).svg"
 
-import RestaurantModal from "./RestaurantModal";
-
-function RestaurantCard({ restaurant, isKm, allowSwipe, setAllowSwipe }) {
-  
-
-  const modalStyles = {
-    overlay: {
-      position: 'fixed', top: 0, left: 0, right: 0, bottom: 0,
-      backgroundColor: 'rgba(0, 0, 0, 0.5)',
-      display: 'flex', justifyContent: 'center', alignItems: 'center',
-      zIndex: 1000,
-      borderRadius: '10px',
-      width: '100%',
-    },
-    modal: {
-      background: '#ffe1c7',
-      padding: '2em',
-      borderRadius: '10px',
-      width: '75%',
-      maxWidth: '500px',
-      maxHeight: '55vh',
-      overflowY: 'auto',
-      position: 'relative',
-    },
-    closeButton: {
-      position: 'absolute',
-      top: '10px',
-      right: '10px',
-      border: 'none',
-      fontSize: '1.2em',
-      cursor: 'pointer',
-      zIndex: 9999       // DEBUG
-    },
-    reviewItem: {
-      margin: '1em 0',
-      borderBottom: '1px solid #ddd',
-      paddingBottom: '0.5em',
-    },
-  };
-
- 
-  const [selectedRestaurant, setSelectedRestaurant] = useState(null);
-  const [showModal, setShowModal] = useState(false);
-  const openModal = (restaurant) => {
-    setSelectedRestaurant(restaurant);
-  };
-  // Function to handle closing the modal
-  const closeModal = () => {
-    setSelectedRestaurant(null);
-  };
-  const handleClick = () => {
-    console.log({restaurant});
-    if (!showModal){
-      setShowModal(true);
-      setAllowSwipe(false);
-      console.log(showModal);
-    }
-    
-    
-  };
-  const handleClose = () => {
-    setShowModal(false);
-    setAllowSwipe(true);
-    console.log("off");
-  }
-
+function RestaurantCard({ restaurant, handleClick }) {  
   return (
-    <div className="card" onClick={handleClick} onTouchStart={handleClick}style={{ cursor: "pointer" }}>
+    <div className="card" onDoubleClick={() => handleClick(restaurant)} >
       <div className="card-image">
         <img src={restaurant.imageUrl} draggable="false" style={{ width: "100%", height: "100%", objectFit: "cover" }} alt={restaurant.name} />
       </div>
@@ -129,60 +66,14 @@ function RestaurantCard({ restaurant, isKm, allowSwipe, setAllowSwipe }) {
   View Reviews
 </button> */}
 
-      {showModal && (
-        <div 
-        style={modalStyles.overlay}
-        onClick={handleClose} // Click on backdrop closes modal
-        >
-          <div 
-            style={modalStyles.modal}
-            onClick={(e) => e.stopPropagation()} // Prevent close when clicking modal content
-          >
-          <button 
-            onClick={handleClose} 
-            style={{
-              position: 'fixed',
-              top: '5px',
-              right: '5px',
-              width: '30px',
-              height: '30px',
-              borderRadius: '50%',
-              backgroundColor: '#ff4d4f',
-              border: 'none',
-              color: 'black',
-              fontSize: '1.2em',
-              fontWeight: 'bold',
-              cursor: 'pointer',
-              transition: 'background-color 0.2s ease',
-              zIndex: 9999, // Ensure the button is on top
-            }}
-            onMouseOver={(e) => e.target.style.backgroundColor = '#e60000'}
-            onMouseOut={(e) => e.target.style.backgroundColor = '#ff4d4f'}
-          >
-            ✕
-          </button>
-
-            <RestaurantModal restaurant={restaurant} isKm={isKm} />
-            
-          </div>
-        </div>
-      )}
-
+      
         </div>
         
         <div className="card-links" style={{marginTop: ".5em", marginBottom: "1em"}}>
             <a
               href={restaurant.googleMapsLink}
               target="_blank" rel="noreferrer" className="icon-wrapperC" style={{backgroundColor: "#F5F5f5"}}>
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                height="30"
-                viewBox="0 0 24 24"
-                width="36"
-              >
-                <path fill="#4285F4" d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7z" />
-                <circle fill="#34A853" cx="12" cy="9" r="2.5" />
-              </svg>
+              <img src={googlemapsIcon} alt="Info" style={{ width: 24, height: 24 }} />
             </a>
 
 
@@ -192,6 +83,12 @@ function RestaurantCard({ restaurant, isKm, allowSwipe, setAllowSwipe }) {
             <a href={`tel:${restaurant.phoneNumber}` } className="icon-wrapperC" style={{backgroundColor: "#00CC66"}}>
               <Phone size={24} className="icon"/> {/* Call Icon */}
             </a>
+            <button className="icon-wrapperC pressable" style={{backgroundColor: "#3399FF", cursor: "pointer" } }onClick={() => handleClick(restaurant)} onTouchStart={() => handleClick(restaurant) } >
+            <Info size={24} className="icon"/> {/* Call Icon */}
+            
+</button>
+
+
           </div>
       </div>
      </div>

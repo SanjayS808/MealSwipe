@@ -284,7 +284,9 @@ describe('API Endpoints', () => {
         price: 'PRICE_LEVEL_MODERATE',
         rating: 4.5,
         weburl: 'http://example.com',
-        gmapurl: 'http://maps.google.com'
+        gmapurl: 'http://maps.google.com',
+        address: '123 Test Dr.',
+        photoUrl: 'abcdefghijklmnop.com'
       };
 
       const response = await request(app)
@@ -318,7 +320,9 @@ describe('API Endpoints', () => {
         price: 'PRICE_LEVEL_MODERATE',
         rating: 4.5,
         weburl: 'http://example.com',
-        gmapurl: 'http://maps.google.com'
+        gmapurl: 'http://maps.google.com',
+        address: '123 Test Dr.',
+        photoUrl: 'abcdefghijklmnop.com'
       };
 
       const response = await request(app)

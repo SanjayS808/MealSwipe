@@ -6,18 +6,29 @@ import MiniCard from "../components/FavoritesTrashedSharedComponents/MiniCard";
 function TrashedPage({ trashedRestaurants , clearTrashed, loadTrashed , loggedIn, isLoading ,deleteRestaurantFromTrashed}) {
   const navigate = useNavigate();
   const [showConfirmModal, setShowConfirmModal] = useState(false);
+  const [isClosing, setIsClosing] = useState(false);
 
   const handleClearClick = () => {
     setShowConfirmModal(true);
   };
   
   const confirmClearFavorites = () => {
-    clearTrashed();
-    setShowConfirmModal(false);
+    setIsClosing(true);
+    setTimeout(() => {
+      setIsClosing(false);
+      clearTrashed();
+      setShowConfirmModal(false);
+    }
+    , 100);
   };
   
   const cancelClearFavorites = () => {
-    setShowConfirmModal(false);
+    setIsClosing(true);
+    setTimeout(() => {
+      setIsClosing(false);
+      setShowConfirmModal(false);
+    }, 100);
+    
   };
   const swipeClick = () => {
     console.log("swipeClick");
@@ -41,13 +52,16 @@ function TrashedPage({ trashedRestaurants , clearTrashed, loadTrashed , loggedIn
 
       {isLoading ? null : (
         trashedRestaurants.length === 0 ? (
-          <div className="noRestaurants">
+          <div className="noRestaurants modal-animateFavorites">
              <h2>props to you for not being picky!</h2>
             <Button text="Back to Swiping" onClick={swipeClick} />
           </div>
         ) : (
           <>
-          <div className="favoritesList">
+          <button className="clearFavorites" onClick={handleClearClick}>
+              Clear Trashed
+            </button>
+          <div className="favoritesList modal-animateFavorites">
               {trashedRestaurants.map((restaurant, index) => (
                 <MiniCard
                   key={index}
@@ -58,12 +72,10 @@ function TrashedPage({ trashedRestaurants , clearTrashed, loadTrashed , loggedIn
               ))}
               
             </div>
-            <button className="clearFavorites" onClick={handleClearClick}>
-              Clear Trashed
-            </button>
+            
             {showConfirmModal && (
             <div className="modal-overlay">
-              <div className="modal-content">
+              <div className={isClosing ? 'modal-content modal-animateFavoritesExit' : 'modal-content modal-animateFavorites'}>
                 <p>Are you sure you want to clear your trash?</p>
                 <div className="modal-buttons">
                   <button onClick={confirmClearFavorites}>Yes</button>
