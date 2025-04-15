@@ -165,7 +165,10 @@ function App() {
   const loadTrashed = async () => {
     setIsLoading(true);  // ✅ always hide loader
     console.log("Loading trashed...");
-    if (user === null) return;
+    if (user === null) {
+      setIsLoading(false);  // ✅ always hide loader
+      return;
+    }
   
     const userid = uid;
   

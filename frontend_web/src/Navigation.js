@@ -78,7 +78,9 @@ function Navigation({ backendData, likedRestaurants, trashedRestaurants ,handleS
       }} className="header">
         <LoginPic></LoginPic>
         <div className = 'logodiv' style= {{display: 'flex', flexDirection: 'row', alignItems: 'center', justifyContent: 'center'}}>
-          <h1 style= {{marginLeft: '0em'}}>mealswipe</h1>
+        <Link to="/" style={{ textDecoration: 'none', color: 'inherit' }}>
+          <h1 style={{ marginLeft: '0em', cursor: 'pointer' }}>mealswipe</h1>
+        </Link>
           <img src= {logo} style={{ width: '25px', height: 'auto' ,marginLeft: '0em'}} className = 'logoimage' onClick={handleLogoClick} ref={logoRef}></img>
         </div>
         
