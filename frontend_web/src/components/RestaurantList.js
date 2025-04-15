@@ -7,6 +7,7 @@ import TinderCard from "react-tinder-card";
 import RestaurantModal from "./RestaurantModal";
 import "./restaurantList.css";
 import "./Card.css"
+import { motion } from "framer-motion";
 function RestaurantList({ restaurants, onSwipe ,resetBackendData,isLoading}) {
   const [currentRestaurant, setCurrentRestaurant] = useState(null);
   const [isClosing, setIsClosing] = useState(false);
@@ -78,7 +79,7 @@ function RestaurantList({ restaurants, onSwipe ,resetBackendData,isLoading}) {
           restaurants.map((restaurant) => (
             <>
             <TinderCard
-              className="swipe"
+              className="swipe modal-animate"
               key={restaurant.id}
               onSwipe={(dir) => onSwipe(dir, restaurant)}
               preventSwipe={["up", "down"]}
@@ -141,6 +142,7 @@ function RestaurantList({ restaurants, onSwipe ,resetBackendData,isLoading}) {
 
       </div>
     </div>
+    
   );
   
 }

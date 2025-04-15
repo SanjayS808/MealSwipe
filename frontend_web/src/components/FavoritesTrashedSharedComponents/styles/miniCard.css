@@ -17,3 +17,41 @@
     width: 100%;
     margin-top: 10px;
 }
+
+
+@keyframes bounceIn {
+    0% {
+      opacity: 0;
+      transform: scale(0.8);
+    }
+    50% {
+      opacity: 1;
+      transform: scale(1.05);
+    }
+    100% {
+      transform: scale(1);
+    }
+  }
+  
+  
+  .modal-animateMiniCard {
+    animation: bounceIn 0.1s ease-in-out;
+    
+  }
+  
+  
+  @keyframes zoomOut {
+    0% {
+      opacity: 1;
+      transform: scale(1.02);
+    }
+    100% {
+      opacity: 0;
+      transform: scale(0.2);
+    }
+  }
+
+.modal-animateMiniCardExit{
+    animation: zoomOut 0.9s ease-in-out;
+    
+}

@@ -6,18 +6,31 @@ import MiniCard from "../components/FavoritesTrashedSharedComponents/MiniCard";
 function FavoritesPage({ likedRestaurants, clearFavorites, loadFavorites, loggedIn, isLoading ,deleteRestaurantFromFavorites}) {
   const navigate = useNavigate();
   const [showConfirmModal, setShowConfirmModal] = useState(false);
+  const [isClosing, setIsClosing] = useState(false);
+
+  
   const handleClearClick = () => {
     setShowConfirmModal(true);
   };
   
   const confirmClearFavorites = () => {
-    clearFavorites();
-    setShowConfirmModal(false);
+    setIsClosing(true);
+    setTimeout(() => {
+      setIsClosing(false);
+      clearFavorites();
+      setShowConfirmModal(false);
+    }, 100);
+    
+  };
+  const cancelClearFavorites = () => {
+    setIsClosing(true);
+    setTimeout(() => {
+      setIsClosing(false);
+      setShowConfirmModal(false);
+    }, 100);
+    
   };
   
-  const cancelClearFavorites = () => {
-    setShowConfirmModal(false);
-  };
   
   const swipeClick = () => {
     console.log("swipeClick");
@@ -41,7 +54,7 @@ function FavoritesPage({ likedRestaurants, clearFavorites, loadFavorites, logged
 
       {isLoading ? null : (
         likedRestaurants.length === 0 ? (
-          <div className="noRestaurants">
+          <div className="noRestaurants modal-animateFavorites">
             <h2>it's lonely in here :(</h2>
             <Button text="Start Swiping" onClick={swipeClick} />
           </div>
@@ -50,7 +63,7 @@ function FavoritesPage({ likedRestaurants, clearFavorites, loadFavorites, logged
           <button className="clearFavorites" onClick={handleClearClick}>
               Clear Favorites
             </button>
-          <div className="favoritesList">
+          <div className="favoritesList modal-animateFavorites">
             
               {likedRestaurants.map((restaurant, index) => (
                 <MiniCard
@@ -64,8 +77,8 @@ function FavoritesPage({ likedRestaurants, clearFavorites, loadFavorites, logged
             </div>
             
             {showConfirmModal && (
-            <div className="modal-overlay">
-              <div className="modal-content">
+            <div className="modal-overlay ">
+              <div className={isClosing ? 'modal-content modal-animateFavoritesExit' : 'modal-content modal-animateFavorites'}>
                 <p>Are you sure you want to clear all favorites?</p>
                 <div className="modal-buttons">
                   <button onClick={confirmClearFavorites}>Yes</button>
