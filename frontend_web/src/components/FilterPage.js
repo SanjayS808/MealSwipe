@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useState} from 'react';
 import './FilterPage.css';
 import { useNavigate } from 'react-router-dom';
 
@@ -54,6 +54,8 @@ const StarRating = ({ rating, onRatingChange }) => {
 
 
 const FilterPage = ({
+ isKm,
+ setIsKm,
  maxDistance,
  setMaxDistance,
  minRating,
@@ -68,7 +70,25 @@ const FilterPage = ({
   setAllowedTypes,
   fetchRestaurants
 }) => {
-  const navigate = useNavigate();
+
+  // Function to handle unit toggle
+  const toggleUnit = () => {
+    setIsKm(prev => !prev);
+  };
+
+  // Convert maxDistance based on the selected unit
+  const handleDistanceChange = (e) => {
+    let value = parseInt(e.target.value, 10);
+    setMaxDistance(value);
+  };
+  
+  const displayedDistance = isKm ? (maxDistance * 1.61).toFixed(1) : maxDistance;
+
+ // Set min/max values for the range input based on the unit
+ const sliderMin = 1; // Min is adjusted for kilometers (multiply by 1.61 for km)
+ const sliderMax = 50; // Max is adjusted for kilometers (multiply by 1.61 for km)
+
+ const navigate = useNavigate();
  const togglePriceLevel = (level) => {
    setPriceLevels(prev =>
      prev.includes(level)
@@ -98,19 +118,26 @@ const allTypesSelected = allowedTypes.length === types.length;
        <h2>Filters</h2>
       
        <div className="filter-section">
-         <label>Max Distance: {maxDistance} miles</label>
+         <label>Max Distance: {displayedDistance} {isKm ? 'km' : 'miles'}</label>
          <input
            type="range"
-           min="1"
-           max="50"
+           min={sliderMin}
+           max={sliderMax}
            value={maxDistance}
-           onChange={e => setMaxDistance(parseInt(e.target.value, 10))}
+           onChange={handleDistanceChange}
            style={{
             accentColor: '#d9413d' 
           }}
          />
+         <div className="toggle-container">
+            <label className="switch">
+            <input type="checkbox" checked={isKm} onChange={toggleUnit} />
+            <span className="slider round"></span>
+            </label>
+            <span>{isKm ? 'Switch to Miles' : 'Switch to Kilometers'}</span>
+         </div>
        </div>
-      
+
        <div className="filter-section">
          <label>Min Rating: {minRating} Stars</label>
          <StarRating

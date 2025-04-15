@@ -7,7 +7,7 @@ import { MapPin, Globe, Phone } from "lucide-react";
 import { Info } from 'lucide-react'
 import googlemapsIcon from "./Google_Maps_icon_(2020).svg"
 
-function RestaurantCard({ restaurant, handleClick }) {  
+function RestaurantCard({ restaurant, isKm, handleClick }) {  
   return (
     <div className="card" onDoubleClick={() => handleClick(restaurant)} >
       <div className="card-image">
@@ -20,7 +20,10 @@ function RestaurantCard({ restaurant, handleClick }) {
             : restaurant.name}
         </h3>
             
-        <h4 style= {{marginBottom: ".5rem"}}> <MapPin size={18} className="icon"/> {restaurant.distanceFromUser} miles</h4>
+        <h4>
+          <MapPin size={18} className="icon"/> 
+          {isKm ? (restaurant.distanceFromUser * 1.61).toFixed(1) : restaurant.distanceFromUser} {isKm ? 'km' : 'miles'}
+        </h4>
         <div className="restaurant-details" >
           
           <div className="info" style={{ display: "flex", justifyContent: "space-evenly" , marginBottom: "1em", marginTop: "0.5em"}}>

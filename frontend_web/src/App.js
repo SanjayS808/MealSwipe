@@ -35,7 +35,7 @@ function App() {
   const [pendingMinRating, setPendingMinRating] = useState(0);
   const [pendingPriceLevels, setPendingPriceLevels] = useState([]);
   const [allowedTypes, setAllowedTypes] = useState([]);
-  
+  const [isKm, setIsKm] = useState(false);
   const [uid,setUid] = useState(null);
   const [showFilterPage, setShowFilterPage] = useState(false);
   const { user, setUser, incrementSwipes } = useUser();  
@@ -615,6 +615,7 @@ function App() {
         isLoading={isLoading}
         deleteRestaurantFromFavorites={deleteRestaurantFromFavorites}
         deleteRestaurantFromTrash={deleteRestaurantFromTrash}
+        isKm={isKm}
       />
       {isLoading && <Loader />}
 
@@ -633,6 +634,8 @@ function App() {
          <Filter size={24} color="#ffffff" />
       </motion.button>
       <FilterPage
+        isKm={isKm}
+        setIsKm={setIsKm}
         maxDistance={pendingMaxDistance}
         setMaxDistance={setPendingMaxDistance}
         minRating={pendingMinRating}
