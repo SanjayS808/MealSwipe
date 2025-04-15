@@ -21,3 +21,4 @@ backend/.env
 
 # Other directories that might contain unnecessary files
 /Weekly-reports/
+infra/backups/

@@ -7,15 +7,7 @@ import { MapPin, Globe, Phone } from "lucide-react";
 import { Info } from 'lucide-react'
 import googlemapsIcon from "./Google_Maps_icon_(2020).svg"
 
-function RestaurantCard({ restaurant, handleClick }) {
-  
-  
-  
-
-
-
-  
-
+function RestaurantCard({ restaurant, handleClick }) {  
   return (
     <div className="card" onDoubleClick={() => handleClick(restaurant)} >
       <div className="card-image">
