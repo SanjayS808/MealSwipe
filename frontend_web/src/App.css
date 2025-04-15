@@ -59,6 +59,10 @@
     padding-top: 120px;
     width: 100vw;
     max-width: 300px;
+    height: 72vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
     
   }
   
