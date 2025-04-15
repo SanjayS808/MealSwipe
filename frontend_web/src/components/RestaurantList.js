@@ -9,7 +9,7 @@ import "./restaurantList.css";
 import "./Card.css"
 function RestaurantList({ restaurants, onSwipe ,resetBackendData,isLoading}) {
   const [currentRestaurant, setCurrentRestaurant] = useState(null);
-
+  const [isClosing, setIsClosing] = useState(false);
   const [showModal, setShowModal] = useState(false);
   const handleClick = (restaurant) => {
     setCurrentRestaurant(restaurant);
@@ -17,10 +17,12 @@ function RestaurantList({ restaurants, onSwipe ,resetBackendData,isLoading}) {
     console.log("currentRestaurant", restaurant);
   };
   const handleClose = () => {
-    setCurrentRestaurant(null);
-    
-    
-  }
+    setIsClosing(true);
+    setTimeout(() => {
+      setCurrentRestaurant(null);
+      setIsClosing(false);
+    }, 200); // match duration of bounceOut
+  };
 
   
 
@@ -102,7 +104,7 @@ function RestaurantList({ restaurants, onSwipe ,resetBackendData,isLoading}) {
         >
           <div 
             style={modalStyles.modal}
-            className="modal-animate"
+            className={isClosing ? 'modal-exit' : 'modal-animate'}
             onClick={(e) => e.stopPropagation()} // Prevent close when clicking modal content
           >
           <button 

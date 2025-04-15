@@ -97,35 +97,46 @@
         color: #333;
     }
 
-.modal{
-  
-  overflow-y: auto;
-  padding-right: 8px; /* Space for scrollbar */
-  scrollbar-width: thin;
-  scrollbar-color: #ccc transparent;
-}
-
-.modal::-webkit-scrollbar {
-  width: 6px;
-}
-
-.modal::-webkit-scrollbar-thumb {
-  background-color: #ccc;
-  border-radius: 6px;
-}
 
 
-@keyframes slideFadeIn {
-  from {
+
+@keyframes bounceIn {
+  0% {
     opacity: 0;
-    transform: translateY(40px) scale(0.95);
+    transform: scale(0.8);
   }
-  to {
+  50% {
     opacity: 1;
-    transform: translateY(0) scale(1);
+    transform: scale(1.05);
+  }
+  100% {
+    transform: scale(1);
   }
 }
+
 
 .modal-animate {
-  animation: slideFadeIn 0.3s ease-out;
+  animation: bounceIn 0.2s ease-in-out;
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none;  /* IE and Edge */
+  overflow-y: auto; /* still allows scroll */
+}
+
+.modal-animate::-webkit-scrollbar {
+  display: none; /* Chrome, Safari */
+}
+
+@keyframes zoomOut {
+  0% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  100% {
+    opacity: 0;
+    transform: scale(0.2);
+  }
+}
+
+.modal-exit {
+  animation: zoomOut 0.1s ease-in-out forwards;
 }
