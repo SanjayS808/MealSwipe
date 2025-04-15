@@ -413,14 +413,15 @@ function App() {
       },
       body: json_body_data
     })
-    .then(response => response.json())
+    .then(response => response.json() )
+    
     .then(data => {
       if(data) {
         console.log("Restaurant succesfully added.");
       }
     })
     .catch((error) => {
-      console.log("Internal error. Could not add restaurant.")
+      console.log(error)
     })
 
     if(user === null) {return ;} // We do not want to load API if we have no user.

@@ -47,7 +47,11 @@ function FavoritesPage({ likedRestaurants, clearFavorites, loadFavorites, logged
           </div>
         ) : (
           <>
+          <button className="clearFavorites" onClick={handleClearClick}>
+              Clear Favorites
+            </button>
           <div className="favoritesList">
+            
               {likedRestaurants.map((restaurant, index) => (
                 <MiniCard
                   key={index}
@@ -58,9 +62,7 @@ function FavoritesPage({ likedRestaurants, clearFavorites, loadFavorites, logged
               ))}
               
             </div>
-            <button className="clearFavorites" onClick={handleClearClick}>
-              Clear Favorites
-            </button>
+            
             {showConfirmModal && (
             <div className="modal-overlay">
               <div className="modal-content">

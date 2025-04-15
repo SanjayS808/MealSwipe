@@ -47,6 +47,9 @@ function TrashedPage({ trashedRestaurants , clearTrashed, loadTrashed , loggedIn
           </div>
         ) : (
           <>
+          <button className="clearFavorites" onClick={handleClearClick}>
+              Clear Trashed
+            </button>
           <div className="favoritesList">
               {trashedRestaurants.map((restaurant, index) => (
                 <MiniCard
@@ -58,9 +61,7 @@ function TrashedPage({ trashedRestaurants , clearTrashed, loadTrashed , loggedIn
               ))}
               
             </div>
-            <button className="clearFavorites" onClick={handleClearClick}>
-              Clear Trashed
-            </button>
+            
             {showConfirmModal && (
             <div className="modal-overlay">
               <div className="modal-content">

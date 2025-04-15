@@ -16,7 +16,8 @@
   width: 100%;
   justify-content: center;
   overflow-y: auto;
-  padding-bottom: 5rem; /* ensures last row isn't clipped */
+  padding-bottom: 10rem; /* ensures last row isn't clipped */
+  padding-top: 1rem;
 }
 
 .favoritesCard {
@@ -29,6 +30,7 @@
   overflow: hidden;
   cursor: pointer;
   transition: transform 0.2s ease, box-shadow 0.2s ease;
+
 }
 
 .favoritesCard:hover {
