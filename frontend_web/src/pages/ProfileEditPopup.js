@@ -87,31 +87,7 @@ const ProfileEditPopup = ({ currentValues, setValues, onClose }) => {
             onChange={(e) => setTempValues({ ...tempValues, name: e.target.value })}
             style={styles.input}
           />
-
-          <label style={styles.label}>Username</label>
-          <input
-            type="text"
-            value={tempValues.username}
-            onChange={(e) => setTempValues({ ...tempValues, username: e.target.value })}
-            style={styles.input}
-          />
-
-          <label style={styles.label}>Location</label>
-          <input
-            type="text"
-            value={tempValues.location}
-            onChange={(e) => setTempValues({ ...tempValues, location: e.target.value })}
-            style={styles.input}
-          />
-
-          <label style={styles.label}>Gender</label>
-          <input
-            type="text"
-            value={tempValues.gender}
-            onChange={(e) => setTempValues({ ...tempValues, gender: e.target.value })}
-            style={styles.input}
-          />
-
+          
           <button
             style={styles.doneButton}
             onClick={() => {
