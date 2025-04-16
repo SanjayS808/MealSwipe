@@ -35,9 +35,9 @@ const LoginPic = () => {
         border: '2px solid white',
         boxShadow: '0 2px 2px rgba(0, 0, 0, 0.2)', // Adjusted boxShadow for web
       }}>
-        {user && user.picture ? (
+        {user && user?.picture ? (
           <img
-            src={user.name}
+            src={user.picture}
             alt="Profile"
             style={{
               width: '100%',
