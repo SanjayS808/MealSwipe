@@ -15,6 +15,7 @@
 
 This week, the group worked on a variety of tasks including creating the login page. There are currently minor bugs, but they are likely not going to be a big issue moving forward. Google OAuth was also implemented entirely. The next tasks include the filter fix and the distance formula. This improved filter logic, organization, styling, and card functionality as well. The next tasks include algorithm research, UI fixes, and revision of the general product scope. It was determined that keeping the project as a web app would be simpler and more efficient, and realistic than the original plan of switching frameworks in order to develop a mobile app. Lastly, the group worked on the blown-up modal feature. The group received valuable feedback from Dr. Taele, as mentioned earlier. This advice allowed us to revise our plan and make a clearer path to completing the project. He also emphasized the importance of prioritizing functionality over UI and making a mobile app. This week, the group will look to finalize the functionality of the web app, as well as polish the UI. Tasks include: finalizing the filter, fixing bugs in the login page, implementing the user view, and working on the sorting algorithm. By the end of the week, we should have an entirely functioning app.
 
+
 | Current Status |
 | :---- |
 

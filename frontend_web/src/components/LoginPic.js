@@ -1,9 +1,9 @@
 import { React } from 'react'
 import { useNavigate } from "react-router-dom";
-import { UserProvider, useUser } from '../context/UserContext';
+import { useUser } from '../context/UserContext';
 
 const LoginPic = () => {
-  const { user, setUser } = useUser();  
+  const { user, } = useUser();  
   const navigate = useNavigate();
 
   const handleLoginClick = () => {
@@ -37,7 +37,7 @@ const LoginPic = () => {
       }}>
         {user && user.picture ? (
           <img
-            src={user.picture}
+            src={user.name}
             alt="Profile"
             style={{
               width: '100%',

@@ -1,18 +1,17 @@
-import Review from "./Review.js";
 function formatString(str) {
   return str
     .split('_') // split on underscores
     .map(word => word.charAt(0).toUpperCase() + word.slice(1)) // capitalize first letter
     .join(' '); // join with space
 }
-class HourInfo{
-  constructor(day, openTime, closeTime){
-    this.day = day;
-    this.openTime = openTime;
-    this.closeTime = closeTime;
-  }
+// class HourInfo{
+//   constructor(day, openTime, closeTime){
+//     this.day = day;
+//     this.openTime = openTime;
+//     this.closeTime = closeTime;
+//   }
+// }
 
-}
 class Restaurant{
     constructor(id = ' ',
       name = ' ',

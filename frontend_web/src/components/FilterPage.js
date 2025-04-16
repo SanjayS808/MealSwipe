@@ -1,6 +1,6 @@
 import React, {useState} from 'react';
 import './FilterPage.css';
-import { useNavigate } from 'react-router-dom';
+// import { useNavigate } from 'react-router-dom';
 
 const StarRating = ({ rating, onRatingChange }) => {
  const handleStarClick = (event, starValue) => {
@@ -88,7 +88,7 @@ const FilterPage = ({
  const sliderMin = 1; // Min is adjusted for kilometers (multiply by 1.61 for km)
  const sliderMax = 50; // Max is adjusted for kilometers (multiply by 1.61 for km)
 
- const navigate = useNavigate();
+  // const navigate = useNavigate();
  const togglePriceLevel = (level) => {
    setPriceLevels(prev =>
      prev.includes(level)
