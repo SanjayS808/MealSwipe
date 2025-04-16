@@ -92,7 +92,7 @@ function Navigation({ backendData, likedRestaurants, trashedRestaurants ,handleS
       }}>
         <Routes>
           <Route path="/favorites" element={<FavoritesPage likedRestaurants={likedRestaurants} clearFavorites={clearFavorites} loadFavorites={loadFavorites} loggedIn={loggedIn} isLoading={isLoading} deleteRestaurantFromFavorites={deleteRestaurantFromFavorites} />} />
-          <Route path="/" element={<RestaurantList restaurants={backendData} onSwipe={handleSwipe} resetBackendData={resetBackendData} isLoading={isLoading} />} />
+          <Route path="/" element={<RestaurantList restaurants={backendData} isKm={isKm} onSwipe={handleSwipe} resetBackendData={resetBackendData} isLoading={isLoading} />} />
           <Route path="/trashed" element={<TrashedPage trashedRestaurants={trashedRestaurants} clearTrashed={clearTrashed} loadTrashed={loadTrashed} loggedIn={loggedIn} isLoading={isLoading} deleteRestaurantFromTrashed={deleteRestaurantFromTrash} />} />
           <Route path="/login" element={<Login />} />
           <Route path="/profile" element={<ProfilePage />} />

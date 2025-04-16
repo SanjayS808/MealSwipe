@@ -4,7 +4,7 @@ import StarRating from "./StarRating";
 import { MapPin, Globe, Phone, MoreHorizontal } from "lucide-react";
 import RestaurantModal from "./RestaurantModal";
 
-function RestaurantCard({ restaurant, allowSwipe, setAllowSwipe }) {
+function RestaurantCard({ restaurant, isKm, allowSwipe, setAllowSwipe }) {
   const [showModal, setShowModal] = useState(false);
 
   const modalStyles = {
@@ -68,7 +68,7 @@ function RestaurantCard({ restaurant, allowSwipe, setAllowSwipe }) {
         {/* Distance */}
         <div style={{ display: "flex", alignItems: "center", gap: "0.3em" }}>
           <MapPin size={18} className="icon" />
-          <span style={{ fontSize: "0.95em" }}>{restaurant.distanceFromUser} miles</span>
+          <span style={{ fontSize: "0.95em" }}>{isKm ? (restaurant.distanceFromUser * 1.61).toFixed(1) : restaurant.distanceFromUser} {isKm ? 'km' : 'miles'}</span>
         </div>
 
         {/* Rating / Reviews / Price */}
