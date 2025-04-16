@@ -102,23 +102,6 @@ function App() {
     return `${backendURL}/api/serve/get-restaurant-photo?rinfo=${rinfo}`;
   };
 
-  const fetchuid = async () => {
-    if (user === null || user === undefined) {
-      console.error("User is not logged in. Cannot fetch user ID.");
-      return null;
-    }
-    let response = await fetch(`${backendURL}/api/serve/get-userid-with-uname?uname=${user.name}`)
-    .then(response => {
-      if(!response.ok) {
-        throw new Error("Backend error. Failed to fetch user information.");
-      }
-      return response.json();
-    });
-    setLoggedIn(true);
-    console.log("User ID: ", response[0].userid);
-    return response[0].userid;
-  };
-
   const fetchRestaurantInfo = async (rid) => {
 
      // ✅ always hide loader
@@ -426,7 +409,6 @@ function App() {
       if (!response.ok) {
         console.err("Backend error: Could not delete data");
         }
-        
       });
       
   };
