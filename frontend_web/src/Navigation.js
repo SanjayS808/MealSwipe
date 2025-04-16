@@ -33,7 +33,6 @@ function Navigation({ backendData, likedRestaurants, trashedRestaurants ,handleS
       borderTopLeftRadius: "16px",
       borderTopRightRadius: "16px",
       boxShadow: "0 -2px 6px rgba(0, 0, 0, 0.2)",
-      zIndex: 100,
     },
     link: {
       textDecoration: "none",
@@ -83,42 +82,47 @@ function Navigation({ backendData, likedRestaurants, trashedRestaurants ,handleS
         </Link>
           <img src= {logo} style={{ width: '25px', height: 'auto' ,marginLeft: '0em'}} className = 'logoimage' onClick={handleLogoClick} ref={logoRef}></img>
         </div>
-        
       </div>
-
-
-      <Routes>
-            <Route path="/favorites" element={<FavoritesPage likedRestaurants={likedRestaurants} clearFavorites = {clearFavorites} loadFavorites = {loadFavorites} loggedIn = {loggedIn} isLoading= {isLoading} deleteRestaurantFromFavorites={deleteRestaurantFromFavorites}/>} />
-        <Route path="/" element={<RestaurantList restaurants={backendData} onSwipe={handleSwipe} resetBackendData={resetBackendData} isLoading= {isLoading}/>} />
-            <Route path="/trashed" element={<TrashedPage trashedRestaurants={trashedRestaurants} clearTrashed = {clearTrashed} loadTrashed = {loadTrashed} loggedIn = {loggedIn} isLoading= {isLoading} deleteRestaurantFromTrashed={deleteRestaurantFromTrash}/>} />
-        <Route path="/login" element={<Login />} />
-        <Route path="/profile" element={<ProfilePage/>}/>
-      </Routes>
-
-
+    
+      {/* Scrollable Content Area */}
+      <div style={{
+        flex: 1, // fills the remaining vertical space
+        overflowY: 'auto',
+        paddingBottom: '64px', // make room for the footer height
+      }}>
+        <Routes>
+          <Route path="/favorites" element={<FavoritesPage likedRestaurants={likedRestaurants} clearFavorites={clearFavorites} loadFavorites={loadFavorites} loggedIn={loggedIn} isLoading={isLoading} deleteRestaurantFromFavorites={deleteRestaurantFromFavorites} />} />
+          <Route path="/" element={<RestaurantList restaurants={backendData} onSwipe={handleSwipe} resetBackendData={resetBackendData} isLoading={isLoading} />} />
+          <Route path="/trashed" element={<TrashedPage trashedRestaurants={trashedRestaurants} clearTrashed={clearTrashed} loadTrashed={loadTrashed} loggedIn={loggedIn} isLoading={isLoading} deleteRestaurantFromTrashed={deleteRestaurantFromTrash} />} />
+          <Route path="/login" element={<Login />} />
+          <Route path="/profile" element={<ProfilePage />} />
+        </Routes>
+      </div>
+    
+      {/* Fixed Footer */}
       <nav style={styles.navContainer}>
-      {navItems.map(({ path, icon: Icon, label }) => {
-        const isActive = location.pathname === path;
-
-        return (
-          <Link to={path} key={path} aria-label={label} style={styles.link}>
-            <div style={styles.iconWrapper}>
-              <Icon
-                size={24}
-                color={isActive ? "#ffffff" : "#9ca3af"}
-                style={styles.icon}
-              />
-              {isActive && (
-                <motion.div
-                  layoutId="active-indicator"
-                  style={styles.activeIndicator}
+        {navItems.map(({ path, icon: Icon, label }) => {
+          const isActive = location.pathname === path;
+    
+          return (
+            <Link to={path} key={path} aria-label={label} style={styles.link}>
+              <div style={styles.iconWrapper}>
+                <Icon
+                  size={24}
+                  color={isActive ? "#ffffff" : "#9ca3af"}
+                  style={styles.icon}
                 />
-              )}
-            </div>
-          </Link>
-        );
-      })}
-    </nav>
+                {isActive && (
+                  <motion.div
+                    layoutId="active-indicator"
+                    style={styles.activeIndicator}
+                  />
+                )}
+              </div>
+            </Link>
+          );
+        })}
+      </nav>
     </div>
   );
 }

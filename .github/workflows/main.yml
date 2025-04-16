@@ -18,8 +18,10 @@ jobs:
       ECR_BACKEND_REPO: mealswipe/backend-repo
       S3_FRONTEND_BUCKET: mealswipe-frontend
 
-      DB_PASSWORD_PRDD: ${{ secrets.DB_PASSWORD_PRDD }}
+      DB_PASSWORD_PROD: ${{ secrets.DB_PASSWORD_PROD }}
       DB_USER_PROD: ${{ secrets.DB_USER_PROD }}
+      DB_PASSWORD_DEV: ${{ secrets.DB_PASSWORD_DEV }}
+      DB_USER_DEV: ${{ secrets.DB_USER_DEV }}
       DB_URL_PATH: ${{ secrets.DB_URL_PATH }}
       REACT_APP_GOOGLE_WEB_CLIENT_ID: ${{ secrets.REACT_APP_GOOGLE_WEB_CLIENT_ID }}
       REACT_APP_GOOGLE_CLIENT_SECRET: ${{ secrets.REACT_APP_GOOGLE_CLIENT_SECRET }}
@@ -41,27 +43,22 @@ jobs:
           node-version: '18'
 
       - name: Build Backend Docker Image
-        env:
-          # Pass environment-specific variables as build arguments
-          NODE_ENV: ${{ github.ref == 'refs/heads/main' && 'production' || 'development' }}
-          DB_PASSWORD_DEV: ${{ secrets.DB_PASSWORD_DEV }}
-          DB_PASSWORD_PROD: ${{ secrets.DB_PASSWORD_PROD }}
-          DB_USER_DEV: ${{ secrets.DB_USER_DEV }}
-          DB_USER_PROD: ${{ secrets.DB_USER_PROD }}
-          DB_URL_PATH: ${{ secrets.DB_URL_PATH }}
         run: |
+          echo "Building with NODE_ENV: ${{ github.ref == 'refs/heads/main' && 'production' || 'development' }}"
+          
           docker build \
-            --build-arg NODE_ENV=$NODE_ENV \
-            --build-arg DB_PASSWORD_DEV=$DB_PASSWORD_DEV \
-            --build-arg DB_PASSWORD_PROD=$DB_PASSWORD_PROD \
-            --build-arg DB_USER_DEV=$DB_USER_DEV \
-            --build-arg DB_USER_PROD=$DB_USER_PROD \
-            --build-arg DB_URL_PATH=$DB_URL_PATH \
+            --build-arg NODE_ENV=${{ github.ref == 'refs/heads/main' && 'production' || 'development' }} \
+            --build-arg DB_PASSWORD_DEV="${{ secrets.DB_PASSWORD_DEV }}" \
+            --build-arg DB_PASSWORD_PROD="${{ secrets.DB_PASSWORD_PROD }}" \
+            --build-arg DB_USER_DEV="${{ secrets.DB_USER_DEV }}" \
+            --build-arg DB_USER_PROD="${{ secrets.DB_USER_PROD }}" \
+            --build-arg DB_URL_PATH="${{ secrets.DB_URL_PATH }}" \
             -t $ECR_BACKEND_REPO:latest ./backend
 
       - name: Build Frontend
         working-directory: frontend_web
         run: |
+          npm install
           npm ci
           npm run build
 
@@ -103,6 +100,12 @@ jobs:
 
       - name: Deploy CDK Stack
         working-directory: infra
+        env:
+          DB_PASSWORD_PROD: ${{ secrets.DB_PASSWORD_PROD }}
+          DB_PASSWORD_DEV: ${{ secrets.DB_PASSWORD_DEV }}
+          DB_USER_PROD: ${{ secrets.DB_USER_PROD }}
+          DB_USER_DEV: ${{ secrets.DB_USER_DEV }}
+          DB_URL_PATH: ${{ secrets.DB_URL_PATH }}
         run: |
           ACCOUNT_ID=$(aws sts get-caller-identity --query Account --output text)
           npx cdk bootstrap aws://$ACCOUNT_ID/$AWS_REGION
