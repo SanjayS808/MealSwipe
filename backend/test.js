@@ -289,7 +289,8 @@ describe('API Endpoints', () => {
         rating: 4.5,
         weburl: 'http://example.com',
         gmapurl: 'http://maps.google.com',
-        address: '123 Silly Street'
+        address: '123 Test Dr.',
+        photoUrl: 'abcdefghijklmnop.com'
       };
 
       const response = await request(app)
@@ -324,7 +325,8 @@ describe('API Endpoints', () => {
         rating: 4.5,
         weburl: 'http://example.com',
         gmapurl: 'http://maps.google.com',
-        address: '123 Silly St.'
+        address: '123 Test Dr.',
+        photoUrl: 'abcdefghijklmnop.com'
       };
 
       const response = await request(app)

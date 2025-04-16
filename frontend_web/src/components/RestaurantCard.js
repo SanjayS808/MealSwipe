@@ -65,7 +65,6 @@ function RestaurantCard({ restaurant, allowSwipe, setAllowSwipe }) {
             ? restaurant.name.slice(0, 25) + "..."
             : restaurant.name}
         </h3>
-
         {/* Distance */}
         <div style={{ display: "flex", alignItems: "center", gap: "0.3em" }}>
           <MapPin size={18} className="icon" />
@@ -163,8 +162,15 @@ function RestaurantCard({ restaurant, allowSwipe, setAllowSwipe }) {
             >
               ✕
             </button>
-
-            <RestaurantModal restaurant={restaurant} />
+              <a href={restaurant.website} target="_blank" rel="noreferrer" className="icon-wrapperC" style={{backgroundColor: "#3399FF"}}>
+                <Globe size={24} className="icon"/> {/* Website Icon */}
+              </a>
+              <a href={`tel:${restaurant.phoneNumber}` } className="icon-wrapperC" style={{backgroundColor: "#00CC66"}}>
+                <Phone size={24} className="icon"/> {/* Call Icon */}
+              </a>
+              <button className="icon-wrapperC pressable" style={{backgroundColor: "#3399FF", cursor: "pointer" } }onClick={() => handleClick(restaurant)} onTouchStart={() => handleClick(restaurant) } >
+              <Info size={24} className="icon"/> {/* Call Icon */}
+            </button>
           </div>
         </div>
       )}

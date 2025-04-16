@@ -13,21 +13,21 @@ function formatString(str) {
 // }
 
 class Restaurant{
-    constructor(id = '',
-      name = '',
+    constructor(id = ' ',
+      name = ' ',
       rating = 0.0,
-      price = '',
-      address = '',
-      generativeSummary = '',
+      price = 'PRICE_LEVEL_VERY_EXPENSIVE',
+      address = ' ',
+      generativeSummary = ' ',
       googleMapsLink = '',
       reviews = [],
-      website = '',
+      website = ' ',
       ratingsCount = 0,
       isOpen = false,
-      phoneNumber = '',
+      phoneNumber = ' ',
       photos = [],
       distanceFromUser = 10.0,
-      cuisineType = '',
+      cuisineType = ' ',
       ratingCount = 0,
       openingHours = []) {
         this.id = id;

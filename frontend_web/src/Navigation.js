@@ -71,24 +71,16 @@ function Navigation({ backendData, likedRestaurants, trashedRestaurants ,handleS
   };
 
   return (
-    <div style={{ 
-      display: 'flex', 
-      flexDirection: 'column', 
-      height: '100vh' // Full height of the viewport
-    }}>
-      {/* Fixed Header */}
-      <div className="header" style={{ zIndex: 100 }}>
-        <LoginPic />
-        <div className="logodiv" style={{ display: 'flex', flexDirection: 'row', alignItems: 'center', justifyContent: 'center' }}>
-          <h1 style={{ marginLeft: '0em' }}>mealswipe</h1>
-          <img
-            src={logo}
-            alt="noimage"
-            style={{ width: '25px', height: 'auto', marginLeft: '0em' }}
-            className="logoimage"
-            onClick={handleLogoClick}
-            ref={logoRef}
-          />
+    <div>
+      <div style={{
+        zIndex: 100,
+      }} className="header">
+        <LoginPic></LoginPic>
+        <div className = 'logodiv' style= {{display: 'flex', flexDirection: 'row', alignItems: 'center', justifyContent: 'center'}}>
+        <Link to="/" style={{ textDecoration: 'none', color: 'inherit' }}>
+          <h1 style={{ marginLeft: '0em', cursor: 'pointer' }}>mealswipe</h1>
+        </Link>
+          <img src= {logo} style={{ width: '25px', height: 'auto' ,marginLeft: '0em'}} className = 'logoimage' onClick={handleLogoClick} ref={logoRef}></img>
         </div>
       </div>
     

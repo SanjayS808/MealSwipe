@@ -12,8 +12,11 @@ import { motion } from "framer-motion";
 import HeartFlash from './components/Heart';
 import TrashFlash from './components/TrashIcon';
 import Loader from "./components/Loader";
-const backendURL = (DEV_MODE) ? "http://localhost:5001"  : "https://backend.app-mealswipe.com";
 
+const backendURL = (DEV_MODE) ? "http://localhost:5001"  : "https://backend.app-mealswipe.com";
+window.addEventListener("error", (e) => {
+  console.log("Global error caught:", e.message, e.filename, e.lineno);
+});
 function App() {
   const [originalBackendData, setOriginalBackendData] = useState([]);
   const [backendData, setBackendData] = useState([]);
@@ -95,6 +98,27 @@ function App() {
     };
   }, [user, fetchuid, uid]);
 
+  const fetchGooglePlacePhoto = (rinfo) => {
+    return `${backendURL}/api/serve/get-restaurant-photo?rinfo=${rinfo}`;
+  };
+
+  const fetchuid = async () => {
+    if (user === null || user === undefined) {
+      console.error("User is not logged in. Cannot fetch user ID.");
+      return null;
+    }
+    let response = await fetch(`${backendURL}/api/serve/get-userid-with-uname?uname=${user.name}`)
+    .then(response => {
+      if(!response.ok) {
+        throw new Error("Backend error. Failed to fetch user information.");
+      }
+      return response.json();
+    });
+    setLoggedIn(true);
+    console.log("User ID: ", response[0].userid);
+    return response[0].userid;
+  };
+
   const fetchRestaurantInfo = async (rid) => {
 
      // ✅ always hide loader
@@ -112,7 +136,10 @@ function App() {
   const loadFavorites = async () => {
     setIsLoading(true);  // ✅ always hide loader
     console.log("Loading favorites...");
-    if (user === null) return;
+    if (user === null) {
+      setIsLoading(false);  // ✅ always hide loader
+      return;
+    }
     let userid = uid;
   
     try {
@@ -139,7 +166,6 @@ function App() {
       const favoritesTEMP = restaurantInfoResults.map(result => result[0]);
   
       // Set state
-      
       setFavoriteRestaurants(favoritesTEMP);
       
   
@@ -156,7 +182,10 @@ function App() {
   const loadTrashed = async () => {
     setIsLoading(true);  // ✅ always hide loader
     console.log("Loading trashed...");
-    if (user === null) return;
+    if (user === null) {
+      setIsLoading(false);  // ✅ always hide loader
+      return;
+    }
   
     const userid = uid;
   
@@ -263,31 +292,36 @@ function App() {
       
       
       const mappedRestaurants = data.map(r => new Restaurant(
+          r.id,
+          r.displayName?.text,
+          r.rating,
+          r.priceLevel,
+          r.shortFormattedAddress,
+          r.generativeSummary?.overview?.text ?? r.editorialSummary?.text,
+          r.googleMapsLinks?.placeUri,
+          r.reviews?.map(review => ({
+            author: review.authorAttribution.displayName,
+            text: review.originalText.text,
+            rating: review.rating,
+          })) || [],
+          r.websiteUri,
+          r.userRatingCount,
+          r.currentOpeningHours?.openNow ?? false,
+          r.nationalPhoneNumber,
+          r.photos,
+          r.distanceFromCenter || 0,
+          r.primaryType || "Unknown", 
+          r.userRatingCount,
+          r.regularOpeningHours?.periods || [],   
+        )
+      );
 
-        r.id,
-        r.displayName?.text,
-        r.rating,
-        r.priceLevel,
-        r.shortFormattedAddress,
-        r.generativeSummary?.overview?.text ?? r.editorialSummary?.text,
-        r.googleMapsLinks?.placeUri,
-        r.reviews?.map(review => ({
-          author: review.authorAttribution.displayName,
-          text: review.originalText.text,
-          rating: review.rating,
-        })) || [],
-        r.websiteUri,
-        r.userRatingCount,
-        r.currentOpeningHours?.openNow ?? false,
-        r.nationalPhoneNumber,
-        r.photos,
-        r.distanceFromCenter || 0,
-        r.primaryType || "Unknown", 
-        r.userRatingCount,
-        r.regularOpeningHours?.periods || [],   
-      )
-      
-    );
+      // To save resources. We will just load the first two images. For every swipe, we load the next image.
+      // console.log("Fetched 2 images");
+      let photoURL = await fetchGooglePlacePhoto(mappedRestaurants[mappedRestaurants.length - 1].photos[0].name)
+      mappedRestaurants[mappedRestaurants.length - 1].imageUrl = photoURL;
+      photoURL = await fetchGooglePlacePhoto(mappedRestaurants[mappedRestaurants.length - 2].photos[0].name)
+      mappedRestaurants[mappedRestaurants.length - 2].imageUrl = photoURL;
     
       // Store original and filtered data
       setOriginalBackendData(mappedRestaurants);
@@ -316,7 +350,13 @@ function App() {
   };
 
   // Modify handleSwipe to use filteredRestaurants
-  const handleSwipe = (direction, restaurant) => {
+  const handleSwipe = async (direction, restaurant) => {
+    if(backendData.length >= 3) {
+      console.log(`Updating photo for ${backendData[backendData.length - 3].name}`)
+      let photoURL = await fetchGooglePlacePhoto(backendData[backendData.length - 3].photos[0].name)
+      backendData[backendData.length - 3].imageUrl = photoURL;
+    }
+
     console.log(`You swiped ${direction} on ${restaurant.name}`);
     if (direction === 'right') {
       triggerHeart();
@@ -398,11 +438,12 @@ function App() {
       rating: restaurant.rating,
       weburl: restaurant.website,
       gmapurl: restaurant.googleMapsLink,
-      address: restaurant.address
+      address: restaurant.address,
+      photoUrl: restaurant.photos[0].name,
     };
-    console.log("API body data: ", api_body_data);
+    
     let json_body_data = JSON.stringify(api_body_data);
-
+    
     // Returns a 200 + warning if restaurant is already added.
     fetch(`${backendURL}/api/serve/add-restaurant`, {
       method: 'POST',
@@ -411,14 +452,15 @@ function App() {
       },
       body: json_body_data
     })
-    .then(response => response.json())
+    .then(response => response.json() )
+    
     .then(data => {
       if(data) {
         console.log("Restaurant succesfully added.");
       }
     })
     .catch((error) => {
-      console.log("Internal error. Could not add restaurant.")
+      console.log(error)
     })
 
     if(user === null) {return ;} // We do not want to load API if we have no user.
@@ -476,7 +518,8 @@ function App() {
       rating: restaurant.rating,
       weburl: restaurant.website,
       gmapurl: restaurant.googleMapsLink,
-      address: restaurant.address
+      address: restaurant.address,
+      photoUrl: restaurant.photos[0].name,
     };
 
     let json_body_data = JSON.stringify(api_body_data);
