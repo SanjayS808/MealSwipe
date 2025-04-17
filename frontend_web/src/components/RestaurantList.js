@@ -67,7 +67,14 @@ function RestaurantList({ restaurants, onSwipe ,resetBackendData,isLoading}) {
   return (
     
     <div>
-      <div className="cardContainer">
+      <div className="cardContainer"
+      style={{
+        width: "90vw",
+        height: "75vh",
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+      }}>
         {isLoading ? (
           null
         ) : restaurants.length === 0 ? (
@@ -77,20 +84,22 @@ function RestaurantList({ restaurants, onSwipe ,resetBackendData,isLoading}) {
           </div>
         ) : (
           restaurants.map((restaurant) => (
-            <>
             <TinderCard
               className="swipe modal-animate"
               key={restaurant.id}
               onSwipe={(dir) => onSwipe(dir, restaurant)}
               preventSwipe={["up", "down"]}
               swipeThreshold={1}
-              
             >
-              <RestaurantCard restaurant={restaurant} handleClick={handleClick} handleClose={handleClose} showModal={showModal}/>
+              <div style={{ height: "70vh", width: "100%" }}>
+                <RestaurantCard
+                  restaurant={restaurant}
+                  handleClick={handleClick}
+                  handleClose={handleClose}
+                  showModal={showModal}
+                />
+              </div>
             </TinderCard>
-
-            
-            </>
           ))
         )}
 
