@@ -25,6 +25,7 @@ jobs:
       DB_URL_PATH: ${{ secrets.DB_URL_PATH }}
       REACT_APP_GOOGLE_WEB_CLIENT_ID: ${{ secrets.REACT_APP_GOOGLE_WEB_CLIENT_ID }}
       REACT_APP_GOOGLE_CLIENT_SECRET: ${{ secrets.REACT_APP_GOOGLE_CLIENT_SECRET }}
+      GOOGLE_PLACES_API: ${{ secrets.GOOGLE_PLACES_API }}
 
     steps:
       - name: Checkout Code
@@ -53,6 +54,7 @@ jobs:
             --build-arg DB_USER_DEV="${{ secrets.DB_USER_DEV }}" \
             --build-arg DB_USER_PROD="${{ secrets.DB_USER_PROD }}" \
             --build-arg DB_URL_PATH="${{ secrets.DB_URL_PATH }}" \
+            --build-arg GOOGLE_PLACES_API="${{ secrets.GOOGLE_PLACES_API }}" \
             -t $ECR_BACKEND_REPO:latest ./backend
 
       - name: Build Frontend
