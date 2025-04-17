@@ -53,12 +53,14 @@ function App() {
 
   const fetchuid = useCallback( async () => {
     if (user === null || user === undefined) {
+      setIsLoading(false);
       console.error("User is not logged in. Cannot fetch user ID.");
       return null;
     }
     let response = await fetch(`${backendURL}/api/serve/get-userid-with-uname?uname=${user.name}`)
     .then(response => {
       if(!response.ok) {
+        setIsLoading(false);
         throw new Error("Backend error. Failed to fetch user information.");
       }
       return response.json();
@@ -66,6 +68,7 @@ function App() {
     setLoggedIn(true);
     console.log("User ID: ", response[0].userid);
     return response[0].userid;
+    
   }, [user]);
 
   useEffect(() => {
