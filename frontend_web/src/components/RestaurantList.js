@@ -96,6 +96,7 @@ function RestaurantList({ restaurants, isKm, onSwipe ,resetBackendData,isLoading
               <div style={{ height: "70vh", width: "100%" }}>
                 <RestaurantCard
                   restaurant={restaurant}
+                  isKm={isKm}
                   handleClick={handleClick}
                   handleClose={handleClose}
                   showModal={showModal}
