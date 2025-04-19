@@ -34,7 +34,7 @@ function App() {
   const [pendingMinRating, setPendingMinRating] = useState(0);
   const [pendingPriceLevels, setPendingPriceLevels] = useState([]);
   const [allowedTypes, setAllowedTypes] = useState([]);
-  const [isKm, setIsKm] = useState(false);
+
   const [uid,setUid] = useState(null);
   const [showFilterPage, setShowFilterPage] = useState(false);
   const { user, incrementSwipes } = useUser();  
@@ -593,6 +593,7 @@ function App() {
       cursor: "pointer",
     },
   }
+  const [isKm, setIsKm] = useState(false);
 
 
   return (
