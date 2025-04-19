@@ -6,7 +6,7 @@ import ReviewCarousel from './ModalComponents/ReviewCarousel';
 import OpeningHours from './ModalComponents/OpeningHours';
 function RestaurantModal({ restaurant, isKm }) {
     return (
-        <div className="cardModal" style={({zIndex: '9999'})}>
+        <div className="cardModal">
             
             <div className="image_container">
             <img 

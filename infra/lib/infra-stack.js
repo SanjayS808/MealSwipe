@@ -75,9 +75,11 @@ class MealSwipeAppService extends cdk.Stack {
         environment: {
           NODE_ENV: 'production',
           DB_PASSWORD_DEV: process.env.DB_PASSWORD_DEV || '',
+          DB_PASSWORD_PROD: process.env.DB_PASSWORD_PROD || '',
           DB_USER_PROD: process.env.DB_USER_PROD || '',
           DB_USER_DEV: process.env.DB_USER_DEV || '',
-          DB_URL_PATH: process.env.DB_URL_PATH || ''
+          DB_URL_PATH: process.env.DB_URL_PATH || '',
+          GOOGLE_PLACES_API: process.env.GOOGLE_PLACES_API || '',
         },
         // Adding healthcheck to ensure connection to ECR container works.dd
         healthCheck: {
