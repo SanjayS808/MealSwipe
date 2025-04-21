@@ -1,43 +1,53 @@
 // The following file is used for all the tests needed for the backend service. Tests all API calls and some edge cases.
 
-const { app, server } = require('./server.js');
+const { app, server, imageCache, contentTypeCache, CACHE_EXPIRATION_TIME } = require('../server.js');
 const request = require('supertest');
-const pool = require('./db'); // Adjust path to your DB connection file
+const pool = require('../db'); // Adjust path to your DB connection file
+const fetchMock = require('jest-fetch-mock');
+const fs = require('fs');
 
+// Global variables used for testing.
 // Mock the PostgreSQL pool
-jest.mock('./db', () => ({
+jest.mock('../db', () => ({
   query: jest.fn()
 }));
 
 beforeEach(() => {
+  global.imageCache = new Map();
+  global.contentTypeCache = new Map();
+  global.CACHE_EXPIRATION_TIME = 60 * 60 * 1000;
+  global.GOOGLE_API_KEY = 'mock-key';
+
   jest.clearAllMocks();
 });
 
-// Test ): Get all the restaurants..
-describe('GET /api/serve/get-all-restaurants', () => {
-  it('GET should return a list of all restaurants from maxDistance', async () => {
-    const res = await request(server).get('/api/serve/get-all-restaurants?maxDistance=100&minRating=0.0'); // Measured in kilometers.
-    expect(res.status).toEqual(200);
-    expect(res.type).toEqual(expect.stringContaining('json'));
-    expect(Array.isArray(res.body)).toBe(true);
-    if (res.body.length > 0) {
-      res.body.forEach(item => {
-        expect(item).toEqual(expect.objectContaining({}));
-      });
-    }
-  });
+describe('API Endpoints', () => {
 
-  it('GET should always contain location information.', async () => {
-    const res = await request(server).get('/api/serve/get-all-restaurants?maxDistance=100');
-    expect(res.status).toEqual(200);
-    expect(res.type).toEqual(expect.stringContaining('json'));
-    expect(Array.isArray(res.body)).toBe(true);
-    if (res.body.length > 0) {
-      res.body.forEach(item => {
-        expect(item).toHaveProperty('location');
-      });
-    }
-  });
+  // Test 1: Get all the restaurants information.
+  describe('GET /api/serve/get-all-restaurants', () => {
+    it('GET should return a list of all restaurants from maxDistance', async () => {
+      const res = await request(server).get('/api/serve/get-all-restaurants?maxDistance=100&minRating=0.0'); // Measured in kilometers.
+      expect(res.status).toEqual(200);
+      expect(res.type).toEqual(expect.stringContaining('json'));
+      expect(Array.isArray(res.body)).toBe(true);
+      if (res.body.length > 0) {
+        res.body.forEach(item => {
+          expect(item).toEqual(expect.objectContaining({}));
+        });
+      }
+    });
+
+    it('GET should always contain location information.', async () => {
+      const res = await request(server).get('/api/serve/get-all-restaurants?maxDistance=100');
+      expect(res.status).toEqual(200);
+      expect(res.type).toEqual(expect.stringContaining('json'));
+      expect(Array.isArray(res.body)).toBe(true);
+      if (res.body.length > 0) {
+        res.body.forEach(item => {
+          expect(item).toHaveProperty('location');
+        });
+      }
+    });
 
   it('GET with custom minRating should get values above minRating', async () => {
     const res = await request(server).get('/api/serve/get-all-restaurants?maxDistance=100&minRating=3.0');
@@ -51,10 +61,109 @@ describe('GET /api/serve/get-all-restaurants', () => {
       });
     }
   });
-});
+  });
 
-describe('API Endpoints', () => {
-  // Test 1: Get userId with username
+  // Test 2: Get userId with username
+  describe('GET /api/serve/get-restaurant-photo', () => {
+    beforeAll(() => {
+      fetchMock.enableMocks();
+    });
+
+    beforeEach(() => {
+      fetchMock.resetMocks();
+      // Clear caches before each test
+      imageCache.clear();
+      contentTypeCache.clear();
+    });
+
+    afterAll(() => {
+      server.close();
+    });
+
+    it('should return 400 if rinfo not provided', async () => {
+      const res = await request(server).get('/api/serve/get-restaurant-photo');
+      expect(res.status).toBe(400);
+      expect(res.body).toEqual({ error: "Missing restaurant photo reference (rinfo)." });
+    });
+
+    it('should fetch image and cache it', async () => {
+      const fakeImage = Buffer.from([0x01, 0x02, 0x03]);
+      fetchMock.mockResponseOnce(fakeImage, {
+        status: 200,
+        headers: { 'content-type': 'image/png' },
+      });
+
+      const rinfo = 'photoRef1';
+      const res = await request(server).get(`/api/serve/get-restaurant-photo?rinfo=${rinfo}`);
+      expect(res.status).toBe(200);
+      expect(res.header['content-type']).toBe('image/png');
+      expect(res.body).toEqual(fakeImage);
+      expect(imageCache.has(rinfo)).toBe(true);
+      expect(contentTypeCache.get(rinfo)).toBe('image/png');
+    });
+
+    it('should serve cached image on subsequent requests', async () => {
+      const fakeImage = Buffer.from([0x0A, 0x0B, 0x0C]);
+      fetchMock.mockResponseOnce(fakeImage, {
+        status: 200,
+        headers: { 'content-type': 'image/jpeg' },
+      });
+
+      const rinfo = 'photoRef2';
+      // First request fetches and caches
+      await request(server).get(`/api/serve/get-restaurant-photo?rinfo=${rinfo}`);
+      // Clear fetch mocks so any fetch calls will be evident
+      fetchMock.mockClear();
+
+      const res2 = await request(server).get(`/api/serve/get-restaurant-photo?rinfo=${rinfo}`);
+      expect(res2.status).toBe(200);
+      expect(res2.header['content-type']).toBe('image/jpeg');
+      expect(res2.body).toEqual(fakeImage);
+      // Ensure no new fetch call was made
+      expect(fetchMock).not.toHaveBeenCalled();
+    });
+
+    it('should return 500 when Google API fails', async () => {
+      fetchMock.mockRejectOnce(new Error('Google API down'));
+
+      const rinfo = 'failRef';
+      const res = await request(server).get(`/api/serve/get-restaurant-photo?rinfo=${rinfo}`);
+      expect(res.status).toBe(500);
+      expect(res.text).toBe('Failed to fetch image');
+    });
+
+    it('should refetch image when cache expired', async () => {
+      jest.useFakeTimers();
+      const fakeImage1 = Buffer.from([0xAA]);
+      const fakeImage2 = Buffer.from([0xBB]);
+
+      fetchMock
+        .mockResponseOnce(fakeImage1, {
+          status: 200,
+          headers: { 'content-type': 'image/gif' },
+        })
+        .mockResponseOnce(fakeImage2, {
+          status: 200,
+          headers: { 'content-type': 'image/gif' },
+        });
+
+      const rinfo = 'photoRef3';
+      // First fetch
+      const res1 = await request(server).get(`/api/serve/get-restaurant-photo?rinfo=${rinfo}`);
+      expect(res1.body).toEqual(fakeImage1);
+
+      // Advance time beyond expiration
+      jest.advanceTimersByTime(CACHE_EXPIRATION_TIME + 1000);
+      // Second request should trigger new fetch
+      const res2 = await request(server).get(`/api/serve/get-restaurant-photo?rinfo=${rinfo}`);
+      expect(res2.body).toEqual(fakeImage2);
+      expect(fetchMock).toHaveBeenCalledTimes(2);
+
+      jest.useRealTimers();
+    });
+  });
+
+  // Test 3: Get userId with username
   describe('GET /api/serve/get-userid-with-uname', () => {
     it('should return user ID when valid username is provided', async () => {
       // Mock the database response
@@ -92,7 +201,7 @@ describe('API Endpoints', () => {
     });
   });
 
-  // Test 2: Get user info with ID
+  // Test 4: Get user info with ID
   describe('GET /api/serve/get-user-with-id', () => {
     it('should return user info when valid user ID is provided', async () => {
       // Mock the database response
@@ -130,7 +239,7 @@ describe('API Endpoints', () => {
     });
   });
 
-  // Test 3: Add user
+  // Test 5: Add user
   describe('POST /api/serve/add-user', () => {
     it('should add a new user when all information is provided', async () => {
       // Mock checking if user exists (returns empty array)
@@ -193,7 +302,7 @@ describe('API Endpoints', () => {
     });
   });
 
-  // Test 4: Get restaurant ID with restaurant name
+  // Test 6: Get restaurant ID with restaurant name
   describe('GET /api/serve/get-rid-with-rname', () => {
     it('should return restaurant name when valid restaurant name is provided', async () => {
       // Mock the database response
@@ -231,7 +340,7 @@ describe('API Endpoints', () => {
     });
   });
 
-  // Test 5: Get restaurant info with restaurant ID
+  // Test 7: Get restaurant info with restaurant ID
   describe('GET /api/serve/get-rinfo-with-rid', () => {
     it('should return restaurant info when valid restaurant ID is provided', async () => {
       // Mock the database response
@@ -269,7 +378,7 @@ describe('API Endpoints', () => {
     });
   });
 
-  // Test 6: Add restaurant
+  // Test 8: Add restaurant
   describe('POST /api/serve/add-restaurant', () => {
     it('should add a new restaurant when all information is provided', async () => {
       // Mock checking if restaurant exists (returns empty array)
@@ -339,7 +448,7 @@ describe('API Endpoints', () => {
     });
   });
 
-  // Test 7: Get user trashed restaurants
+  // Test 9: Get user trashed restaurants
   describe('GET /api/serve/get-user-trashed-restaurant', () => {
     it('should return trashed restaurants when valid user ID is provided', async () => {
       // Mock the database response
@@ -383,7 +492,7 @@ describe('API Endpoints', () => {
     });
   });
 
-  // Test 8: Add user trashed restaurant
+  // Test 10: Add user trashed restaurant
   describe('POST /api/serve/add-user-trashed-restaurant', () => {
     it('should add a trashed restaurant when valid user ID and restaurant ID are provided', async () => {
       // Mock checking if relation exists (returns empty array)
@@ -442,7 +551,7 @@ describe('API Endpoints', () => {
     });
   });
 
-  // Test 9: Get user favorite restaurants
+  // Test 11: Get user favorite restaurants
   describe('GET /api/serve/get-user-favorite-restaurants', () => {
     it('should return favorite restaurants when valid user ID is provided', async () => {
       // Mock the database response
@@ -486,7 +595,7 @@ describe('API Endpoints', () => {
     });
   });
 
-  // Test 10: Add user favorite restaurant
+  // Test 12: Add user favorite restaurant
   describe('POST /api/serve/add-user-favorite-restaurant', () => {
     it('should add a favorite restaurant when valid user ID and restaurant ID are provided', async () => {
       // Mock checking if relation exists (returns empty array)
@@ -718,7 +827,81 @@ describe('API Endpoints', () => {
     });
   });
 
-  // Test 11: Health check
+
+  // Test 13: Testing the increment of user's swipes/
+  describe('GET /api/serve/get-swipes', () => {
+    beforeEach(() => jest.clearAllMocks());
+    afterAll(() => server.close());
+  
+    it('should return 400 if uid not provided', async () => {
+      const res = await request(server).get('/api/serve/get-swipes');
+      expect(res.status).toBe(400);
+      expect(res.body).toEqual({ error: 'Could not fetch undefined username.' });
+    });
+  
+    it('should return swipes count for valid uid', async () => {
+      const mockRows = [{ numswipes: 5 }];
+      pool.query.mockResolvedValue({ rows: mockRows });
+  
+      const uid = '123';
+      const res = await request(server).get(`/api/serve/get-swipes?uid=${uid}`);
+  
+      expect(pool.query).toHaveBeenCalledWith(`SELECT numswipes FROM Users WHERE userid=${uid};`);
+      expect(res.status).toBe(200);
+      expect(res.body).toEqual(mockRows);
+    });
+  
+    it('should return 500 on database error', async () => {
+      pool.query.mockRejectedValue(new Error('DB error'));
+  
+      const res = await request(server).get('/api/serve/get-swipes?uid=123');
+      expect(res.status).toBe(500);
+      expect(res.body).toEqual({ error: 'Internal Server Error' });
+    });
+  });
+  
+  // Test 14: Testing the increment of user's swipes/
+  describe('POST /api/serve/increment-swipes', () => {
+    beforeEach(() => jest.clearAllMocks());
+  
+    it('should return 400 if uid or rid missing', async () => {
+      const res = await request(server)
+        .post('/api/serve/increment-swipes')
+        .send({});
+  
+      expect(res.status).toBe(400);
+      expect(res.body).toEqual({ error: 'Could not create user. User information is missing.' });
+    });
+  
+    it('should increment swipes for valid request', async () => {
+      pool.query.mockResolvedValue({});
+      const payload = { uid: 123, rid: 'abc' };
+  
+      const res = await request(server)
+        .post('/api/serve/increment-swipes')
+        .send(payload);
+  
+      expect(pool.query).toHaveBeenCalledWith(
+        `UPDATE users SET numswipes = numswipes +1 WHERE userid=${payload.uid};`
+      );
+      expect(res.status).toBe(200);
+      expect(res.body).toEqual({ transactionComplete: 'Added number of swipes to 1.' });
+    });
+  
+    it('should return 500 on database error', async () => {
+      pool.query.mockRejectedValue(new Error('DB fail'));
+  
+      const res = await request(server)
+        .post('/api/serve/increment-swipes')
+        .send({ uid: 123, rid: 'abc' });
+  
+      expect(res.status).toBe(500);
+      expect(res.body).toEqual({ error: 'Internal Server Error' });
+    });
+  });
+  
+
+  // Test 15: Health check
   describe('GET /health', () => {
     it('should return health status', async () => {
       const response = await request(app).get('/health');
@@ -728,7 +911,7 @@ describe('API Endpoints', () => {
     });
   });
 
-  // Test 12: Root endpoint
+  // Test 16: Root endpoint
   describe('GET /', () => {
     it('should return connection status', async () => {
       const response = await request(app).get('/');
@@ -738,7 +921,7 @@ describe('API Endpoints', () => {
     });
   });
 
-  // Test 13: API endpoint
+  // Test 17: API index endpoint
   describe('GET /api', () => {
     it('should return restaurants array', async () => {
       const response = await request(app).get('/api');
