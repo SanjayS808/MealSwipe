@@ -328,6 +328,7 @@ function App() {
       
 
     } catch (error) {
+      setIsLoading(false); 
       console.error("Fetch error:", error);
     } finally {
       setIsLoading(false);  // ✅ always hide loader
