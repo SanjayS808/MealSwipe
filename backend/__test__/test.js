@@ -173,11 +173,12 @@ describe('API Endpoints', () => {
 
       const response = await request(server)
         .get('/api/serve/get-userid-with-uname')
-        .query({ uname: 'testuser' });
+        .query({ uname: 'testuser' })
+        .query({ email: 'testuser@email.com' });
 
       expect(response.status).toBe(200);
       expect(response.body).toEqual([{ userid: '123' }]);
-      expect(pool.query).toHaveBeenCalledWith("SELECT userid FROM Users WHERE name='testuser';");
+      expect(pool.query).toHaveBeenCalledWith("SELECT userid FROM Users WHERE email='testuser@email.com';");
     });
 
     it('should return 400 when username is not provided', async () => {

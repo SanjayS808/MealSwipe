@@ -167,12 +167,12 @@ app.get("/api/serve/get-restaurant-photo", async (req, res) => {
 
 // Get userid via username
 app.get("/api/serve/get-userid-with-uname", async (req, res) => {
-    if(req.query.uname === undefined) {
+    if(!req.query.uname && !req.query.email) {
         console.error('Could not fetch undefined user.');
         res.status(400).json({error: 'Could not fetch undefined username.'});
         return;
     }
-    const query = `SELECT userid FROM Users WHERE name='${req.query.uname}';`
+    const query = `SELECT userid FROM Users WHERE email='${req.query.email}';`
     try {
         const result = await pool.query(query);
         res.json(result.rows);
