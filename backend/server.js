@@ -598,4 +598,5 @@ if (DEV_MODE) {
 }
 
 // Exporting app for testing.
-module.exports = { app, server };
+module.exports = { app, server,
+     imageCache, contentTypeCache, CACHE_EXPIRATION_TIME}; // Exporting for testing only!
