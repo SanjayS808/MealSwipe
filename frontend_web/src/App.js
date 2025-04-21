@@ -57,7 +57,7 @@ function App() {
       console.error("User is not logged in. Cannot fetch user ID.");
       return null;
     }
-    let response = await fetch(`${backendURL}/api/serve/get-userid-with-uname?uname=${user.name}`)
+    let response = await fetch(`${backendURL}/api/serve/get-userid-with-uname?uname=${user.name}&email=${user.email}`)
     .then(response => {
       if(!response.ok) {
         setIsLoading(false);
