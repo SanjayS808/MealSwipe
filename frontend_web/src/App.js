@@ -593,7 +593,6 @@ function App() {
       cursor: "pointer",
     },
   }
-  const [isKm, setIsKm] = useState(false);
 
 
   return (
@@ -615,7 +614,6 @@ function App() {
         isLoading={isLoading}
         deleteRestaurantFromFavorites={deleteRestaurantFromFavorites}
         deleteRestaurantFromTrash={deleteRestaurantFromTrash}
-        isKm={isKm}
       />
       {isLoading && <Loader />}
 
@@ -634,8 +632,6 @@ function App() {
          <Filter size={24} color="#ffffff" />
       </motion.button>
       <FilterPage
-        isKm={isKm}
-        setIsKm={setIsKm}
         maxDistance={pendingMaxDistance}
         setMaxDistance={setPendingMaxDistance}
         minRating={pendingMinRating}

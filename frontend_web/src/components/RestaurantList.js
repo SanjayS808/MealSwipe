@@ -8,7 +8,7 @@ import RestaurantModal from "./RestaurantModal";
 import "./restaurantList.css";
 import "./Card.css"
 import { motion } from "framer-motion";
-function RestaurantList({ restaurants, isKm, onSwipe ,resetBackendData,isLoading}) {
+function RestaurantList({ restaurants, onSwipe ,resetBackendData,isLoading}) {
   const [currentRestaurant, setCurrentRestaurant] = useState(null);
   const [isClosing, setIsClosing] = useState(false);
   const [showModal, setShowModal] = useState(false);
@@ -96,7 +96,6 @@ function RestaurantList({ restaurants, isKm, onSwipe ,resetBackendData,isLoading
               <div style={{ height: "70vh", width: "100%" }}>
                 <RestaurantCard
                   restaurant={restaurant}
-                  isKm={isKm}
                   handleClick={handleClick}
                   handleClose={handleClose}
                   showModal={showModal}
@@ -144,7 +143,7 @@ function RestaurantList({ restaurants, isKm, onSwipe ,resetBackendData,isLoading
             ✕
           </button>
 
-            <RestaurantModal restaurant={currentRestaurant} isKm={isKm}  />
+            <RestaurantModal restaurant={currentRestaurant} />
             
           </div>
         </div>

@@ -4,7 +4,7 @@ import StarRating from "./StarRating";
 import { MapPin, Globe, Phone, Info } from "lucide-react";
 import googlemapsIcon from "./Google_Maps_icon_(2020).svg";
 
-function RestaurantCard({ restaurant, isKm, handleClick }) {
+function RestaurantCard({ restaurant, handleClick }) {
   return (
     <div
       className="card"
@@ -66,7 +66,7 @@ function RestaurantCard({ restaurant, isKm, handleClick }) {
           }}
         >
           <MapPin size={18} style={{ marginRight: "0.5em" }} />
-          {isKm ? (restaurant.distanceFromUser * 1.61).toFixed(1) : restaurant.distanceFromUser} {isKm ? 'km' : 'miles'}
+          {restaurant.distanceFromUser} miles
         </h4>
 
         <div className="restaurant-details">
