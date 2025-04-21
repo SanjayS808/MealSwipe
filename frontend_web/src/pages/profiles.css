@@ -1,0 +1,71 @@
+.profilePage {
+    padding-top: 80px;
+    height: 100vh;
+    width: 80vw;
+    margin: auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  
+  .profileCard {
+    background-color: white;
+    border-radius: 12px;
+    box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+    width: 100%;
+    max-width: 500px;
+    padding: 2rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  
+  .profileAvatar {
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    background-color: #ccc;
+    background-size: cover;
+    background-position: center;
+    margin-bottom: 1rem;
+  }
+  
+  .profileRow {
+    width: 100%;
+    margin-bottom: 1rem;
+    text-align: left;
+  }
+  
+  .profileLabel {
+    font-weight: bold;
+    font-size: 0.9rem;
+    color: #444;
+  }
+  
+  .profileValue {
+    font-size: 1.1rem;
+    color: #222;
+  }
+  
+  .profileButtons {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+    margin-top: 1.5rem;
+  }
+  
+  .profileButton {
+    padding: 10px 18px;
+    font-weight: bold;
+    background-color: #d9413d;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+  }
+  
+  .profileButton:hover {
+    background-color: #a1221c;
+  }
+  
