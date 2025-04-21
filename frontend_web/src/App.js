@@ -34,7 +34,7 @@ function App() {
   const [pendingMinRating, setPendingMinRating] = useState(0);
   const [pendingPriceLevels, setPendingPriceLevels] = useState([]);
   const [allowedTypes, setAllowedTypes] = useState([]);
-
+  
   const [uid,setUid] = useState(null);
   const [showFilterPage, setShowFilterPage] = useState(false);
   const { user, incrementSwipes } = useUser();  
