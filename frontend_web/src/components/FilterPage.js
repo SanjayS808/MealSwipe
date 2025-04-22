@@ -54,6 +54,8 @@ const StarRating = ({ rating, onRatingChange }) => {
 
 
 const FilterPage = ({
+ isKm,
+ setIsKm,
  maxDistance,
  setMaxDistance,
  minRating,
@@ -68,6 +70,20 @@ const FilterPage = ({
   setAllowedTypes,
   fetchRestaurants
 }) => {
+
+   // Function to handle unit toggle
+   const toggleUnit = () => {
+    setIsKm(prev => !prev);
+  };
+
+  // Convert maxDistance based on the selected unit
+  const handleDistanceChange = (e) => {
+    let value = parseInt(e.target.value, 10);
+    setMaxDistance(value);
+  };
+  
+  const displayedDistance = isKm ? (maxDistance * 1.61).toFixed(1) : maxDistance;
+
   // const navigate = useNavigate();
  const togglePriceLevel = (level) => {
    setPriceLevels(prev =>
@@ -98,19 +114,27 @@ const allTypesSelected = allowedTypes.length === types.length;
        <h2>Filters</h2>
       
        <div className="filter-section">
-       <label>Max Distance: {maxDistance} miles</label>
+       <label>Max Distance: {displayedDistance} {isKm ? 'km' : 'miles'}</label>
        <input
            type="range"
            min="1"
            max="50"
            value={maxDistance}
-           onChange={e => setMaxDistance(parseInt(e.target.value, 10))}
+           onChange={handleDistanceChange}
            style={{
             accentColor: '#d9413d' 
           }}
          />
        </div>
-      
+
+       <div className="toggle-container">
+             <label className="switch">
+             <input type="checkbox" checked={isKm} onChange={toggleUnit} />
+             <span className="slider round"></span>
+             </label>
+             <span>{isKm ? 'Switch to Miles' : 'Switch to Kilometers'}</span>
+          </div>
+          
        <div className="filter-section">
          <label>Min Rating: {minRating} Stars</label>
          <StarRating
