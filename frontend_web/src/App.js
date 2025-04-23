@@ -126,6 +126,7 @@ function App() {
       setIsLoading(false);  // ✅ always hide loader
       return;
     }
+    setIsLoading(false);
     let userid = uid;
   
     try {
