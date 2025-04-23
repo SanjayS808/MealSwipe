@@ -1,6 +1,6 @@
 import React from "react";
 import { render, screen, fireEvent } from "@testing-library/react";
-import RestaurantCard from "../components/RestaurantCard";
+import RestaurantCard from "./components/RestaurantCard";
 
 // Mock the lucide-react icons
 jest.mock("lucide-react", () => ({
@@ -9,7 +9,7 @@ jest.mock("lucide-react", () => ({
   Phone: () => <div data-testid="icon-phone" />,
   Info: () => <div data-testid="icon-info" />,
 }));
-jest.mock("../components/Google_Maps_icon_2020.svg", () => "googlemapsIcon");
+jest.mock("./components/Google_Maps_icon_2020.svg", () => "googlemapsIcon");
 
 describe("RestaurantCard", () => {
   const mockRestaurant = {
