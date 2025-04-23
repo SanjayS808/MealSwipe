@@ -24,7 +24,7 @@ const TrashFlash = forwardRef((_, ref) => {
     
     <div style={styles.overlay}>
         {console.log("TrashFlash")}
-          <FaTrash ref={trashRef} style={styles.icon} />
+          <FaTrash ref={trashRef} data-testid="trash-icon" style={styles.icon} />
         </div>
   );
 });

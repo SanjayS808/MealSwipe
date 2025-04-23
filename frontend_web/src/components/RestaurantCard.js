@@ -2,7 +2,7 @@ import React from "react";
 import "./Card.css";
 import StarRating from "./StarRating";
 import { MapPin, Globe, Phone, Info } from "lucide-react";
-import googlemapsIcon from "./Google_Maps_icon_(2020).svg";
+import googlemapsIcon from "./Google_Maps_icon_2020.svg";
 
 function RestaurantCard({ restaurant, handleClick }) {
   return (

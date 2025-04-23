@@ -17,17 +17,17 @@ const StarRating = ({ rating }) => {
 
     // Add full stars
     for (let i = 0; i < fullStars; i++) {
-      stars.push(<FontAwesomeIcon key={`full-${i}`} icon={faStar} style={starStyle}/>);
+      stars.push(<FontAwesomeIcon data-testid="star-full"key={`full-${i}`} icon={faStar} style={starStyle}/>);
     }
 
     // Add half star if needed
     if (halfStars) {
-      stars.push(<FontAwesomeIcon key="half" icon={faStarHalfAlt} style={starStyle}/>);
+      stars.push(<FontAwesomeIcon data-testid="star-half"key="half" icon={faStarHalfAlt} style={starStyle}/>);
     }
 
     // Add empty stars
     for (let i = 0; i < emptyStars; i++) {
-      stars.push(<FontAwesomeIcon key={`empty-${i}`} icon={faRegStar} style={starStyle}/>);
+      stars.push(<FontAwesomeIcon data-testid="star-empty" key={`empty-${i}`} icon={faRegStar} style={starStyle}/>);
     }
 
     return stars;
