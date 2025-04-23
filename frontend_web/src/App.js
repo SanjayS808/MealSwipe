@@ -126,6 +126,7 @@ function App() {
       setIsLoading(false);  // ✅ always hide loader
       return;
     }
+    setIsLoading(false);
     let userid = uid;
   
     try {
@@ -308,14 +309,14 @@ function App() {
       mappedRestaurants[mappedRestaurants.length - 1].imageUrl = photoURL;
       photoURL = await fetchGooglePlacePhoto(mappedRestaurants[mappedRestaurants.length - 2].photos[0].name)
       mappedRestaurants[mappedRestaurants.length - 2].imageUrl = photoURL;
-    
+      const shuffledRestaurants = [...mappedRestaurants].sort(() => Math.random() - 0.5);
       // Store original and filtered data
-      setOriginalBackendData(mappedRestaurants);
-      setFilteredRestaurants(mappedRestaurants);
-      setBackendData(mappedRestaurants);
+      setOriginalBackendData(shuffledRestaurants);
+      setFilteredRestaurants(shuffledRestaurants);
+      setBackendData(shuffledRestaurants);
       const uniqueTypes = [
         ...new Set(
-          mappedRestaurants
+          shuffledRestaurants
             .map(r => r.cuisineType)
             .filter(Boolean)
         )
