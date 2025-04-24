@@ -3,7 +3,7 @@ name: Build and Deploy
 on:
   push:
     branches: [main]
-  schdeule: 
+  schedule: 
   # Run the worflow at the end of each day (CST).
   - cron: "0 0 * * ?"
 
