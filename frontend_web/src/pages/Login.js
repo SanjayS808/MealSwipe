@@ -20,30 +20,29 @@ const Login = () => {
       }, 600); // match with swipe-out duration
     };
   return (
-    <div style={{ padding: "10vh 10vw", overflow: "hidden" }}>
-      <div style={{ display: "flex", flexDirection: "column", alignItems: "center", width: "100%", backgroundColor: "#000",height: "80%",borderRadius: "10px"}}>
-        <div style={{  color: "white", padding: "1em", borderRadius: "10px", textAlign: "center", width: "100%",height: "100%" }}>
-          <h1>Welcome Back!</h1>
-          <p>Join us to discover restaurants around your area!</p>
+    <div className = "login-container">
+      <div className = "login-content">
+        <div className = "welcome-back">
+        <h2>MealSwipe!</h2>
+          <h4 className={`slogan ${animationClass}`} onClick={handleSloganClick}>
+            Meals you’ll love, one swipe away.
+          </h4>
           <img
             src={pizzaimg}
             alt="Pizza"
-            style={{ width: "80%", maxWidth: "400px", marginTop: "1em", borderRadius: "10px" }}
+            style={{ width: "80%", maxWidth: "400px", borderRadius: "10px" }}
           />
         </div>
 
-        <div style={{ backgroundColor: "#fff", paddingLeft: "2em", paddingRight: "2em", padding: "1em", borderRadius: "10px", textAlign: "center", marginTop: "2em", width: "70%",marginBottom: "2em" ,paddingBottom: "2em"}}>
-          <h2>MealSwipe!</h2>
-          <h3 className={`slogan ${animationClass}`} onClick={handleSloganClick}>
-            Meals you’ll love, one swipe away.
-          </h3>
+        <div className = "login-form">
+          
 
           <p style={{ color: "red", fontWeight: "bold" }}>Create Account / Sign in</p>
           <GoogleLoginButton style={{ marginBottom: "1em" }} />
           <button
             onClick={() => navigate("/")}
             style={{
-              width: "100%",
+              width: "90%",
               padding: "0.75em",
               backgroundColor: "red",
               color: "white",
@@ -51,7 +50,7 @@ const Login = () => {
               borderRadius: "8px",
               fontWeight: "bold",
               cursor: "pointer",
-              marginTop: "1em"
+              
             }}
           >
             Return to MealSwipe!
@@ -62,7 +61,7 @@ const Login = () => {
               marginTop: "1em",
               backgroundColor: "#f0f0f0",
               border: "none",
-              width: "100%",
+              width: "90%",
               padding: "0.75em 1em",
               borderRadius: "8px",
               cursor: "pointer",
@@ -72,14 +71,14 @@ const Login = () => {
           >
             How to Add MealSwipe to Home Screen (iOS)
           </button>
-        </div>
+        
       </div>
-
+      </div>
       {showInstructions && (
-        <div style={styles.modalOverlay}>
-          <div style={styles.modalContent}>
-            <h2 style={styles.modalTitle}>Add MealSwipe to Home Screen</h2>
-            <p style={styles.modalText}>
+        <div style={styles.modalOverlayL}>
+          <div style={styles.modalContentL}>
+            <h2 style={styles.modalTitleL}>Add MealSwipe to Home Screen</h2>
+            <p style={styles.modalTextL}>
               1. Open Safari and go to <strong>mealswipe.app</strong><br />
               2. Tap the <strong>Share</strong> icon (square with arrow)<br />
               3. Scroll down and tap <strong>"Add to Home Screen"</strong><br />
@@ -87,7 +86,7 @@ const Login = () => {
             </p>
             <button
               onClick={() => setShowInstructions(false)}
-              style={styles.modalCloseButton}
+              style={styles.modalCloseButtonL}
             >
               Close
             </button>
@@ -99,39 +98,44 @@ const Login = () => {
 };
 
 const styles = {
-  modalOverlay: {
+  modalOverlayL: {
     position: 'fixed',
     top: 0, left: 0, right: 0, bottom: 0,
     backgroundColor: 'rgba(0, 0, 0, 0.6)',
     display: 'flex',
     justifyContent: 'center',
     alignItems: 'center',
-    zIndex: 1000
+    zIndex: 1000,
+    padding: '1em'
   },
-  modalContent: {
+  modalContentL: {
     background: 'white',
-    padding: '2em',
+    padding: '1.2em',
     borderRadius: '10px',
-    maxWidth: '400px',
-    width: '90%',
-    textAlign: 'center'
+    maxWidth: '320px',
+    width: '100%',
+    textAlign: 'center',
+    boxSizing: 'border-box'
   },
-  modalTitle: {
-    marginBottom: '1em'
+  modalTitleL: {
+    fontSize: '1.2em',
+    marginBottom: '0.6em'
   },
-  modalText: {
-    fontSize: '1em',
-    marginBottom: '1.5em',
-    lineHeight: '1.6'
+  modalTextL: {
+    fontSize: '0.95em',
+    marginBottom: '1em',
+    lineHeight: '1.5'
   },
-  modalCloseButton: {
+  modalCloseButtonL: {
     backgroundColor: 'red',
     color: 'white',
-    padding: '0.5em 1em',
+    padding: '0.4em 0.8em',
     border: 'none',
     borderRadius: '6px',
-    cursor: 'pointer'
+    cursor: 'pointer',
+    fontSize: '0.95em'
   }
 };
+
 
 export default Login;

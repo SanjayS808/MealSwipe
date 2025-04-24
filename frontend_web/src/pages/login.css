@@ -4,13 +4,7 @@
 
   
   /* Container */
-  .login-container {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    width: 70vw;
-    padding: 10vh 10vw;
-  }
+  
   
   /* Section Boxes */
   .section-box {
@@ -70,7 +64,7 @@
   }
   
   /* Modal Overlay */
-  .modal-overlay {
+  .modal-overlayL {
     position: fixed;
     top: 0; left: 0; right: 0; bottom: 0;
     background-color: rgba(0, 0, 0, 0.6);
@@ -80,7 +74,7 @@
     z-index: 1000;
   }
   
-  .modal-content {
+  .modal-contentL {
     background: #fff;
     padding: 2em;
     border-radius: 10px;
@@ -89,17 +83,17 @@
     text-align: center;
   }
   
-  .modal-content h2 {
+  .modal-contentL h2 {
     margin-bottom: 1em;
   }
   
-  .modal-content p {
+  .modal-contentL p {
     font-size: 1em;
     margin-bottom: 1.5em;
     line-height: 1.6;
   }
   
-  .modal-content button {
+  .modal-contentL button {
     background-color: red;
     color: white;
     padding: 0.5em 1em;
@@ -108,7 +102,7 @@
     cursor: pointer;
   }
   
-  .modal-content button:hover {
+  .modal-contentL button:hover {
     background-color: #cc0000;
   }
   
@@ -149,3 +143,65 @@
     opacity: 1;
   }
   
+  .whiteloginthing > *{
+    margin: 0;
+    padding: 0;
+  }
+
+  .login-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center ;
+    width: 70vw;
+    height: 100vh;
+    
+    border-radius: 10px;
+  }
+  .login-content{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center ;
+    height: 60%;
+    width: 100%;
+    max-width: 500px;
+    
+    background-color: #ffe1c7;
+    min-height: 70vh;
+    max-width: 300px;
+    border-radius: 10px;
+    
+  }
+  .welcome-back{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-evenly ;
+    background-color: #FFF7E6;
+    border-radius: 10px;
+    margin-bottom: 1em;
+    height: 45%;
+    width: 90%;
+  }
+  .login-form{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-evenly ;
+    background-color: white;
+    border-radius: 10px;
+    height: 45%;
+    width: 90%;
+    
+  }
+
+  .login-form > *{
+    margin: 0px;
+    padding-left: 1em;
+    padding-right: 1em;
+  }
+  .welcome-back > *{
+    margin: 5px;
+    padding: 0;
+  }
