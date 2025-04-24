@@ -72,32 +72,40 @@ function RestaurantModal({ restaurant }) {
                 marginBottom: '.5em'
             }} />
 
-            <div className = "info">
-                <div className="info_item">
-                    
-                    <a href={restaurant.googleMapsLink} target="_blank" rel="noreferrer" className="icon-wrapper">
-                        <MapPin size={16} className="icon"/> {/* Google Maps Icon */}
-                    </a>
-                    
-                </div>
-                <div className="info_item">
-                    
-                <a href={restaurant.website} target="_blank" rel="noreferrer" className="icon-wrapper">
-                    <Globe size={16} className="icon"/> {/* Website Icon */}
-                    </a>
-                    
-                </div>
-                <div className="info_item">
-                    
-                <a href={`tel:${restaurant.phoneNumber}` } className="icon-wrapper">
-                    
-                    <Phone size={16} className="icon"/> {/* Call Icon */} 
-                    </a>
-                    
-                </div>
-                
-                    
-            </div>
+<div className="info" data-testid="review-carousel">
+  <div className="info_item">
+    {restaurant.googleMapsLink && (
+      <a
+        href={restaurant.googleMapsLink}
+        target="_blank"
+        rel="noreferrer"
+        className="icon-wrapper"
+      >
+        <MapPin size={16} className="icon" />
+      </a>
+    )}
+</div>
+  <div className="info_item">
+    {restaurant.website && (
+      <a
+        href={restaurant.website}
+        target="_blank"
+        rel="noreferrer"
+        className="icon-wrapper"
+      >
+        <Globe size={16} className="icon" />
+      </a>
+    )}
+  </div>
+
+  <div className="info_item">
+    {restaurant.phoneNumber && (
+      <a href={`tel:${restaurant.phoneNumber}`} className="icon-wrapper">
+        <Phone size={16} className="icon" />
+      </a>
+    )}
+  </div>
+</div>
 
             <div style={{
                 width: '100%',
@@ -105,14 +113,20 @@ function RestaurantModal({ restaurant }) {
                 backgroundColor: '#ccc', // or any color
                 marginTop: '.5em'
             }} />
-
-            <ReviewCarousel reviews={restaurant.reviews} />
-            <div style={{
-                width: '100%',
-                height: '1px',
-                backgroundColor: '#ccc', // or any color
-                marginTop: '.5em'
-            }} />
+            
+            {restaurant.reviews && restaurant.reviews.length > 0 && (
+                    <>
+                        <ReviewCarousel reviews={restaurant.reviews} />
+                        <div 
+                        style={{
+                            width: '100%',
+                            height: '1px',
+                            backgroundColor: '#ccc',
+                            marginTop: '.5em',
+                        }}
+                        />
+                    </>
+                    )}
             <OpeningHours openingHours={restaurant.openingHours} />
 
             <div style={{

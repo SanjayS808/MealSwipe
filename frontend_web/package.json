@@ -10,8 +10,6 @@
     "@fortawesome/react-fontawesome": "^0.2.2",
     "@react-oauth/google": "^0.12.1",
     "@react-spring/web": "^9.5.5",
-    "@testing-library/jest-dom": "^5.17.0",
-    "@testing-library/react": "^13.4.0",
     "@testing-library/user-event": "^13.5.0",
     "ajv": "^8.17.1",
     "framer-motion": "^12.6.3",
@@ -26,7 +24,7 @@
     "react-native-config": "^1.5.5",
     "react-native-web": "^0.19.13",
     "react-rating-stars-component": "^2.2.0",
-    "react-router-dom": "^7.2.0",
+    "react-router-dom": "^6.30.0",
     "react-scripts": "^5.0.1",
     "react-tinder-card": "^1.6.4",
     "styled-components": "^6.1.17",
@@ -57,5 +55,11 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
+  },
+  "devDependencies": {
+    "@testing-library/dom": "^10.4.0",
+    "@testing-library/jest-dom": "^6.6.3",
+    "@testing-library/react": "^16.3.0",
+    "jest": "^29.7.0"
   }
 }

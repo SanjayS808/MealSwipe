@@ -24,7 +24,7 @@ const HeartFlash = forwardRef((_, ref) => {
   return (
     
     <div style={styles.overlay}>
-      <FaHeart ref={heartRef} style={styles.heart} />
+      <FaHeart ref={heartRef} style={styles.heart} data-testid="heart-icon" />
     </div>
   );
 });
