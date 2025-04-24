@@ -115,9 +115,9 @@ function RestaurantCard({ restaurant, handleClick }) {
             target="_blank"
             rel="noreferrer"
             className="icon-wrapperC"
-            style={{ backgroundColor: "#F5F5F5" }}
+            style={{ backgroundColor: "#7dcea0" }}
           >
-            <img src={googlemapsIcon} alt="Maps" style={{ width: 24, height: 24 }} />
+           <MapPin size={24} className="icon" />
           </a>
 
           <a
@@ -127,7 +127,7 @@ function RestaurantCard({ restaurant, handleClick }) {
             className="icon-wrapperC"
             style={{ backgroundColor: "#3399FF" }}
           >
-            <Globe size={24} />
+            <Globe size={24} className="icon"/>
           </a>
 
           <a
@@ -135,16 +135,16 @@ function RestaurantCard({ restaurant, handleClick }) {
             className="icon-wrapperC"
             style={{ backgroundColor: "#00CC66" }}
           >
-            <Phone size={24} />
+            <Phone size={24} className="icon"/>
           </a>
 
           <button
             className="icon-wrapperC pressable"
-            style={{ backgroundColor: "#3399FF", cursor: "pointer" }}
+            style={{ backgroundColor: "#89CFF0", cursor: "pointer" ,border: "2px solid #89CFF0"}}
             onClick={() => handleClick(restaurant)}
             onTouchStart={() => handleClick(restaurant)}
           >
-            <Info size={24} />
+            <Info size={24} className="icon"/>
           </button>
         </div>
       </div>
