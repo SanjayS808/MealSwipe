@@ -84,8 +84,7 @@ function RestaurantModal({ restaurant }) {
         <MapPin size={16} className="icon" />
       </a>
     )}
-  </div>
-
+</div>
   <div className="info_item">
     {restaurant.website && (
       <a
