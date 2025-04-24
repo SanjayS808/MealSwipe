@@ -7,7 +7,7 @@ import { useNavigate } from 'react-router-dom';
 const Login = () => {
   const navigate = useNavigate();
   return (
-    <div style={{padding: "15vh", margin: "0", overflow: "hidden"}}>
+    <div style={{padding: "10vh", margin: "0", overflow: "hidden"}}>
     <ScrollView contentContainerStyle={styles.scrollViewContainer}>
       <View style={styles.container}>
         
