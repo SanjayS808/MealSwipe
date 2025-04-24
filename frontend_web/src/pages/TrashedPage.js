@@ -96,7 +96,20 @@ function TrashedPage({ trashedRestaurants , clearTrashed, loadTrashed , loggedIn
   ) : (
     <div className="favoritesPage">
       <h2>Trash</h2>
-      <p>Please log in to view your trashed restaurants.</p>
+        <h3
+          style={{
+            fontSize: "clamp(1rem, 2.5vw, 2rem)",
+            textAlign: "center",
+            whiteSpace: "nowrap",        // ✅ forces single line
+            overflow: "hidden",          // ✅ hides overflow
+            textOverflow: "ellipsis",    // ✅ adds "..." if needed
+            width: "100%",               // ✅ ensures it fills parent
+          }}
+        >
+        Please log in to view your trashed restaurants.
+      </h3>
+      <Button text="Log In" onClick={() => navigate("/login")} />
+
     </div>
   );
 }

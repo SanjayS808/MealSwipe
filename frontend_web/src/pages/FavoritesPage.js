@@ -99,7 +99,19 @@ function FavoritesPage({ likedRestaurants, clearFavorites, loadFavorites, logged
   ) : (
     <div className="favoritesPage">
       <h2>Favorites</h2>
-      <p>Please log in to view your favorites.</p>
+      <h3
+          style={{
+            fontSize: "clamp(1rem, 2.5vw, 2rem)",
+            textAlign: "center",
+            whiteSpace: "nowrap",        // ✅ forces single line
+            overflow: "hidden",          // ✅ hides overflow
+            textOverflow: "ellipsis",    // ✅ adds "..." if needed
+            width: "100%",               // ✅ ensures it fills parent
+          }}
+        >
+        Please log in to view your favorite restaurants.
+      </h3>
+      <Button text="Log In" onClick={() => navigate("/login")} />
     </div>
   );
 }

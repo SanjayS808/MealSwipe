@@ -3,14 +3,14 @@ import { Link } from 'react-router-dom';
 import pizzaimg from './login-img/login-pizza.png';
 import GoogleLoginButton from './GoogleLoginButton';
 const { width, height } = Dimensions.get("window");
-
+import { useNavigate } from 'react-router-dom';
 const Login = () => {
+  const navigate = useNavigate();
   return (
+    <div style={{padding: "15vh", margin: "0", overflow: "hidden"}}>
     <ScrollView contentContainerStyle={styles.scrollViewContainer}>
       <View style={styles.container}>
-        <Link to="/" style={styles.closeButton}>
-          <Text style={styles.closeButtonText}>×</Text>
-        </Link>
+        
         
         <View style={styles.leftContainer}>
           <Text style={styles.welcomeText}>Welcome Back!</Text>
@@ -18,7 +18,7 @@ const Login = () => {
             Join us to discover restaurants around your area! 
           </Text>
           <View style={styles.imagePlaceholder}>
-            <Image source={pizzaimg} style={styles.image} />
+            <Image source={pizzaimg} style={styles.image } />
           </View>
         </View>
         
@@ -27,14 +27,13 @@ const Login = () => {
           <Text style={styles.createAccount}>Create Account</Text>
           <GoogleLoginButton style={{padding: "0.25em"}} />
           <TouchableOpacity style={styles.button}>
-            <Text style={styles.buttonText}>Create Account</Text>
+            <Text onClick={() => navigate("/")} style={styles.buttonText}>Return to MealSwipe!</Text>
           </TouchableOpacity>
-          <Text style={styles.loginText}>
-            Already have an account? <Text style={styles.loginLink}>Login</Text>
-          </Text>
+          
         </View>
       </View>
     </ScrollView>
+    </div>
   );
 };
 
