@@ -75,6 +75,7 @@ function RestaurantList({ restaurants, onSwipe ,resetBackendData,isLoading}) {
         display: "flex",
         alignItems: "center",
         justifyContent: "center",
+        
       }}>
         {isLoading ? (
           null
