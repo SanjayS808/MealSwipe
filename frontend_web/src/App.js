@@ -616,6 +616,7 @@ function App() {
         isLoading={isLoading}
         deleteRestaurantFromFavorites={deleteRestaurantFromFavorites}
         deleteRestaurantFromTrash={deleteRestaurantFromTrash}
+        setUid={setLoggedIn}
       />
       {isLoading && <Loader />}
 

@@ -16,7 +16,7 @@ const navItems = [
   { path: "/favorites", icon: Heart, label: "Favorites" },
 ];
 
-function Navigation({ backendData, likedRestaurants, trashedRestaurants ,handleSwipe, resetBackendData, clearFavorites, clearTrashed,loadFavorites, loadTrashed ,loggedIn,isLoading,deleteRestaurantFromFavorites, deleteRestaurantFromTrash}) {
+function Navigation({ backendData, likedRestaurants, trashedRestaurants ,handleSwipe, resetBackendData, clearFavorites, clearTrashed,loadFavorites, loadTrashed ,loggedIn,isLoading,deleteRestaurantFromFavorites, deleteRestaurantFromTrash,setUid}) {
   const clickCountRef = useRef(0);
   const lastClickTimeRef = useRef(0);
 
@@ -111,7 +111,7 @@ function Navigation({ backendData, likedRestaurants, trashedRestaurants ,handleS
           <Route path="/" element={<RestaurantList restaurants={backendData} onSwipe={handleSwipe} resetBackendData={resetBackendData} isLoading={isLoading} />} />
           <Route path="/trashed" element={<TrashedPage trashedRestaurants={trashedRestaurants} clearTrashed={clearTrashed} loadTrashed={loadTrashed} loggedIn={loggedIn} isLoading={isLoading} deleteRestaurantFromTrashed={deleteRestaurantFromTrash} />} />
           <Route path="/login" element={<Login />} />
-          <Route path="/profile" element={<ProfilePage />} />
+          <Route path="/profile" element={<ProfilePage setUid= {setUid}/>} />
         </Routes>
       </div>
     

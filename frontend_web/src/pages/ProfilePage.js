@@ -6,7 +6,7 @@ import { DEV_MODE } from "../config"
 
 const backendURL = (DEV_MODE) ? "http://localhost:5001"  : "https://backend.app-mealswipe.com";
 
-const ProfilePage = () => {
+const ProfilePage = ({setUid}) => {
   const [name, setName] = useState("John Doe");
   const [username, setUsername] = useState("johndoe123");
   const [location, setLocation] = useState("New York, USA");
@@ -57,6 +57,7 @@ const ProfilePage = () => {
 
   const handleLogoutClick = () => {
     setUser(null);
+    setUid(false);
     navigate('/');
   };
   
