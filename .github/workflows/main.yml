@@ -3,6 +3,9 @@ name: Build and Deploy
 on:
   push:
     branches: [main]
+  schdeule: 
+  # Run the worflow at the end of each day (CST).
+  - cron: "0 0 * * ?"
 
 permissions:
   id-token: write
