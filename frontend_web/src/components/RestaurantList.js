@@ -92,7 +92,7 @@ function RestaurantList({ restaurants, onSwipe ,resetBackendData,isLoading}) {
               onSwipe={(dir) => onSwipe(dir, restaurant)}
               preventSwipe={["up", "down"]}
               
-              swipeRequirement={0.5} // Adjust swipe sensitivity
+              swipeRequirement={0.4} // Adjust swipe sensitivity
               
             >
               <div style={{ height: "70vh", width: "100%" }}>
