@@ -63,7 +63,7 @@ const GoogleLoginButton = () => {
             onSuccess={responseMessage}
             onError={errorMessage}
             size="large"
-            width="275"
+            width="10vw"
             useOneTap
             auto_select={false}
         />

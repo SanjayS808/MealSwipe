@@ -1,0 +1,151 @@
+/* ====== login.css ====== */
+
+/* Page Layout */
+
+  
+  /* Container */
+  .login-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 70vw;
+    padding: 10vh 10vw;
+  }
+  
+  /* Section Boxes */
+  .section-box {
+    width: 100%;
+    max-width: 600px;
+    padding: 2em;
+    border-radius: 10px;
+    margin-bottom: 2em;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  }
+  
+  .section-dark {
+    background-color: #000;
+    color: #fff;
+    text-align: center;
+  }
+  
+  .section-light {
+    background-color: #fff;
+    color: #000;
+    text-align: center;
+  }
+  
+  /* Headings */
+  h1, h2, h3 {
+    margin: 0.5em 0;
+  }
+  
+  /* Buttons */
+  .button-red,
+  .button-gray {
+    width: 100%;
+    padding: 0.75em;
+    font-weight: bold;
+    border-radius: 8px;
+    cursor: pointer;
+    border: none;
+    margin-top: 1em;
+  }
+  
+  .button-red {
+    background-color: red;
+    color: white;
+  }
+  
+  .button-red:hover {
+    background-color: #cc0000;
+  }
+  
+  .button-gray {
+    background-color: #f0f0f0;
+    color: #333;
+  }
+  
+  .button-gray:hover {
+    background-color: #ddd;
+  }
+  
+  /* Modal Overlay */
+  .modal-overlay {
+    position: fixed;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background-color: rgba(0, 0, 0, 0.6);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+  }
+  
+  .modal-content {
+    background: #fff;
+    padding: 2em;
+    border-radius: 10px;
+    max-width: 400px;
+    width: 90%;
+    text-align: center;
+  }
+  
+  .modal-content h2 {
+    margin-bottom: 1em;
+  }
+  
+  .modal-content p {
+    font-size: 1em;
+    margin-bottom: 1.5em;
+    line-height: 1.6;
+  }
+  
+  .modal-content button {
+    background-color: red;
+    color: white;
+    padding: 0.5em 1em;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+  }
+  
+  .modal-content button:hover {
+    background-color: #cc0000;
+  }
+  
+  /* Image */
+  .login-image {
+    width: 100%;
+    max-width: 400px;
+    border-radius: 10px;
+    margin-top: 1em;
+    object-fit: contain;
+  }
+
+  .slogan {
+    font-size: 1rem;
+    font-weight: bold;
+    text-align: center;
+    cursor: pointer;
+    display: inline-block;
+    position: relative;
+    transition: transform 0.6s ease, opacity 0.6s ease;
+  }
+  
+  /* Swipe out to the right */
+  .swipe-out {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+  
+  /* Hidden off-screen to the left before re-entering */
+  .hidden-offscreen-left {
+    transform: translateX(-100%);
+    opacity: 0;
+  }
+  
+  /* Enter from left (to center) */
+  .swipe-in {
+    transform: translateX(0%);
+    opacity: 1;
+  }
+  
