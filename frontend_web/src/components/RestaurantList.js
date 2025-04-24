@@ -7,6 +7,7 @@ import TinderCard from "react-tinder-card";
 import RestaurantModal from "./RestaurantModal";
 import "./restaurantList.css";
 import "./Card.css"
+import Button from './Button';
 import { motion } from "framer-motion";
 function RestaurantList({ restaurants, onSwipe ,resetBackendData,isLoading}) {
   const [currentRestaurant, setCurrentRestaurant] = useState(null);
@@ -80,7 +81,7 @@ function RestaurantList({ restaurants, onSwipe ,resetBackendData,isLoading}) {
         ) : restaurants.length === 0 ? (
           <div className="noRestaurants">
             <h3>No restaurants available :(</h3>
-            <button onClick={resetBackendData}>Refresh</button>
+            <Button onClick={resetBackendData} text="Refresh"></Button>
           </div>
         ) : (
           restaurants.map((restaurant) => (

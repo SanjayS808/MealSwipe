@@ -42,10 +42,13 @@ function FavoritesPage({ likedRestaurants, clearFavorites, loadFavorites, logged
     loadFavorites();
   }, []);
 
-  const deleteAction = (placeid) => {
+  const deleteAction = async (placeid) => {
     console.log("Deleting restaurant with placeid:", placeid);
-    deleteRestaurantFromFavorites(placeid);
-    loadFavorites();
+    await deleteRestaurantFromFavorites(placeid);
+    setTimeout(() => {
+      loadFavorites();
+    }, 150);
+    
   }
 
   return loggedIn ? (

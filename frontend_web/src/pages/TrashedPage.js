@@ -40,10 +40,14 @@ function TrashedPage({ trashedRestaurants , clearTrashed, loadTrashed , loggedIn
     loadTrashed();
   }, []);
 
-  const deleteAction = (placeid) => {
+  const deleteAction = async (placeid) => {
     console.log("Deleting restaurant with placeid:", placeid);
-    deleteRestaurantFromTrashed(placeid);
-    loadTrashed();
+     await deleteRestaurantFromTrashed(placeid);
+     setTimeout(() => {
+      loadTrashed();
+    }, 150);
+      
+    
   }
 
   return loggedIn ? (
