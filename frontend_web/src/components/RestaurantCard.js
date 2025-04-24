@@ -13,6 +13,7 @@ function RestaurantCard({ restaurant, handleClick }) {
         display: "flex",
         flexDirection: "column",
         height: "80%",
+        maxHeight: "500px",
         borderRadius: "1rem",
         overflow: "hidden",
         backgroundColor: "#fff",
