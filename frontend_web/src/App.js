@@ -401,6 +401,7 @@ function App() {
         }
     
       });
+    
   };
 
   const deleteRestaurantFromFavorites = async (restaurantID) => {
