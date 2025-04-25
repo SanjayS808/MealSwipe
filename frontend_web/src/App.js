@@ -617,6 +617,7 @@ function App() {
         deleteRestaurantFromFavorites={deleteRestaurantFromFavorites}
         deleteRestaurantFromTrash={deleteRestaurantFromTrash}
         setUid={setLoggedIn}
+        fetchuid = {fetchuid}
       />
       {isLoading && <Loader />}
 

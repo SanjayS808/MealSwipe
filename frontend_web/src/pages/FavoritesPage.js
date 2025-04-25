@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import Button from "../components/Button";
 import "./favorites.css";
 import MiniCard from "../components/FavoritesTrashedSharedComponents/MiniCard";
-function FavoritesPage({ likedRestaurants, clearFavorites, loadFavorites, loggedIn, isLoading ,deleteRestaurantFromFavorites}) {
+function FavoritesPage({ likedRestaurants, clearFavorites, loadFavorites, loggedIn, isLoading ,deleteRestaurantFromFavorites,fetchuid}) {
   const navigate = useNavigate();
   const [showConfirmModal, setShowConfirmModal] = useState(false);
   const [isClosing, setIsClosing] = useState(false);
@@ -38,8 +38,14 @@ function FavoritesPage({ likedRestaurants, clearFavorites, loadFavorites, logged
   };
 
   useEffect(() => {
-    console.log("Loading favorites...");
-    loadFavorites();
+    console.log("");
+    const loadData = async () => {
+      console.log("this tan");
+      await fetchuid();
+      loadFavorites();
+    };
+  
+    loadData();
   }, []);
 
   const deleteAction = async (placeid) => {
@@ -53,12 +59,24 @@ function FavoritesPage({ likedRestaurants, clearFavorites, loadFavorites, logged
 
   return loggedIn ? (
     <div className="favoritesPage">
-      <h2>Liked Restaurants</h2>
+      <h2
+          style={{
+            fontSize: "clamp(2rem, 5vw, 3.5rem)",
+            fontWeight: "800",
+            textAlign: "center",
+            color: "#ff4d4d",
+            marginBottom: "0.5em",
+            animation: "slideIn 0.3s ease-out",
+          }}
+        >
+          ❤️ Liked Restaurants
+        </h2>
 
       {isLoading ? null : (
         likedRestaurants.length === 0 ? (
           <div className="noRestaurants modal-animateFavorites">
-            <h2>it's lonely in here :(</h2>
+              <h2 style = {{whiteSpace: "nowrap", fontSize: "clamp(1rem, 6vw, 2rem)"}}>it's lonely in here :(</h2>
+
             <Button text="Start Swiping" onClick={swipeClick} />
           </div>
         ) : (
