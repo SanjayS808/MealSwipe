@@ -25,6 +25,7 @@ function RestaurantList({ restaurants, isKm, onSwipe ,resetBackendData,isLoading
       setIsClosing(false);
     }, 200); // match duration of bounceOut
   };
+  
 
   
 
@@ -91,8 +92,7 @@ function RestaurantList({ restaurants, isKm, onSwipe ,resetBackendData,isLoading
               key={restaurant.id}
               onSwipe={(dir) => onSwipe(dir, restaurant)}
               preventSwipe={["up", "down"]}
-              
-              swipeRequirement={0.3} // Adjust swipe sensitivity
+              swipeThreshold={0.5}
               
             >
               <div style={{ height: "70vh", width: "100%" }}>

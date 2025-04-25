@@ -73,7 +73,7 @@ function ReviewCarousel({ reviews }) {
   if (!reviews || reviews.length === 0) return <p>No reviews available</p>;
 
   return (
-    <div >
+    <div data-testid="review-carousel">
       
 
       <div style={styles.container}>
