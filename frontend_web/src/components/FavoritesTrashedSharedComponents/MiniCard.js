@@ -108,8 +108,24 @@ export default function MiniCard({ restaurant, removeRestaurant, text}) {
 
             <hr style={{ margin: "1em 0", borderColor: "#ccc" }} />
 
-            <p style={{ marginBottom: "0.5em" }}>
-              Are you sure you want to remove <strong>{restaurant.name}</strong> from your <strong>{text}</strong>?
+            <p
+              style={{
+                marginBottom: "0.5em",
+                textAlign: "center",
+                fontSize: "1.1rem",
+              }}
+            >
+              {text === "favorites" ? (
+                <>
+                  Thinking about unloving <strong>{restaurant.name}</strong>? 😢 <br />
+                  You might regret it…
+                </>
+              ) : (
+                <>
+                  Giving <strong>{restaurant.name}</strong> another shot? 🤔 <br />
+                  Everyone deserves a second chance!
+                </>
+              )}
             </p>
 
             <div className="modal-buttons" style={{ display: "flex", justifyContent: "center", gap: "1em" }}>

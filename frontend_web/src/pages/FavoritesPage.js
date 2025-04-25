@@ -61,7 +61,7 @@ function FavoritesPage({ likedRestaurants, clearFavorites, loadFavorites, logged
     <div className="favoritesPage">
       <h2
           style={{
-            fontSize: "clamp(2rem, 5vw, 3.5rem)",
+            fontSize: "clamp(2rem, 5vw, 2.5rem)",
             fontWeight: "800",
             textAlign: "center",
             color: "#ff4d4d",
