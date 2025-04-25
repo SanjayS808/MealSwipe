@@ -582,7 +582,7 @@ function App() {
       position: "absolute",
       top: "15px",
       right: "10px",
-      zIndex: 1000,
+      zIndex: 100,
       width: "55px",
       height: "55px",
       borderRadius: "50%",
