@@ -117,7 +117,8 @@ function App() {
     return response;
   }
   const loadFavorites = async () => {
-    setIsLoading(true);  // ✅ always hide loader
+    setIsLoading(true); 
+    console.log("1"); // ✅ always hide loader
     console.log("Loading favorites...");
     if (user === null) {
       setIsLoading(false);  // ✅ always hide loader
@@ -163,7 +164,8 @@ function App() {
   };
   
   const loadTrashed = async () => {
-    setIsLoading(true);  // ✅ always hide loader
+    setIsLoading(true);
+    console.log("2");  // ✅ always hide loader
     console.log("Loading trashed...");
     if (user === null) {
       setIsLoading(false);  // ✅ always hide loader
@@ -258,6 +260,7 @@ function App() {
   const fetchRestaurants = async () => {
 
     setIsLoading(true);  // ✅ always hide loader
+    console.log("3");
     console.log("Fetching restaurants...");
   
     try {
@@ -397,6 +400,7 @@ function App() {
         }
     
       });
+    
   };
 
   const deleteRestaurantFromFavorites = async (restaurantID) => {
@@ -577,7 +581,7 @@ function App() {
       position: "absolute",
       top: "15px",
       right: "10px",
-      zIndex: 1000,
+      zIndex: 100,
       width: "55px",
       height: "55px",
       borderRadius: "50%",
@@ -591,6 +595,7 @@ function App() {
     },
   }
 
+  const [isKm, setIsKm] = useState(false);
 
   return (
     <div className="App">
@@ -611,6 +616,9 @@ function App() {
         isLoading={isLoading}
         deleteRestaurantFromFavorites={deleteRestaurantFromFavorites}
         deleteRestaurantFromTrash={deleteRestaurantFromTrash}
+        isKm={isKm}
+        setUid={setLoggedIn}
+        fetchuid = {fetchuid}
       />
       {isLoading && <Loader />}
 
@@ -629,6 +637,8 @@ function App() {
          <Filter size={24} color="#ffffff" />
       </motion.button>
       <FilterPage
+        isKm={isKm}
+        setIsKm={setIsKm}
         maxDistance={pendingMaxDistance}
         setMaxDistance={setPendingMaxDistance}
         minRating={pendingMinRating}

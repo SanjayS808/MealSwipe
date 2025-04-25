@@ -7,8 +7,9 @@ import TinderCard from "react-tinder-card";
 import RestaurantModal from "./RestaurantModal";
 import "./restaurantList.css";
 import "./Card.css"
+import Button from './Button';
 import { motion } from "framer-motion";
-function RestaurantList({ restaurants, onSwipe ,resetBackendData,isLoading}) {
+function RestaurantList({ restaurants, isKm, onSwipe ,resetBackendData,isLoading}) {
   const [currentRestaurant, setCurrentRestaurant] = useState(null);
   const [isClosing, setIsClosing] = useState(false);
   const [showModal, setShowModal] = useState(false);
@@ -75,13 +76,14 @@ function RestaurantList({ restaurants, onSwipe ,resetBackendData,isLoading}) {
         display: "flex",
         alignItems: "center",
         justifyContent: "center",
+        
       }}>
         {isLoading ? (
           null
         ) : restaurants.length === 0 ? (
           <div className="noRestaurants">
             <h3>No restaurants available :(</h3>
-            <button onClick={resetBackendData}>Refresh</button>
+            <Button onClick={resetBackendData} text="Refresh"></Button>
           </div>
         ) : (
           restaurants.map((restaurant) => (
@@ -96,6 +98,7 @@ function RestaurantList({ restaurants, onSwipe ,resetBackendData,isLoading}) {
               <div style={{ height: "70vh", width: "100%" }}>
                 <RestaurantCard
                   restaurant={restaurant}
+                  isKm={isKm}
                   handleClick={handleClick}
                   handleClose={handleClose}
                   showModal={showModal}
@@ -143,7 +146,7 @@ function RestaurantList({ restaurants, onSwipe ,resetBackendData,isLoading}) {
             ✕
           </button>
 
-            <RestaurantModal restaurant={currentRestaurant}  />
+            <RestaurantModal restaurant={currentRestaurant} isKm={isKm}/>
             
           </div>
         </div>

@@ -4,7 +4,7 @@ import StarRating from "./StarRating";
 import { MapPin, Globe, Phone, Info } from "lucide-react";
 import googlemapsIcon from "./Google_Maps_icon_2020.svg";
 
-function RestaurantCard({ restaurant, handleClick }) {
+function RestaurantCard({ restaurant, isKm, handleClick }) {
   return (
     <div
       className="card"
@@ -13,10 +13,11 @@ function RestaurantCard({ restaurant, handleClick }) {
         display: "flex",
         flexDirection: "column",
         height: "80%",
+        maxHeight: "500px",
         borderRadius: "1rem",
         overflow: "hidden",
         backgroundColor: "#fff",
-        boxShadow: "0 4px 12px rgba(0, 0, 0, 0.1)",
+        boxShadow: "0 0px 0px rgba(0, 0, 0, 0.1)",
       }}
     >
       {/* Image Section */}
@@ -66,7 +67,7 @@ function RestaurantCard({ restaurant, handleClick }) {
           }}
         >
           <MapPin size={18} style={{ marginRight: "0.5em" }} />
-          {restaurant.distanceFromUser} miles
+          {isKm ? (restaurant.distanceFromUser * 1.61).toFixed(1) : restaurant.distanceFromUser} {isKm ? 'km' : 'miles'}
         </h4>
 
         <div className="restaurant-details">
@@ -115,9 +116,9 @@ function RestaurantCard({ restaurant, handleClick }) {
             target="_blank"
             rel="noreferrer"
             className="icon-wrapperC"
-            style={{ backgroundColor: "#F5F5F5" }}
+            style={{ backgroundColor: "#7dcea0" }}
           >
-            <img src={googlemapsIcon} alt="Maps" style={{ width: 24, height: 24 }} />
+           <MapPin size={24} className="icon" />
           </a>
 
           <a
@@ -127,7 +128,7 @@ function RestaurantCard({ restaurant, handleClick }) {
             className="icon-wrapperC"
             style={{ backgroundColor: "#3399FF" }}
           >
-            <Globe size={24} />
+            <Globe size={24} className="icon"/>
           </a>
 
           <a
@@ -135,16 +136,16 @@ function RestaurantCard({ restaurant, handleClick }) {
             className="icon-wrapperC"
             style={{ backgroundColor: "#00CC66" }}
           >
-            <Phone size={24} />
+            <Phone size={24} className="icon"/>
           </a>
 
           <button
             className="icon-wrapperC pressable"
-            style={{ backgroundColor: "#3399FF", cursor: "pointer" }}
+            style={{ backgroundColor: "#89CFF0", cursor: "pointer" ,border: "2px solid #89CFF0"}}
             onClick={() => handleClick(restaurant)}
             onTouchStart={() => handleClick(restaurant)}
           >
-            <Info size={24} />
+            <Info size={24} className="icon"/>
           </button>
         </div>
       </div>

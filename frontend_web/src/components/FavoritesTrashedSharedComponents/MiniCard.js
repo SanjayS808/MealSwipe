@@ -1,5 +1,7 @@
 import React, { useState } from "react";
 import "./styles/miniCard.css";
+import { MapPin, Globe, Phone } from "lucide-react"; 
+import StarRating from "../StarRating";
 import {DEV_MODE} from "../../config"
 
 
@@ -11,6 +13,7 @@ export default function MiniCard({ restaurant, removeRestaurant, text}) {
 
   const handleClick = () => {
     console.log({ restaurant });
+    console.log("restaurant", restaurant);
     setShowModal(true);
   };
 
@@ -51,6 +54,7 @@ export default function MiniCard({ restaurant, removeRestaurant, text}) {
 
   return (
     <>
+    
       <div className="favoritesCard" onClick={handleClick}>
         <div className="card-image">
           <img
@@ -66,21 +70,72 @@ export default function MiniCard({ restaurant, removeRestaurant, text}) {
       </div>
       
       {showModal && (
-        <div style={modalStyles.overlay} >
-          <div style={modalStyles.modal} className={isClosing ? 'miniModal modal-animateMiniCardExit' : 'miniModal modal-animateMiniCard'}>
+        <div style={modalStyles.overlay}>
+          <div
+            style={modalStyles.modal}
+            className={isClosing ? "miniModal modal-animateMiniCardExit" : "miniModal modal-animateMiniCard"}
+          >
+            <div className="image_container" style={{ marginBottom: "1em" }}>
+              <img
+                src={`${backendURL}/api/serve/get-restaurant-photo?rinfo=${restaurant.photourl}`}
+                alt={restaurant.name}
+                style={{ width: "100%", borderRadius: "10px", objectFit: "cover" }}
+              />
+            </div>
 
-              <div>
-                <h4>Are you sure you want to remove {restaurant.name} from your {text}?</h4>
-              </div>
+            <h3 style={{ margin: "0 0 0.25em 0" }}>{restaurant.name}</h3>
+            <p style={{ margin: "0 0 0.5em 0", fontSize: "0.9em", color: "#444" }}>{restaurant.address}</p>
 
-            
-              <div className="modal-buttons">
-                <button onClick={removeRestaurantHandler}>Remove</button>
-                <button onClick={handleClose}>Cancel</button>
-                </div>
+            <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: "1em" }}>
+              <span style={{ fontWeight: "bold", fontSize: "1em" }}>⭐ {restaurant.rating}</span>
+              <span style={{ fontWeight: "bold", color: "#6b8e23" }}>
+                {"$".repeat(restaurant.pricelevel || 1)}
+              </span>
+
+              <span style={{ display: "flex", gap: "0.5em" }}>
+                {restaurant.googlemapsurl && (
+                  <a href={restaurant.googlemapsurl} target="_blank" rel="noreferrer" className="icon-wrapper">
+                    <MapPin size={18} className="icon"/>
+                  </a>
+                )}
+                {restaurant.website && (
+                  <a href={restaurant.website} target="_blank" rel="noreferrer" className="icon-wrapper">
+                    <Globe size={18} className="icon"/>
+                  </a>
+                )}
+              </span>
+            </div>
+
+            <hr style={{ margin: "1em 0", borderColor: "#ccc" }} />
+
+            <p
+              style={{
+                marginBottom: "0.5em",
+                textAlign: "center",
+                fontSize: "1.1rem",
+              }}
+            >
+              {text === "favorites" ? (
+                <>
+                  Thinking about unloving <strong>{restaurant.name}</strong>? 😢 <br />
+                  You might regret it…
+                </>
+              ) : (
+                <>
+                  Giving <strong>{restaurant.name}</strong> another shot? 🤔 <br />
+                  Everyone deserves a second chance!
+                </>
+              )}
+            </p>
+
+            <div className="modal-buttons" style={{ display: "flex", justifyContent: "center", gap: "1em" }}>
+              <button onClick={removeRestaurantHandler}>Remove</button>
+              <button onClick={handleClose}>Cancel</button>
+            </div>
           </div>
         </div>
       )}
+
     </>
   );
 }

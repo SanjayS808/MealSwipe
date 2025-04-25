@@ -16,7 +16,31 @@ const navItems = [
   { path: "/favorites", icon: Heart, label: "Favorites" },
 ];
 
-function Navigation({ backendData, likedRestaurants, trashedRestaurants ,handleSwipe, resetBackendData, clearFavorites, clearTrashed,loadFavorites, loadTrashed ,loggedIn,isLoading,deleteRestaurantFromFavorites, deleteRestaurantFromTrash}) {
+function Navigation({ backendData, likedRestaurants, trashedRestaurants ,handleSwipe, resetBackendData, clearFavorites, clearTrashed,loadFavorites, loadTrashed ,loggedIn,isLoading,deleteRestaurantFromFavorites, deleteRestaurantFromTrash,isKm,setUid,fetchuid}) {
+  const clickCountRef = useRef(0);
+  const lastClickTimeRef = useRef(0);
+
+  const handleLogoClick = () => {
+    const logo = logoRef.current;
+    console.log("clicked");
+    if (logo) {
+      logo.classList.remove("jiggle");
+      void logo.offsetWidth; // force reflow to restart animation
+      logo.classList.add("jiggle");
+    }
+    const now = Date.now();
+    if (now - lastClickTimeRef.current < 600) {
+      clickCountRef.current += 1;
+    } else {
+      clickCountRef.current = 1;
+    }
+    lastClickTimeRef.current = now;
+
+    if (clickCountRef.current === 7) {
+      alert("leanna was here");
+      clickCountRef.current = 0; // Reset after triggering
+    }
+  };
   const location = useLocation();
   const styles = {
     navContainer: {
@@ -60,15 +84,7 @@ function Navigation({ backendData, likedRestaurants, trashedRestaurants ,handleS
 
   const logoRef = useRef(null);
 
-  const handleLogoClick = () => {
-    const logo = logoRef.current;
-    console.log("clicked");
-    if (logo) {
-      logo.classList.remove("jiggle");
-      void logo.offsetWidth; // force reflow to restart animation
-      logo.classList.add("jiggle");
-    }
-  };
+  
 
   return (
     <div>
@@ -91,11 +107,11 @@ function Navigation({ backendData, likedRestaurants, trashedRestaurants ,handleS
         paddingBottom: '64px', // make room for the footer height
       }}>
         <Routes>
-          <Route path="/favorites" element={<FavoritesPage likedRestaurants={likedRestaurants} clearFavorites={clearFavorites} loadFavorites={loadFavorites} loggedIn={loggedIn} isLoading={isLoading} deleteRestaurantFromFavorites={deleteRestaurantFromFavorites} />} />
-          <Route path="/" element={<RestaurantList restaurants={backendData} onSwipe={handleSwipe} resetBackendData={resetBackendData} isLoading={isLoading} />} />
-          <Route path="/trashed" element={<TrashedPage trashedRestaurants={trashedRestaurants} clearTrashed={clearTrashed} loadTrashed={loadTrashed} loggedIn={loggedIn} isLoading={isLoading} deleteRestaurantFromTrashed={deleteRestaurantFromTrash} />} />
+          <Route path="/favorites" element={<FavoritesPage likedRestaurants={likedRestaurants} clearFavorites={clearFavorites} loadFavorites={loadFavorites} loggedIn={loggedIn} isLoading={isLoading} deleteRestaurantFromFavorites={deleteRestaurantFromFavorites} fetchuid = {fetchuid}/>} />
+          <Route path="/" element={<RestaurantList restaurants={backendData} isKm={isKm} onSwipe={handleSwipe} resetBackendData={resetBackendData} isLoading={isLoading} />} />
+          <Route path="/trashed" element={<TrashedPage trashedRestaurants={trashedRestaurants} clearTrashed={clearTrashed} loadTrashed={loadTrashed} loggedIn={loggedIn} isLoading={isLoading} deleteRestaurantFromTrashed={deleteRestaurantFromTrash} fetchuid = {fetchuid}/>} />
           <Route path="/login" element={<Login />} />
-          <Route path="/profile" element={<ProfilePage />} />
+          <Route path="/profile" element={<ProfilePage setUid= {setUid}/>} />
         </Routes>
       </div>
     
