@@ -120,7 +120,8 @@ function App() {
     return response;
   }
   const loadFavorites = async () => {
-    setIsLoading(true);  // ✅ always hide loader
+    setIsLoading(true); 
+    console.log("1"); // ✅ always hide loader
     console.log("Loading favorites...");
     if (user === null) {
       setIsLoading(false);  // ✅ always hide loader
@@ -167,7 +168,8 @@ function App() {
   };
   
   const loadTrashed = async () => {
-    setIsLoading(true);  // ✅ always hide loader
+    setIsLoading(true);
+    console.log("2");  // ✅ always hide loader
     console.log("Loading trashed...");
     if (user === null) {
       setIsLoading(false);  // ✅ always hide loader
@@ -263,6 +265,7 @@ function App() {
   const fetchRestaurants = async () => {
 
     setIsLoading(true);  // ✅ always hide loader
+    console.log("3");
     console.log("Fetching restaurants...");
   
     try {

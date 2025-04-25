@@ -59,7 +59,7 @@ function TrashedPage({ trashedRestaurants , clearTrashed, loadTrashed , loggedIn
     <div className="favoritesPage">
       <h2
         style={{
-          fontSize: "clamp(2rem, 5vw, 2.5rem)",
+          fontSize: "clamp(2rem, 5vw, 2.3rem)",
           fontWeight: "800",
           textAlign: "center",
           color: "#6c6c6c", // a muted gray to reflect the 'trashed' vibe
