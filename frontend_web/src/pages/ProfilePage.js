@@ -3,6 +3,7 @@ import ProfileEditPopup from "./ProfileEditPopup";
 import { useUser } from "../context/UserContext"
 import { useNavigate } from "react-router-dom";
 import { DEV_MODE } from "../config"
+import "./profiles.css";
 
 const backendURL = (DEV_MODE) ? "http://localhost:5001"  : "https://backend.app-mealswipe.com";
 
@@ -209,18 +210,16 @@ const ProfilePage = ({setUid}) => {
       </div>
       {isPopupOpen && (
         <ProfileEditPopup
-          currentValues={{ name, username, location, gender }}
+          currentValues={{ name }}
           setValues={(newValues) => {
             setName(newValues.name);
-            setUsername(newValues.username);
-            setLocation(newValues.location);
-            setGender(newValues.gender);
           }}
           onClose={() => setPopupOpen(false)}
         />
       )}
     </div>
   );
+
 };
 
 

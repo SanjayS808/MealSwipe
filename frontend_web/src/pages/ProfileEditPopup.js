@@ -73,39 +73,44 @@ const ProfileEditPopup = ({ currentValues, setValues, onClose }) => {
   };
 
   return (
-    <div style={styles.overlay} onClick={onClose}>
+    <div style={styles.overlay} onClick={onClose} data-testid="overlay">
+      
       <div style={styles.popup} onClick={(e) => e.stopPropagation()}>
         <span style={styles.closeButton} onClick={onClose}>
           ❌
         </span>
         <h2>Edit Profile</h2>
         <div style={styles.inputContainer}>
-          <label style={styles.label}>Name</label>
+          <label  htmlFor="name" style={styles.label}>Name</label>
           <input
+            id="name"
             type="text"
             value={tempValues.name}
             onChange={(e) => setTempValues({ ...tempValues, name: e.target.value })}
             style={styles.input}
           />
 
-          <label style={styles.label}>Username</label>
+          <label htmlFor="username" style={styles.label}>Username</label>
           <input
+          id ="username"
             type="text"
             value={tempValues.username}
             onChange={(e) => setTempValues({ ...tempValues, username: e.target.value })}
             style={styles.input}
           />
 
-          <label style={styles.label}>Location</label>
+          <label htmlFor="location" style={styles.label}>Location</label>
           <input
+            id="location"
             type="text"
             value={tempValues.location}
             onChange={(e) => setTempValues({ ...tempValues, location: e.target.value })}
             style={styles.input}
           />
 
-          <label style={styles.label}>Gender</label>
+          <label htmlFor = "gender" style={styles.label}>Gender</label>
           <input
+            id = "gender"
             type="text"
             value={tempValues.gender}
             onChange={(e) => setTempValues({ ...tempValues, gender: e.target.value })}

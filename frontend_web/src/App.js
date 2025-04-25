@@ -57,7 +57,7 @@ function App() {
       console.error("User is not logged in. Cannot fetch user ID.");
       return null;
     }
-    let response = await fetch(`${backendURL}/api/serve/get-userid-with-uname?uname=${user.name}`)
+    let response = await fetch(`${backendURL}/api/serve/get-userid-with-uname?uname=${user.name}&email=${user.email}`)
     .then(response => {
       if(!response.ok) {
         setIsLoading(false);
@@ -106,8 +106,6 @@ function App() {
   };
 
   const fetchRestaurantInfo = async (rid) => {
-
-     // ✅ always hide loader
     console.log(isLoading);
     let response = await fetch(`${backendURL}/api/serve/get-rinfo-with-rid?rid=${rid}`)
     .then(response => {
@@ -116,7 +114,6 @@ function App() {
       }
       return response.json();
     });
-    
     return response;
   }
   const loadFavorites = async () => {
@@ -129,7 +126,6 @@ function App() {
     }
     setIsLoading(false);
     let userid = uid;
-  
     try {
       const response = await fetch(`${backendURL}/api/serve/get-user-favorite-restaurants?uid=${userid}`);
       
@@ -213,7 +209,6 @@ function App() {
   };
   
   const resetBackendData = () => {
-
     fetchRestaurants();
     setPendingMaxDistance(50);
     setPendingMinRating(0);
@@ -259,7 +254,7 @@ function App() {
     setBackendData(filtered);
 
     // Close filter page
-    setShowFilterPage(false);
+    setShowFilterPage(false); 
   };
 
   const fetchRestaurants = async () => {
@@ -332,6 +327,7 @@ function App() {
       
 
     } catch (error) {
+      setIsLoading(false); 
       console.error("Fetch error:", error);
     } finally {
       setIsLoading(false);  // ✅ always hide loader
@@ -599,6 +595,7 @@ function App() {
     },
   }
 
+  const [isKm, setIsKm] = useState(false);
 
   return (
     <div className="App">
@@ -619,6 +616,7 @@ function App() {
         isLoading={isLoading}
         deleteRestaurantFromFavorites={deleteRestaurantFromFavorites}
         deleteRestaurantFromTrash={deleteRestaurantFromTrash}
+        isKm={isKm}
         setUid={setLoggedIn}
         fetchuid = {fetchuid}
       />
@@ -639,6 +637,8 @@ function App() {
          <Filter size={24} color="#ffffff" />
       </motion.button>
       <FilterPage
+        isKm={isKm}
+        setIsKm={setIsKm}
         maxDistance={pendingMaxDistance}
         setMaxDistance={setPendingMaxDistance}
         minRating={pendingMinRating}

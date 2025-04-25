@@ -2,10 +2,9 @@ import React from "react";
 import "./modal.css";
 import { MapPin, Globe, Phone } from "lucide-react"; 
 import StarRating from "./StarRating";
-
 import ReviewCarousel from './ModalComponents/ReviewCarousel';
 import OpeningHours from './ModalComponents/OpeningHours';
-function RestaurantModal({ restaurant }) {
+function RestaurantModal({ restaurant, isKm}) {
     return (
         <div className="cardModal">
             
@@ -41,7 +40,7 @@ function RestaurantModal({ restaurant }) {
             <div className = "info">
                 <div className="info_item">
                     
-                    <p>{restaurant.distanceFromUser} miles</p>
+                    <p>{isKm ? (restaurant.distanceFromUser * 1.61).toFixed(1) : restaurant.distanceFromUser} {isKm ? 'km' : 'miles'}</p>
                 </div>
                 <div className="info_item">
                     
@@ -84,8 +83,7 @@ function RestaurantModal({ restaurant }) {
         <MapPin size={16} className="icon" />
       </a>
     )}
-  </div>
-
+</div>
   <div className="info_item">
     {restaurant.website && (
       <a
@@ -108,21 +106,26 @@ function RestaurantModal({ restaurant }) {
   </div>
 </div>
 
-
             <div style={{
                 width: '100%',
                 height: '1px',
                 backgroundColor: '#ccc', // or any color
                 marginTop: '.5em'
             }} />
-
-            <ReviewCarousel reviews={restaurant.reviews} />
-            <div style={{
-                width: '100%',
-                height: '1px',
-                backgroundColor: '#ccc', // or any color
-                marginTop: '.5em'
-            }} />
+            
+            {restaurant.reviews && restaurant.reviews.length > 0 && (
+                    <>
+                        <ReviewCarousel reviews={restaurant.reviews} />
+                        <div 
+                        style={{
+                            width: '100%',
+                            height: '1px',
+                            backgroundColor: '#ccc',
+                            marginTop: '.5em',
+                        }}
+                        />
+                    </>
+                    )}
             <OpeningHours openingHours={restaurant.openingHours} />
 
             <div style={{

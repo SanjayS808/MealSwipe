@@ -9,7 +9,7 @@ import "./restaurantList.css";
 import "./Card.css"
 import Button from './Button';
 import { motion } from "framer-motion";
-function RestaurantList({ restaurants, onSwipe ,resetBackendData,isLoading}) {
+function RestaurantList({ restaurants, isKm, onSwipe ,resetBackendData,isLoading}) {
   const [currentRestaurant, setCurrentRestaurant] = useState(null);
   const [isClosing, setIsClosing] = useState(false);
   const [showModal, setShowModal] = useState(false);
@@ -25,6 +25,7 @@ function RestaurantList({ restaurants, onSwipe ,resetBackendData,isLoading}) {
       setIsClosing(false);
     }, 200); // match duration of bounceOut
   };
+  
 
   
 
@@ -91,13 +92,13 @@ function RestaurantList({ restaurants, onSwipe ,resetBackendData,isLoading}) {
               key={restaurant.id}
               onSwipe={(dir) => onSwipe(dir, restaurant)}
               preventSwipe={["up", "down"]}
-              
-              swipeRequirement={0.3} // Adjust swipe sensitivity
+              swipeThreshold={0.5}
               
             >
               <div style={{ height: "70vh", width: "100%" }}>
                 <RestaurantCard
                   restaurant={restaurant}
+                  isKm={isKm}
                   handleClick={handleClick}
                   handleClose={handleClose}
                   showModal={showModal}
@@ -145,7 +146,7 @@ function RestaurantList({ restaurants, onSwipe ,resetBackendData,isLoading}) {
             ✕
           </button>
 
-            <RestaurantModal restaurant={currentRestaurant}  />
+            <RestaurantModal restaurant={currentRestaurant} isKm={isKm}/>
             
           </div>
         </div>

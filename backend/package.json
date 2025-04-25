@@ -5,6 +5,7 @@
   "main": "server.js",
   "scripts": {
     "test": "cross-env NODE_ENV=test jest --testTimeout=10000",
+    "testFront": "react-scripts test",
     "start": "nodemon server.js",
     "dev": "nodemon server"
   },
@@ -33,6 +34,9 @@
     "testEnvironment": "node",
     "coveragePathIgnorePatterns": [
       "/node_modules/"
-    ]
+    ],
+    "transformIgnorePatterns": [
+    "/node_modules/(?!(lucide-react)/)"
+  ]
   }
 }

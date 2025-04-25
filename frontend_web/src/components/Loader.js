@@ -4,8 +4,10 @@ import './loader.css';
 const Loader = () => {
     return (
         
-    <div class="mainPizza">
+    <div className="mainPizza" data-testid="loader" >
     <svg
+        data-testid="loader"
+        role = "img"
         width="5em"
         height="5em"
         viewBox="0 0 168 158"
