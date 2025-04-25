@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import Button from "../components/Button";
 import "./favorites.css";
 import MiniCard from "../components/FavoritesTrashedSharedComponents/MiniCard";
-function FavoritesPage({ likedRestaurants, clearFavorites, loadFavorites, loggedIn, isLoading ,deleteRestaurantFromFavorites}) {
+function FavoritesPage({ likedRestaurants, clearFavorites, loadFavorites, loggedIn, isLoading ,deleteRestaurantFromFavorites,fetchuid}) {
   const navigate = useNavigate();
   const [showConfirmModal, setShowConfirmModal] = useState(false);
   const [isClosing, setIsClosing] = useState(false);
@@ -38,24 +38,45 @@ function FavoritesPage({ likedRestaurants, clearFavorites, loadFavorites, logged
   };
 
   useEffect(() => {
-    console.log("Loading favorites...");
-    loadFavorites();
+    console.log("");
+    const loadData = async () => {
+      console.log("this tan");
+      await fetchuid();
+      loadFavorites();
+    };
+  
+    loadData();
   }, []);
 
-  const deleteAction = (placeid) => {
+  const deleteAction = async (placeid) => {
     console.log("Deleting restaurant with placeid:", placeid);
-    deleteRestaurantFromFavorites(placeid);
-    loadFavorites();
+    await deleteRestaurantFromFavorites(placeid);
+    setTimeout(() => {
+      loadFavorites();
+    }, 150);
+    
   }
 
   return loggedIn ? (
     <div className="favoritesPage">
-      <h2>Liked Restaurants</h2>
+      <h2
+          style={{
+            fontSize: "clamp(2rem, 5vw, 2.5rem)",
+            fontWeight: "800",
+            textAlign: "center",
+            color: "#ff4d4d",
+            marginBottom: "0.5em",
+            animation: "slideIn 0.3s ease-out",
+          }}
+        >
+          ❤️ Liked Restaurants
+        </h2>
 
       {isLoading ? null : (
         likedRestaurants.length === 0 ? (
           <div className="noRestaurants modal-animateFavorites">
-            <h2>it's lonely in here :(</h2>
+              <h2 style = {{whiteSpace: "nowrap", fontSize: "clamp(1rem, 6vw, 2rem)"}}>it's lonely in here :(</h2>
+
             <Button text="Start Swiping" onClick={swipeClick} />
           </div>
         ) : (
@@ -96,7 +117,19 @@ function FavoritesPage({ likedRestaurants, clearFavorites, loadFavorites, logged
   ) : (
     <div className="favoritesPage">
       <h2>Favorites</h2>
-      <p>Please log in to view your favorites.</p>
+      <h3
+          style={{
+            fontSize: "clamp(1rem, 2.5vw, 2rem)",
+            textAlign: "center",
+            whiteSpace: "nowrap",        // ✅ forces single line
+            overflow: "hidden",          // ✅ hides overflow
+            textOverflow: "ellipsis",    // ✅ adds "..." if needed
+            width: "100%",               // ✅ ensures it fills parent
+          }}
+        >
+        Please log in to view your favorite restaurants.
+      </h3>
+      <Button text="Log In" onClick={() => navigate("/login")} />
     </div>
   );
 }

@@ -1,7 +1,7 @@
 .favoritesPage {
   padding-top: 80px;
   height: 100vh;
-  width: 80vw;
+  width: 90vw;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -136,4 +136,15 @@
 
 .clearFavorites:active {
   transform: scale(0.97);
+}
+
+@keyframes slideIn {
+  from {
+    transform: translateY(-30%);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0%);
+    opacity: 1;
+  }
 }

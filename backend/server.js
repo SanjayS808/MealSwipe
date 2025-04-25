@@ -583,20 +583,18 @@ app.get("/health", (req, res) => {
     res.status(200).send('OK');
 })
 
-let server = undefined;
-if (DEV_MODE) {
-    server = app.listen(5001, () => console.log("Server started on port 5001"));
-} else {
-    // Node.js Express example
-    server = app.use(cors({
-        origin: '*', // Consider restricting this in production
+if (!DEV_MODE) {
+    app.use(cors({
+        origin: '*', // Limit this in production
         methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
         credentials: true,
         optionsSuccessStatus: 204,
         exposedHeaders: ['Content-Length', 'X-Requested-With']
-      }));
+    }));
 }
 
-// Exporting app for testing.
-module.exports = { app, server,
-     imageCache, contentTypeCache, CACHE_EXPIRATION_TIME}; // Exporting for testing only!
+let server;
+server = app.listen(5001, () => console.log("Server started on port 5001"));
+
+// Export both, regardless of DEV_MODE
+module.exports = { app, server };

@@ -120,12 +120,14 @@ function App() {
     return response;
   }
   const loadFavorites = async () => {
-    setIsLoading(true);  // ✅ always hide loader
+    setIsLoading(true); 
+    console.log("1"); // ✅ always hide loader
     console.log("Loading favorites...");
     if (user === null) {
       setIsLoading(false);  // ✅ always hide loader
       return;
     }
+    setIsLoading(false);
     let userid = uid;
   
     try {
@@ -166,7 +168,8 @@ function App() {
   };
   
   const loadTrashed = async () => {
-    setIsLoading(true);  // ✅ always hide loader
+    setIsLoading(true);
+    console.log("2");  // ✅ always hide loader
     console.log("Loading trashed...");
     if (user === null) {
       setIsLoading(false);  // ✅ always hide loader
@@ -262,6 +265,7 @@ function App() {
   const fetchRestaurants = async () => {
 
     setIsLoading(true);  // ✅ always hide loader
+    console.log("3");
     console.log("Fetching restaurants...");
   
     try {
@@ -308,14 +312,14 @@ function App() {
       mappedRestaurants[mappedRestaurants.length - 1].imageUrl = photoURL;
       photoURL = await fetchGooglePlacePhoto(mappedRestaurants[mappedRestaurants.length - 2].photos[0].name)
       mappedRestaurants[mappedRestaurants.length - 2].imageUrl = photoURL;
-    
+      const shuffledRestaurants = [...mappedRestaurants].sort(() => Math.random() - 0.5);
       // Store original and filtered data
-      setOriginalBackendData(mappedRestaurants);
-      setFilteredRestaurants(mappedRestaurants);
-      setBackendData(mappedRestaurants);
+      setOriginalBackendData(shuffledRestaurants);
+      setFilteredRestaurants(shuffledRestaurants);
+      setBackendData(shuffledRestaurants);
       const uniqueTypes = [
         ...new Set(
-          mappedRestaurants
+          shuffledRestaurants
             .map(r => r.cuisineType)
             .filter(Boolean)
         )
@@ -400,6 +404,7 @@ function App() {
         }
     
       });
+    
   };
 
   const deleteRestaurantFromFavorites = async (restaurantID) => {
@@ -580,7 +585,7 @@ function App() {
       position: "absolute",
       top: "15px",
       right: "10px",
-      zIndex: 1000,
+      zIndex: 100,
       width: "55px",
       height: "55px",
       borderRadius: "50%",
@@ -616,6 +621,8 @@ function App() {
         deleteRestaurantFromFavorites={deleteRestaurantFromFavorites}
         deleteRestaurantFromTrash={deleteRestaurantFromTrash}
         isKm={isKm}
+        setUid={setLoggedIn}
+        fetchuid = {fetchuid}
       />
       {isLoading && <Loader />}
 
