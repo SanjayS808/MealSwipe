@@ -25,8 +25,6 @@ const app = express();
 const API_URI = "https://mealswipe-flask-service.75ct69eg04jk6.us-west-2.cs.amazonlightsail.com/v1/places:searchNearby";
 const GOOGLE_API_KEY = process.env.GOOGLE_PLACES_API;
 
-expressJSDocSwagger(app)(options);
-
 // USED FOR CACHING IMAGING.
 const imageCache = new Map(); // { data: Buffer, timestamp: Date }
 const contentTypeCache = new Map();
