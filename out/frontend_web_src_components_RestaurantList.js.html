@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: frontend_web/src/components/RestaurantList.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: frontend_web/src/components/RestaurantList.js</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>/** 
+ * @module RestaurantList-Component
+ * @requires React
+ * @fileoverview 
+ * This component renders a Tinder-like interface for browsing through a list of restaurants. 
+ * Users can swipe through restaurant cards, view more details in a modal, and refresh the list if there are no available restaurants.
+ */
+
+import React, { useState } from 'react';
+import RestaurantCard from "./RestaurantCard";
+import TinderCard from "react-tinder-card";
+import RestaurantModal from "./RestaurantModal";
+import "./restaurantList.css";
+import "./Card.css";
+import Button from './Button';
+import { motion } from "framer-motion";
+
+/**
+ * RestaurantList component that renders restaurant cards in a Tinder-like interface.
+ * @function RestaurantList
+ * @memberof module:RestaurantList
+ * @param {Object[]} restaurants - List of restaurant data to display.
+ * @param {Function} onSwipe - Callback to handle swipe actions.
+ * @param {Function} resetBackendData - Callback to reset restaurant data.
+ * @param {boolean} isLoading - Flag indicating if data is loading.
+ * @returns {JSX.Element} The rendered component
+ */
+function RestaurantList({ restaurants, onSwipe, resetBackendData, isLoading }) {
+  const [currentRestaurant, setCurrentRestaurant] = useState(null);
+  const [isClosing, setIsClosing] = useState(false);
+  const [showModal, setShowModal] = useState(false);
+
+  /**
+   * Triggered when a restaurant card is clicked to show its details.
+   * @function handleClick
+   * @memberof module:RestaurantList
+   * @param {Object} restaurant - The restaurant object to display in the modal.
+   */
+  const handleClick = (restaurant) => {
+    setCurrentRestaurant(restaurant);
+    setShowModal(true);
+    console.log("currentRestaurant", restaurant);
+  };
+
+  /**
+   * Triggered to close the restaurant detail modal.
+   * @function handleClose
+   * @memberof module:RestaurantList
+   */
+  const handleClose = () => {
+    setIsClosing(true);
+    setTimeout(() => {
+      setCurrentRestaurant(null);
+      setIsClosing(false);
+    }, 200); // match duration of bounceOut
+  };
+
+  const modalStyles = {
+    overlay: {
+      position: 'fixed', top: 0, left: 0, right: 0, bottom: 0,
+      backgroundColor: 'rgba(0, 0, 0, 0.5)',
+      display: 'flex', justifyContent: 'center', alignItems: 'center',
+      zIndex: 1000,
+      borderRadius: '10px',
+      width: '100%',
+    },
+    modal: {
+      background: '#ffe1c7',
+      padding: '2em',
+      borderRadius: '10px',
+      width: '75%',
+      maxWidth: '300px',
+      maxHeight: '55vh',
+      overflowY: 'auto',
+      position: 'relative',
+    },
+    closeButton: {
+      position: 'absolute',
+      top: '10px',
+      right: '10px',
+      border: 'none',
+      fontSize: '1.2em',
+      cursor: 'pointer',
+      zIndex: 9999       // DEBUG
+    },
+    reviewItem: {
+      margin: '1em 0',
+      borderBottom: '1px solid #ddd',
+      paddingBottom: '0.5em',
+    },
+  };
+
+  return (
+    &lt;div>
+      &lt;div className="cardContainer"
+        style={{
+          width: "90vw",
+          height: "75vh",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+        }}>
+        {isLoading ? (
+          null
+        ) : restaurants.length === 0 ? (
+          &lt;div className="noRestaurants">
+            &lt;h3>No restaurants available :(&lt;/h3>
+            &lt;Button onClick={resetBackendData} text="Refresh">&lt;/Button>
+          &lt;/div>
+        ) : (
+          restaurants.map((restaurant) => (
+            &lt;TinderCard
+              className="swipe modal-animate"
+              key={restaurant.id}
+              onSwipe={(dir) => onSwipe(dir, restaurant)}
+              preventSwipe={["up", "down"]}
+              swipeRequirement={0.4} // Adjust swipe sensitivity
+            >
+              &lt;div style={{ height: "70vh", width: "100%" }}>
+                &lt;RestaurantCard
+                  restaurant={restaurant}
+                  handleClick={handleClick}
+                  handleClose={handleClose}
+                  showModal={showModal}
+                />
+              &lt;/div>
+            &lt;/TinderCard>
+          ))
+        )}
+
+        {currentRestaurant &amp;&amp; (
+          &lt;div className="card">
+            &lt;div className="restaurant-details">
+              &lt;div 
+                style={modalStyles.overlay}
+                onClick={handleClose} // Click on backdrop closes modal
+              >
+                &lt;div 
+                  style={modalStyles.modal}
+                  className={isClosing ? 'modal-exit' : 'modal-animate'}
+                  onClick={(e) => e.stopPropagation()} // Prevent close when clicking modal content
+                >
+                  &lt;button 
+                    onClick={handleClose} 
+                    style={{
+                      position: 'absolute',
+                      top: '10px',
+                      right: '10px',
+                      width: '35px',
+                      height: '35px',
+                      borderRadius: '50%',
+                      backgroundColor: '#ff4d4f',
+                      border: 'none',
+                      color: 'black',
+                      fontSize: '1.2em',
+                      fontWeight: 'bold',
+                      cursor: 'pointer',
+                      transition: 'background-color 0.2s ease',
+                      zIndex: 9999, // Ensure the button is on top
+                    }}
+                    onMouseOver={(e) => e.target.style.backgroundColor = '#e60000'}
+                    onMouseOut={(e) => e.target.style.backgroundColor = '#ff4d4f'}
+                  >
+                    ✕
+                  &lt;/button>
+
+                  &lt;RestaurantModal restaurant={currentRestaurant} />
+                &lt;/div>
+              &lt;/div>
+            &lt;/div>
+          &lt;/div>
+        )}
+
+      &lt;/div>
+    &lt;/div>
+  );
+}
+
+/**
+ * @exports RestaurantList
+ */
+export default RestaurantList;
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="module-Express-Backend.html">Express-Backend</a></li><li><a href="module-FavoritesPage-Page.html">FavoritesPage-Page</a></li><li><a href="module-FilterPage.html">FilterPage</a></li><li><a href="module-Google-Button-Page.html">Google-Button-Page</a></li><li><a href="module-LogIn-Page.html">LogIn-Page</a></li><li><a href="module-Main-Component.html">Main-Component</a></li><li><a href="module-Navigation-Component.html">Navigation-Component</a></li><li><a href="module-ProfileEditPopup-Page.html">ProfileEditPopup-Page</a></li><li><a href="module-ProfilePage-Page.html">ProfilePage-Page</a></li><li><a href="module-Restaurant.html">Restaurant</a></li><li><a href="module-RestaurantCard.html">RestaurantCard</a></li><li><a href="module-RestaurantList.html">RestaurantList</a></li><li><a href="module-Review.html">Review</a></li><li><a href="module-StarRating.html">StarRating</a></li><li><a href="module-TrashFlash.html">TrashFlash</a></li><li><a href="module-TrashedPage-Page.html">TrashedPage-Page</a></li><li><a href="module-pool.html">pool</a></li></ul><h3>Classes</h3><ul><li><a href="module-Restaurant-Restaurant.html">Restaurant</a></li><li><a href="module-Review-Review.html">Review</a></li></ul><h3>Global</h3><ul><li><a href="global.html#DEV_MODE">DEV_MODE</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 4.0.4</a> on Sun Apr 27 2025 14:59:25 GMT-0500 (Central Daylight Time)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>

@@ -1,9 +1,32 @@
-import { useState, useEffect } from "react";
+/** 
+ * ProfileEditPopup component for editing user profile.
+ * @module ProfileEditPopup-Page
+ * @requires React
+ * @requires useState
+ * @requires useEffect
+ */
+/**
+ * @fileoverview This component displays a popup for editing user profile details such as name, username, location, and gender. 
+ * It allows users to make changes and save them to the parent component's state.
+ */
+import { useState, useEffect, Component } from "react";
 
+/**
+ * Component with all functions necessary to open and compare popup.
+ * @function ProfileEditPopup
+ * @param {useState} currentValues 
+ * @param {function} setValues
+ * @param {function} onClose
+ * @returns {Component} Popup component.
+ */
 const ProfileEditPopup = ({ currentValues, setValues, onClose }) => {
   const [tempValues, setTempValues] = useState(currentValues);
   const [isVisible, setIsVisible] = useState(false);
 
+  /**
+   * useEffect hook to set the popup visibility after a short delay.
+   * @function useEffect
+   */
   useEffect(() => {
     setTimeout(() => setIsVisible(true), 50);
   }, []);

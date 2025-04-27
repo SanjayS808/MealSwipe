@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: frontend_web/src/pages/TrashedPage.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: frontend_web/src/pages/TrashedPage.js</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>/** Handles displaying, clearing, and managing user's trashed (disliked) restaurants.
+ * @module TrashedPage-Page
+ * @requires React
+ */
+
+/**
+ * @fileoverview TrashedPage renders the user's trashed restaurants.
+ * Provides options to delete individual trashed entries, clear all trashed restaurants, and navigate back to swiping.
+ */
+
+import React, { useEffect, useState } from "react";
+import { useNavigate } from 'react-router-dom';
+import Button from "../components/Button";
+import "./favorites.css";
+import MiniCard from "../components/FavoritesTrashedSharedComponents/MiniCard";
+
+/**
+ * Renders the user's Trashed Page.
+ * @component
+ * @param {Object} props
+ * @param {Array} props.trashedRestaurants - Array of trashed restaurant objects
+ * @param {Function} props.clearTrashed - Function to clear all trashed restaurants
+ * @param {Function} props.loadTrashed - Function to fetch and load trashed restaurants
+ * @param {boolean} props.loggedIn - Whether the user is logged in
+ * @param {boolean} props.isLoading - Loading state flag
+ * @param {Function} props.deleteRestaurantFromTrashed - Function to delete a restaurant by placeid
+ * @returns {JSX.Element} Trashed page layout
+ */
+function TrashedPage({ trashedRestaurants, clearTrashed, loadTrashed, loggedIn, isLoading, deleteRestaurantFromTrashed }) {
+  const navigate = useNavigate();
+  const [showConfirmModal, setShowConfirmModal] = useState(false);
+  const [isClosing, setIsClosing] = useState(false);
+
+  /**
+   * Handles clicking the "Clear Trashed" button by showing the confirmation modal.
+   * @function handleClearClick
+   * @returns {void}
+   */
+  const handleClearClick = () => {
+    setShowConfirmModal(true);
+  };
+
+  /**
+   * Confirms clearing all trashed restaurants and triggers clearing logic.
+   * @function confirmClearFavorites
+   * @returns {void}
+   */
+  const confirmClearFavorites = () => {
+    setIsClosing(true);
+    setTimeout(() => {
+      setIsClosing(false);
+      clearTrashed();
+      setShowConfirmModal(false);
+    }, 100);
+  };
+
+  /**
+   * Cancels the "clear trashed" action and closes the confirmation modal.
+   * @returns {void}
+   * @function cancelClearFavorites
+   */
+  const cancelClearFavorites = () => {
+    setIsClosing(true);
+    setTimeout(() => {
+      setIsClosing(false);
+      setShowConfirmModal(false);
+    }, 100);
+  };
+
+  /**
+   * Handles the "Back to Swiping" button click by navigating to the homepage.
+   * @function swipeClick
+   * @returns {void}
+   */
+  const swipeClick = () => {
+    console.log("swipeClick");
+    navigate("/");
+  };
+
+  useEffect(() => {
+    console.log("Loading trashed...");
+    loadTrashed();
+  }, []);
+
+  /**
+   * Deletes a restaurant from the trashed list by its place ID.
+   * Then reloads the trashed list.
+   * @async
+   * @function deleteAction
+   * @param {string} placeid - The ID of the restaurant to delete.
+   * @returns {Promise&lt;void>}
+   */
+  const deleteAction = async (placeid) => {
+    console.log("Deleting restaurant with placeid:", placeid);
+    await deleteRestaurantFromTrashed(placeid);
+    setTimeout(() => {
+      loadTrashed();
+    }, 150);
+  };
+
+  return loggedIn ? (
+    &lt;div className="favoritesPage">
+      &lt;h2>Trashed Restaurants&lt;/h2>
+
+      {isLoading ? null : (
+        trashedRestaurants.length === 0 ? (
+          &lt;div className="noRestaurants modal-animateFavorites">
+            &lt;h2>props to you for not being picky!&lt;/h2>
+            &lt;Button text="Back to Swiping" onClick={swipeClick} />
+          &lt;/div>
+        ) : (
+          &lt;>
+            &lt;button className="clearFavorites" onClick={handleClearClick}>
+              Clear Trashed
+            &lt;/button>
+            &lt;div className="favoritesList modal-animateFavorites">
+              {trashedRestaurants.map((restaurant, index) => (
+                &lt;MiniCard
+                  key={index}
+                  restaurant={restaurant}
+                  removeRestaurant={deleteAction}
+                  text="trashed"
+                />
+              ))}
+            &lt;/div>
+
+            {showConfirmModal &amp;&amp; (
+              &lt;div className="modal-overlay">
+                &lt;div className={isClosing ? 'modal-content modal-animateFavoritesExit' : 'modal-content modal-animateFavorites'}>
+                  &lt;p>Are you sure you want to clear your trash?&lt;/p>
+                  &lt;div className="modal-buttons">
+                    &lt;button onClick={confirmClearFavorites}>Yes&lt;/button>
+                    &lt;button onClick={cancelClearFavorites}>Cancel&lt;/button>
+                  &lt;/div>
+                &lt;/div>
+              &lt;/div>
+            )}
+          &lt;/>
+        )
+      )}
+    &lt;/div>
+  ) : (
+    &lt;div className="favoritesPage">
+      &lt;h2>Trash&lt;/h2>
+      &lt;h3
+        style={{
+          fontSize: "clamp(1rem, 2.5vw, 2rem)",
+          textAlign: "center",
+          whiteSpace: "nowrap",
+          overflow: "hidden",
+          textOverflow: "ellipsis",
+          width: "100%",
+        }}
+      >
+        Please log in to view your trashed restaurants.
+      &lt;/h3>
+      &lt;Button text="Log In" onClick={() => navigate("/login")} />
+    &lt;/div>
+  );
+}
+
+export default TrashedPage;
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="module-Express-Backend.html">Express-Backend</a></li><li><a href="module-FavoritesPage-Page.html">FavoritesPage-Page</a></li><li><a href="module-FilterPage.html">FilterPage</a></li><li><a href="module-Google-Button-Page.html">Google-Button-Page</a></li><li><a href="module-LogIn-Page.html">LogIn-Page</a></li><li><a href="module-Main-Component.html">Main-Component</a></li><li><a href="module-Navigation-Component.html">Navigation-Component</a></li><li><a href="module-ProfileEditPopup-Page.html">ProfileEditPopup-Page</a></li><li><a href="module-ProfilePage-Page.html">ProfilePage-Page</a></li><li><a href="module-Restaurant.html">Restaurant</a></li><li><a href="module-RestaurantCard.html">RestaurantCard</a></li><li><a href="module-RestaurantList.html">RestaurantList</a></li><li><a href="module-Review.html">Review</a></li><li><a href="module-StarRating.html">StarRating</a></li><li><a href="module-TrashFlash.html">TrashFlash</a></li><li><a href="module-TrashedPage-Page.html">TrashedPage-Page</a></li><li><a href="module-pool.html">pool</a></li></ul><h3>Classes</h3><ul><li><a href="module-Restaurant-Restaurant.html">Restaurant</a></li><li><a href="module-Review-Review.html">Review</a></li></ul><h3>Global</h3><ul><li><a href="global.html#DEV_MODE">DEV_MODE</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 4.0.4</a> on Sun Apr 27 2025 14:59:25 GMT-0500 (Central Daylight Time)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>

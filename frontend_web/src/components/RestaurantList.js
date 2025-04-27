@@ -1,23 +1,52 @@
-// This component takes the list of restaurants and generates the restaurant cards to be displayed in the Tinder-like interface.
+/** 
+ * @module RestaurantList-Component
+ * @requires React
+ * @fileoverview 
+ * This component renders a Tinder-like interface for browsing through a list of restaurants. 
+ * Users can swipe through restaurant cards, view more details in a modal, and refresh the list if there are no available restaurants.
+ */
 
-
-import React, { useRef ,useState,useEffect} from 'react';
+import React, { useState } from 'react';
 import RestaurantCard from "./RestaurantCard";
 import TinderCard from "react-tinder-card";
 import RestaurantModal from "./RestaurantModal";
 import "./restaurantList.css";
-import "./Card.css"
+import "./Card.css";
 import Button from './Button';
 import { motion } from "framer-motion";
-function RestaurantList({ restaurants, onSwipe ,resetBackendData,isLoading}) {
+
+/**
+ * RestaurantList component that renders restaurant cards in a Tinder-like interface.
+ * @function RestaurantList
+ * @memberof module:RestaurantList
+ * @param {Object[]} restaurants - List of restaurant data to display.
+ * @param {Function} onSwipe - Callback to handle swipe actions.
+ * @param {Function} resetBackendData - Callback to reset restaurant data.
+ * @param {boolean} isLoading - Flag indicating if data is loading.
+ * @returns {JSX.Element} The rendered component
+ */
+function RestaurantList({ restaurants, onSwipe, resetBackendData, isLoading }) {
   const [currentRestaurant, setCurrentRestaurant] = useState(null);
   const [isClosing, setIsClosing] = useState(false);
   const [showModal, setShowModal] = useState(false);
+
+  /**
+   * Triggered when a restaurant card is clicked to show its details.
+   * @function handleClick
+   * @memberof module:RestaurantList
+   * @param {Object} restaurant - The restaurant object to display in the modal.
+   */
   const handleClick = (restaurant) => {
     setCurrentRestaurant(restaurant);
     setShowModal(true);
     console.log("currentRestaurant", restaurant);
   };
+
+  /**
+   * Triggered to close the restaurant detail modal.
+   * @function handleClose
+   * @memberof module:RestaurantList
+   */
   const handleClose = () => {
     setIsClosing(true);
     setTimeout(() => {
@@ -25,8 +54,6 @@ function RestaurantList({ restaurants, onSwipe ,resetBackendData,isLoading}) {
       setIsClosing(false);
     }, 200); // match duration of bounceOut
   };
-
-  
 
   const modalStyles = {
     overlay: {
@@ -63,20 +90,16 @@ function RestaurantList({ restaurants, onSwipe ,resetBackendData,isLoading}) {
     },
   };
 
-  
-  
   return (
-    
     <div>
       <div className="cardContainer"
-      style={{
-        width: "90vw",
-        height: "75vh",
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "center",
-        
-      }}>
+        style={{
+          width: "90vw",
+          height: "75vh",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+        }}>
         {isLoading ? (
           null
         ) : restaurants.length === 0 ? (
@@ -91,9 +114,7 @@ function RestaurantList({ restaurants, onSwipe ,resetBackendData,isLoading}) {
               key={restaurant.id}
               onSwipe={(dir) => onSwipe(dir, restaurant)}
               preventSwipe={["up", "down"]}
-              
               swipeRequirement={0.4} // Adjust swipe sensitivity
-              
             >
               <div style={{ height: "70vh", width: "100%" }}>
                 <RestaurantCard
@@ -107,57 +128,55 @@ function RestaurantList({ restaurants, onSwipe ,resetBackendData,isLoading}) {
           ))
         )}
 
-{currentRestaurant && (
-  
-  <div className="card" >
-    <div className="restaurant-details" >
-    
-        <div 
-        style={modalStyles.overlay}
-        onClick={handleClose} // Click on backdrop closes modal
-        >
-          <div 
-            style={modalStyles.modal}
-            className={isClosing ? 'modal-exit' : 'modal-animate'}
-            onClick={(e) => e.stopPropagation()} // Prevent close when clicking modal content
-          >
-          <button 
-            onClick={handleClose} 
-            style={{
-              position: 'absolute',
-              top: '10px',
-              right: '10px',
-              width: '35px',
-              height: '35px',
-              borderRadius: '50%',
-              backgroundColor: '#ff4d4f',
-              border: 'none',
-              color: 'black',
-              fontSize: '1.2em',
-              fontWeight: 'bold',
-              cursor: 'pointer',
-              transition: 'background-color 0.2s ease',
-              zIndex: 9999, // Ensure the button is on top
-            }}
-            onMouseOver={(e) => e.target.style.backgroundColor = '#e60000'}
-            onMouseOut={(e) => e.target.style.backgroundColor = '#ff4d4f'}
-          >
-            ✕
-          </button>
+        {currentRestaurant && (
+          <div className="card">
+            <div className="restaurant-details">
+              <div 
+                style={modalStyles.overlay}
+                onClick={handleClose} // Click on backdrop closes modal
+              >
+                <div 
+                  style={modalStyles.modal}
+                  className={isClosing ? 'modal-exit' : 'modal-animate'}
+                  onClick={(e) => e.stopPropagation()} // Prevent close when clicking modal content
+                >
+                  <button 
+                    onClick={handleClose} 
+                    style={{
+                      position: 'absolute',
+                      top: '10px',
+                      right: '10px',
+                      width: '35px',
+                      height: '35px',
+                      borderRadius: '50%',
+                      backgroundColor: '#ff4d4f',
+                      border: 'none',
+                      color: 'black',
+                      fontSize: '1.2em',
+                      fontWeight: 'bold',
+                      cursor: 'pointer',
+                      transition: 'background-color 0.2s ease',
+                      zIndex: 9999, // Ensure the button is on top
+                    }}
+                    onMouseOver={(e) => e.target.style.backgroundColor = '#e60000'}
+                    onMouseOut={(e) => e.target.style.backgroundColor = '#ff4d4f'}
+                  >
+                    ✕
+                  </button>
 
-            <RestaurantModal restaurant={currentRestaurant}  />
-            
+                  <RestaurantModal restaurant={currentRestaurant} />
+                </div>
+              </div>
+            </div>
           </div>
-        </div>
-        </div>
-        </div>
-      )}
+        )}
 
       </div>
     </div>
-    
   );
-  
 }
 
+/**
+ * @exports RestaurantList
+ */
 export default RestaurantList;

@@ -1,3 +1,12 @@
+/** Express router providing user related routes
+ * @module LogIn-Page
+ * @requires React
+ */
+
+/**
+ * @fileoverview Login component where the user is initially navigated. Contains all buttons and images to login.
+*/
+
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import pizzaimg from "./login-img/login-pizza.png";
@@ -9,21 +18,27 @@ const Login = () => {
   const [showInstructions, setShowInstructions] = useState(false);
   const [animationClass, setAnimationClass] = useState("");
 
-    const handleSloganClick = () => {
-      setAnimationClass("swipe-out");
+  /**
+   * @function handleSloganClick
+   * @summary Handles the click event on the slogan.
+   * @description Triggers a swipe-out and swipe-in animation sequence.
+   */
+  const handleSloganClick = () => {
+    setAnimationClass("swipe-out");
 
+    setTimeout(() => {
+      setAnimationClass("hidden-offscreen-left"); // jump off-screen to the left
       setTimeout(() => {
-        setAnimationClass("hidden-offscreen-left"); // jump off-screen to the left
-        setTimeout(() => {
-          setAnimationClass("swipe-in"); // animate back in from left
-        }, 100); // brief delay
-      }, 600); // match with swipe-out duration
-    };
+        setAnimationClass("swipe-in"); // animate back in from left
+      }, 100); // brief delay
+    }, 600); // match with swipe-out duration
+  };
+
   return (
-    <div className = "login-container">
-      <div className = "login-content">
-        <div className = "welcome-back">
-        <h2>MealSwipe!</h2>
+    <div className="login-container">
+      <div className="login-content">
+        <div className="welcome-back">
+          <h2>MealSwipe!</h2>
           <h4 className={`slogan ${animationClass}`} onClick={handleSloganClick}>
             Meals you’ll love, one swipe away.
           </h4>
@@ -34,9 +49,7 @@ const Login = () => {
           />
         </div>
 
-        <div className = "login-form">
-          
-
+        <div className="login-form">
           <p style={{ color: "red", fontWeight: "bold" }}>Create Account / Sign in</p>
           <GoogleLoginButton style={{ marginBottom: "1em" }} />
           <button
@@ -50,7 +63,6 @@ const Login = () => {
               borderRadius: "8px",
               fontWeight: "bold",
               cursor: "pointer",
-              
             }}
           >
             Return to MealSwipe!
@@ -71,9 +83,9 @@ const Login = () => {
           >
             How to Add MealSwipe to Home Screen (iOS)
           </button>
-        
+        </div>
       </div>
-      </div>
+
       {showInstructions && (
         <div style={styles.modalOverlayL}>
           <div style={styles.modalContentL}>
@@ -136,6 +148,5 @@ const styles = {
     fontSize: '0.95em'
   }
 };
-
 
 export default Login;

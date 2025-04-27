@@ -1,6 +1,10 @@
 /** Express router providing user related routes
- * @module api/serve/
+ * @module Express-Backend
  * @requires express
+ */
+
+/**
+ * @fileoverview Backend main body for MealSwipe. Contains all necessary API calls to get, add, update, and delete operations to create a functional backend. More information can be found in the functional design overview.
  */
 
 /**

@@ -1,4 +1,9 @@
 /**
+ * Exports the configured PostgreSQL connection pool for use in other modules.
+ * @module pool
+ */
+
+/**
  * @fileoverview Database pool configuration for PostgreSQL using environment variables.
  * Initializes and exports a connection pool to be used throughout the application.
  */
@@ -36,8 +41,4 @@ const pool = new Pool({
   ssl: process.env.NODE_ENV === 'production' ? { rejectUnauthorized: false } : false
 });
 
-/**
- * Exports the configured PostgreSQL connection pool for use in other modules.
- * @module pool
- */
 module.exports = pool;

@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: frontend_web/src/components/FilterPage.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: frontend_web/src/components/FilterPage.js</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>/**
+ * @module FilterPage
+ * @description A component that provides filtering controls for restaurant search results.
+ * Users can filter restaurants by maximum distance, minimum rating, price level, and restaurant types.
+ * Includes a star rating selector subcomponent for rating-based filtering.
+ */
+
+import React from 'react';
+import './FilterPage.css';
+// import { useNavigate } from 'react-router-dom';
+
+/**
+ * Interactive star rating component for selecting minimum rating filter
+ * @function StarRating
+ * @memberof module:FilterPage
+ * @param {Object} props - Component props
+ * @param {number} props.rating - Current rating value
+ * @param {Function} props.onRatingChange - Callback function when rating changes
+ * @returns {JSX.Element} The rendered star rating selector
+ */
+const StarRating = ({ rating, onRatingChange }) => {
+  /**
+   * Handles click events on stars, calculating partial or full star values
+   * @function handleStarClick
+   * @memberof module:FilterPage.StarRating
+   * @param {Event} event - Click event object
+   * @param {number} starValue - Value of the clicked star
+   */
+  const handleStarClick = (event, starValue) => {
+    const starElement = event.currentTarget;
+    const rect = starElement.getBoundingClientRect();
+    const clickPosition = event.clientX - rect.left;
+    const starWidth = rect.width;
+
+    // Determine if click is on left or right half of star
+    const ratingValue = clickPosition &lt; starWidth / 2
+      ? starValue - 0.5
+      : starValue;
+
+    onRatingChange(ratingValue);
+  };
+
+  return (
+    &lt;div className="star-rating-selector">
+      {[1, 2, 3, 4, 5].map((starValue) => (
+        &lt;svg
+          key={starValue}
+          xmlns="http://www.w3.org/2000/svg"
+          viewBox="0 0 24 24"
+          className={`star ${rating >= starValue - 0.5 ? 'partially-filled' : ''} ${rating >= starValue ? 'filled' : ''}`}
+          onClick={(e) => handleStarClick(e, starValue)}
+        >
+          {rating >= starValue - 0.5 &amp;&amp; rating &lt; starValue &amp;&amp; (
+            &lt;defs>
+              &lt;linearGradient id={`halfGradient${starValue}`}>
+                &lt;stop offset="50%" stopColor="#ffc107"/>
+                &lt;stop offset="50%" stopColor="#ddd" stopOpacity="1"/>
+              &lt;/linearGradient>
+            &lt;/defs>
+          )}
+          &lt;path
+            fill={
+              rating >= starValue - 0.5 &amp;&amp; rating &lt; starValue
+                ? `url(#halfGradient${starValue})`
+                : (rating >= starValue ? '#ffc107' : '#ddd')
+            }
+            d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"
+          />
+        &lt;/svg>
+      ))}
+    &lt;/div>
+  );
+};
+
+/**
+ * Main FilterPage component for controlling restaurant filters
+ * @function FilterPage
+ * @memberof module:FilterPage
+ * @param {number} maxDistance - Maximum distance filter value
+ * @param {Function} setMaxDistance - Function to update maximum distance
+ * @param {number} minRating - Minimum rating filter value
+ * @param {Function} setMinRating - Function to update minimum rating
+ * @param {Array&lt;number>} priceLevels - Array of selected price levels
+ * @param {Function} setPriceLevels - Function to update price levels
+ * @param {Function} applyFilters - Function to apply all filter selections
+ * @param {Function} onClose - Function to close the filter page
+ * @param {boolean} isOpen - Whether the filter page is currently open
+ * @param {Array&lt;string>} types - Available restaurant types
+ * @param {Array&lt;string>} allowedTypes - Currently selected restaurant types
+ * @param {Function} setAllowedTypes - Function to update allowed types
+ * @param {Function} fetchRestaurants - Function to fetch restaurants with current filters
+ * @returns {JSX.Element} The rendered filter page component
+ */
+const FilterPage = ({
+  maxDistance,
+  setMaxDistance,
+  minRating,
+  setMinRating,
+  priceLevels,
+  setPriceLevels,
+  applyFilters,
+  onClose,
+  isOpen,
+  types,
+  allowedTypes,
+  setAllowedTypes,
+  fetchRestaurants
+}) => {
+  // const navigate = useNavigate();
+  
+  /**
+   * Toggles price level selection
+   * @function togglePriceLevel
+   * @memberof module:FilterPage.FilterPage
+   * @param {number} level - Price level to toggle
+   */
+  const togglePriceLevel = (level) => {
+    setPriceLevels(prev =>
+      prev.includes(level)
+        ? prev.filter(l => l !== level)
+        : [...prev, level]
+    );
+  };
+  
+  /**
+   * Toggles restaurant type selection
+   * @function toggleType
+   * @memberof module:FilterPage.FilterPage
+   * @param {string} type - Restaurant type to toggle
+   */
+  const toggleType = (type) => {
+    const allTypesSelected = allowedTypes.length === types.length;
+    if (allTypesSelected) {
+      setAllowedTypes([type]);
+    } else {
+      setAllowedTypes(prev =>
+        prev.includes(type)
+          ? prev.filter(t => t !== type)
+          : [...prev, type]
+      );
+    }
+  };
+
+  const allTypesSelected = allowedTypes.length === types.length;
+
+  return (
+    &lt;div className={`filter-page ${isOpen ? 'open' : ''}`}>
+      &lt;div className="filter-page-content">
+        &lt;button className="close-button" onClick={onClose}>×&lt;/button>
+        &lt;h2>Filters&lt;/h2>
+        
+        &lt;div className="filter-section">
+          &lt;label>Max Distance: {maxDistance} miles&lt;/label>
+          &lt;input
+            type="range"
+            min="1"
+            max="50"
+            value={maxDistance}
+            onChange={e => setMaxDistance(parseInt(e.target.value, 10))}
+            style={{
+              accentColor: '#d9413d' 
+            }}
+          />
+        &lt;/div>
+        
+        &lt;div className="filter-section">
+          &lt;label>Min Rating: {minRating} Stars&lt;/label>
+          &lt;StarRating
+            rating={minRating}
+            onRatingChange={setMinRating}
+          />
+        &lt;/div>
+        
+        &lt;div className="filter-section">
+          &lt;label>Price Level&lt;/label>
+          &lt;div className="price-level-selector">
+            {[1, 2, 3, 4].map(level => (
+              &lt;button
+                key={level}
+                className={`price-level-btn ${priceLevels.includes(level) ? 'selected' : ''}`}
+                onClick={() => togglePriceLevel(level)}
+              >
+                {'$'.repeat(level)}
+              &lt;/button>
+            ))}
+          &lt;/div>
+        &lt;/div>
+        &lt;div className="filter-section">
+          &lt;label>Types&lt;/label>
+          &lt;div className="type-checkboxes">
+            {types.map((type) => (
+              &lt;label key={type} className="type-option">
+                &lt;input
+                  type="checkbox"
+                  value={type}
+                  checked={!allTypesSelected &amp;&amp; allowedTypes.includes(type)}
+                  onChange={() => toggleType(type)}
+                />
+                {type.charAt(0).toUpperCase() + type.slice(1)}
+              &lt;/label>
+            ))}
+          &lt;/div>
+        &lt;/div>
+        &lt;div className="filter-buttons">
+          &lt;button
+            className="apply-filters-button"
+            onClick={applyFilters}
+          >
+            Apply Filters
+          &lt;/button>
+          &lt;button className='clear-filters-button' onClick={() => {
+            setMaxDistance(50);
+            setMinRating(0);
+            setPriceLevels([]);
+            setAllowedTypes(types);
+            fetchRestaurants();
+            onClose();
+          }}>
+            Clear Filters
+          &lt;/button>
+        &lt;/div>
+        
+      &lt;/div>
+    &lt;/div>
+  );
+}
+
+/**
+ * @exports FilterPage
+ */
+export default FilterPage;</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="module-Express-Backend.html">Express-Backend</a></li><li><a href="module-FavoritesPage-Page.html">FavoritesPage-Page</a></li><li><a href="module-FilterPage.html">FilterPage</a></li><li><a href="module-Google-Button-Page.html">Google-Button-Page</a></li><li><a href="module-LogIn-Page.html">LogIn-Page</a></li><li><a href="module-Main-Component.html">Main-Component</a></li><li><a href="module-Navigation-Component.html">Navigation-Component</a></li><li><a href="module-ProfileEditPopup-Page.html">ProfileEditPopup-Page</a></li><li><a href="module-ProfilePage-Page.html">ProfilePage-Page</a></li><li><a href="module-Restaurant.html">Restaurant</a></li><li><a href="module-RestaurantCard.html">RestaurantCard</a></li><li><a href="module-RestaurantList.html">RestaurantList</a></li><li><a href="module-Review.html">Review</a></li><li><a href="module-StarRating.html">StarRating</a></li><li><a href="module-TrashFlash.html">TrashFlash</a></li><li><a href="module-TrashedPage-Page.html">TrashedPage-Page</a></li><li><a href="module-pool.html">pool</a></li></ul><h3>Classes</h3><ul><li><a href="module-Restaurant-Restaurant.html">Restaurant</a></li><li><a href="module-Review-Review.html">Review</a></li></ul><h3>Global</h3><ul><li><a href="global.html#DEV_MODE">DEV_MODE</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 4.0.4</a> on Sun Apr 27 2025 14:59:25 GMT-0500 (Central Daylight Time)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>

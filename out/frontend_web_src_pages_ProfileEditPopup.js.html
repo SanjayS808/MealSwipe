@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: frontend_web/src/pages/ProfileEditPopup.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: frontend_web/src/pages/ProfileEditPopup.js</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>/** 
+ * ProfileEditPopup component for editing user profile.
+ * @module ProfileEditPopup-Page
+ * @requires React
+ * @requires useState
+ * @requires useEffect
+ */
+/**
+ * @fileoverview This component displays a popup for editing user profile details such as name, username, location, and gender. 
+ * It allows users to make changes and save them to the parent component's state.
+ */
+import { useState, useEffect, Component } from "react";
+
+/**
+ * Component with all functions necessary to open and compare popup.
+ * @function ProfileEditPopup
+ * @param {useState} currentValues 
+ * @param {function} setValues
+ * @param {function} onClose
+ * @returns {Component} Popup component.
+ */
+const ProfileEditPopup = ({ currentValues, setValues, onClose }) => {
+  const [tempValues, setTempValues] = useState(currentValues);
+  const [isVisible, setIsVisible] = useState(false);
+
+  /**
+   * useEffect hook to set the popup visibility after a short delay.
+   * @function useEffect
+   */
+  useEffect(() => {
+    setTimeout(() => setIsVisible(true), 50);
+  }, []);
+
+  const styles = {
+    overlay: {
+      position: "fixed",
+      top: 0,
+      left: 0,
+      width: "100vw",
+      height: "100vh",
+      backgroundColor: "rgba(0, 0, 0, 0.5)",
+      display: "flex",
+      alignItems: "center",
+      justifyContent: "center",
+      zIndex: 1000,
+    },
+    popup: {
+      backgroundColor: "white",
+      width: "90%",
+      maxWidth: "400px",
+      padding: "1.5rem",
+      borderRadius: "10px",
+      boxShadow: "0px 4px 6px rgba(0, 0, 0, 0.1)",
+      transform: isVisible ? "scale(1)" : "scale(0.8)",
+      opacity: isVisible ? 1 : 0,
+      transition: "all 0.3s ease-in-out",
+      position: "relative",
+    },
+    closeButton: {
+      position: "absolute",
+      top: "10px",
+      right: "15px",
+      fontSize: "1.5rem",
+      cursor: "pointer",
+    },
+    inputContainer: {
+      display: "flex",
+      flexDirection: "column",
+      gap: "0.75rem",
+      marginTop: "1rem",
+    },
+    label: {
+      fontSize: "0.875rem",
+      fontWeight: "600",
+    },
+    input: {
+      border: "1px solid #ccc",
+      borderRadius: "5px",
+      padding: "0.5rem",
+      fontSize: "1rem",
+      width: "100%",
+      outline: "none",
+    },
+    doneButton: {
+      marginTop: "1.5rem",
+      backgroundColor: "#4CAF50",
+      color: "white",
+      fontSize: "1rem",
+      fontWeight: "bold",
+      padding: "0.75rem",
+      borderRadius: "5px",
+      cursor: "pointer",
+      border: "none",
+      width: "100%",
+    },
+  };
+
+  return (
+    &lt;div style={styles.overlay} onClick={onClose}>
+      &lt;div style={styles.popup} onClick={(e) => e.stopPropagation()}>
+        &lt;span style={styles.closeButton} onClick={onClose}>
+          ❌
+        &lt;/span>
+        &lt;h2>Edit Profile&lt;/h2>
+        &lt;div style={styles.inputContainer}>
+          &lt;label style={styles.label}>Name&lt;/label>
+          &lt;input
+            type="text"
+            value={tempValues.name}
+            onChange={(e) => setTempValues({ ...tempValues, name: e.target.value })}
+            style={styles.input}
+          />
+
+          &lt;label style={styles.label}>Username&lt;/label>
+          &lt;input
+            type="text"
+            value={tempValues.username}
+            onChange={(e) => setTempValues({ ...tempValues, username: e.target.value })}
+            style={styles.input}
+          />
+
+          &lt;label style={styles.label}>Location&lt;/label>
+          &lt;input
+            type="text"
+            value={tempValues.location}
+            onChange={(e) => setTempValues({ ...tempValues, location: e.target.value })}
+            style={styles.input}
+          />
+
+          &lt;label style={styles.label}>Gender&lt;/label>
+          &lt;input
+            type="text"
+            value={tempValues.gender}
+            onChange={(e) => setTempValues({ ...tempValues, gender: e.target.value })}
+            style={styles.input}
+          />
+
+          &lt;button
+            style={styles.doneButton}
+            onClick={() => {
+              setValues(tempValues);
+              onClose();
+            }}
+          >
+            Done!
+          &lt;/button>
+        &lt;/div>
+      &lt;/div>
+    &lt;/div>
+  );
+};
+
+export default ProfileEditPopup;
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="module-Express-Backend.html">Express-Backend</a></li><li><a href="module-FavoritesPage-Page.html">FavoritesPage-Page</a></li><li><a href="module-FilterPage.html">FilterPage</a></li><li><a href="module-Google-Button-Page.html">Google-Button-Page</a></li><li><a href="module-LogIn-Page.html">LogIn-Page</a></li><li><a href="module-Main-Component.html">Main-Component</a></li><li><a href="module-Navigation-Component.html">Navigation-Component</a></li><li><a href="module-ProfileEditPopup-Page.html">ProfileEditPopup-Page</a></li><li><a href="module-ProfilePage-Page.html">ProfilePage-Page</a></li><li><a href="module-Restaurant.html">Restaurant</a></li><li><a href="module-RestaurantCard.html">RestaurantCard</a></li><li><a href="module-RestaurantList.html">RestaurantList</a></li><li><a href="module-Review.html">Review</a></li><li><a href="module-StarRating.html">StarRating</a></li><li><a href="module-TrashFlash.html">TrashFlash</a></li><li><a href="module-TrashedPage-Page.html">TrashedPage-Page</a></li><li><a href="module-pool.html">pool</a></li></ul><h3>Classes</h3><ul><li><a href="module-Restaurant-Restaurant.html">Restaurant</a></li><li><a href="module-Review-Review.html">Review</a></li></ul><h3>Global</h3><ul><li><a href="global.html#DEV_MODE">DEV_MODE</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 4.0.4</a> on Sun Apr 27 2025 14:59:25 GMT-0500 (Central Daylight Time)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>

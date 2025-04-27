@@ -1,0 +1,451 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: frontend_web/src/App.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: frontend_web/src/App.js</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>/** MealSwipe main App component.
+ * @module Main-Component
+ * @requires React
+ */
+
+/**
+ * @fileoverview Main App component for Mealswipe.
+ * Handles data fetching, filtering, user interactions (swipes, favorites, trash),
+ * and renders the UI (restaurant cards, navigation, filter page, loader).
+*/
+
+import React, { useEffect, useState, useCallback, useRef } from "react";
+import Restaurant from "./Restaurant";
+import Navigation from "./Navigation";
+import FilterPage from "./components/FilterPage";
+import "./components/FilterPage.css";
+import "./App.css";
+import "./components/FilterPage.css";
+import { DEV_MODE } from "./config";
+import { useUser } from './context/UserContext';
+import { Filter } from "lucide-react";
+import { motion } from "framer-motion";
+import HeartFlash from './components/Heart';
+import TrashFlash from './components/TrashIcon';
+import Loader from "./components/Loader";
+
+const backendURL = (DEV_MODE)
+  ? "http://localhost:5001"
+  : "https://backend.app-mealswipe.com";
+
+window.addEventListener("error", (e) => {
+  console.log("Global error caught:", e.message, e.filename, e.lineno);
+});
+
+/**
+ * Triggers the heart flash animation.
+ * @returns {void}
+ */
+const triggerHeart = () => {
+  heartRef.current?.flash();
+};
+
+/**
+ * Triggers the trash flash animation.
+ * @returns {void}
+ */
+const triggerTrash = () => {
+  console.log("Trash triggered");
+  trashRef.current?.flash();
+};
+
+/**
+ * Fetches the current user's ID from the backend.
+ * @async
+ * @function
+ * @returns {Promise&lt;number|null>} The user ID if found, otherwise null.
+ */
+const fetchuid = useCallback(async () => {
+  if (user == null) {
+    setIsLoading(false);
+    console.error("User is not logged in. Cannot fetch user ID.");
+    return null;
+  }
+  const response = await fetch(`${backendURL}/api/serve/get-userid-with-uname?uname=${user.name}`)
+    .then(res => {
+      if (!res.ok) {
+        setIsLoading(false);
+        throw new Error("Backend error. Failed to fetch user information.");
+      }
+      return res.json();
+    });
+  setLoggedIn(true);
+  console.log("User ID: ", response[0].userid);
+  return response[0].userid;
+}, [user]);
+
+/**
+ * Constructs the URL to fetch a restaurant's photo from Google Places.
+ * @function
+ * @param {string} rinfo - The place photo reference.
+ * @returns {string} The full URL to fetch the photo.
+ */
+function fetchGooglePlacePhoto(rinfo) {
+  return `${backendURL}/api/serve/get-restaurant-photo?rinfo=${rinfo}`;
+}
+
+/**
+ * Fetches detailed information for a given restaurant ID.
+ * @async
+ * @function
+ * @param {string} rid - The restaurant's unique identifier.
+ * @returns {Promise&lt;any>} The restaurant information object.
+ */
+async function fetchRestaurantInfo(rid) {
+  console.log(isLoading);
+  const response = await fetch(`${backendURL}/api/serve/get-rinfo-with-rid?rid=${rid}`)
+    .then(res => {
+      if (!res.ok) {
+        throw new Error("Backend error. Failed to fetch restaurant information.");
+      }
+      return res.json();
+    });
+  return response;
+}
+
+/**
+ * Loads and sets the user's favorite restaurants.
+ * @async
+ * @function
+ * @returns {Promise&lt;void>}
+ */
+async function loadFavorites() {
+  setIsLoading(true);
+  console.log("Loading favorites...");
+  if (user == null) {
+    setIsLoading(false);
+    return;
+  }
+  setIsLoading(false);
+  const userid = uid;
+  try {
+    const res = await fetch(`${backendURL}/api/serve/get-user-favorite-restaurants?uid=${userid}`);
+    if (!res.ok) throw new Error("Internal error. Failed to fetch swipe information.");
+    const data = await res.json();
+    if (!Object.keys(data).length) {
+      setFavoriteRestaurants([]);
+      return;
+    }
+    const infoPromises = data.map(r => fetchRestaurantInfo(r.placeid));
+    const results = await Promise.all(infoPromises);
+    const favoritesTEMP = results.map(r => r[0]);
+    setFavoriteRestaurants(favoritesTEMP);
+    console.log("Favorites: ", favoritesTEMP);
+  } catch (error) {
+    console.error("Error loading favorites:", error);
+  } finally {
+    setIsLoading(false);
+  }
+}
+
+/**
+ * Loads and sets the user's trashed restaurants.
+ * @async
+ * @function
+ * @returns {Promise&lt;void>}
+ */
+async function loadTrashed() {
+  setIsLoading(true);
+  console.log("Loading trashed...");
+  if (user == null) {
+    setIsLoading(false);
+    return;
+  }
+  try {
+    const res = await fetch(`${backendURL}/api/serve/get-user-trashed-restaurant?uid=${uid}`);
+    if (!res.ok) throw new Error("Internal error. Failed to fetch swipe information.");
+    const data = await res.json();
+    if (!Object.keys(data).length) {
+      setTrashedRestaurants([]);
+      return;
+    }
+    setTrashedRestaurants([]);
+    const infoPromises = data.map(r => fetchRestaurantInfo(r.placeid));
+    const results = await Promise.all(infoPromises);
+    const trashedNames = results.map(r => r[0]);
+    setTrashedRestaurants(trashedNames);
+  } catch (error) {
+    console.error("Error loading trashed restaurants:", error);
+  } finally {
+    setIsLoading(false);
+  }
+}
+
+/**
+ * Resets backend data and pending filters to defaults.
+ * @function
+ * @returns {void}
+ */
+function resetBackendData() {
+  fetchRestaurants();
+  setPendingMaxDistance(50);
+  setPendingMinRating(0);
+  setPendingPriceLevels([]);
+}
+
+/**
+ * Applies the pending filter settings to the restaurant list.
+ * @function
+ * @returns {void}
+ */
+function applyFilters() {
+  setMaxDistance(pendingMaxDistance);
+  setMinRating(pendingMinRating);
+  setPriceLevels(pendingPriceLevels);
+
+  const filtered = originalBackendData.filter(restaurant => {
+    const distanceMatch = !restaurant.distanceFromUser || restaurant.distanceFromUser &lt;= pendingMaxDistance;
+    const ratingMatch = restaurant.rating >= pendingMinRating;
+    const typeMatch = allowedTypes.length === 0 || allowedTypes.includes(restaurant.cuisineType);
+    const priceLevelMatch = pendingPriceLevels.length === 0 ||
+      pendingPriceLevels.some(level => {
+        const priceMap = {
+          1: 'PRICE_LEVEL_INEXPENSIVE',
+          2: 'PRICE_LEVEL_MODERATE',
+          3: 'PRICE_LEVEL_EXPENSIVE',
+          4: 'PRICE_LEVEL_VERY_EXPENSIVE'
+        };
+        return restaurant.price === priceMap[level];
+      });
+    return distanceMatch &amp;&amp; ratingMatch &amp;&amp; priceLevelMatch &amp;&amp; typeMatch;
+  });
+
+  setFilteredRestaurants(filtered);
+  setBackendData(filtered);
+  setShowFilterPage(false);
+}
+
+/**
+ * Fetches all restaurants from backend, maps and shuffles them,
+ * and initializes application state (original, filtered, types).
+ * @async
+ * @function
+ * @returns {Promise&lt;void>}
+ */
+async function fetchRestaurants() {
+  setIsLoading(true);
+  console.log("Fetching restaurants...");
+  try {
+    const res = await fetch(`${backendURL}/api/serve/get-all-restaurants?maxDistance=50`);
+    if (!res.ok) throw new Error("Network response was not ok");
+    const data = await res.json();
+    const mapped = data.map(r => new Restaurant(
+      r.id,
+      r.displayName?.text,
+      r.rating,
+      r.priceLevel,
+      r.shortFormattedAddress,
+      r.generativeSummary?.overview?.text ?? r.editorialSummary?.text,
+      r.googleMapsLinks?.placeUri,
+      r.reviews?.map(review => ({
+        author: review.authorAttribution.displayName,
+        text: review.originalText.text,
+        rating: review.rating,
+      })) || [],
+      r.websiteUri,
+      r.userRatingCount,
+      r.currentOpeningHours?.openNow ?? false,
+      r.nationalPhoneNumber,
+      r.photos,
+      r.distanceFromCenter || 0,
+      r.primaryType || "Unknown",
+      r.userRatingCount,
+      r.regularOpeningHours?.periods || [],
+    ));
+    // Preload two images
+    let photoURL = await fetchGooglePlacePhoto(mapped[mapped.length - 1].photos[0].name);
+    mapped[mapped.length - 1].imageUrl = photoURL;
+    photoURL = await fetchGooglePlacePhoto(mapped[mapped.length - 2].photos[0].name);
+    mapped[mapped.length - 2].imageUrl = photoURL;
+    const shuffled = [...mapped].sort(() => Math.random() - 0.5);
+    setOriginalBackendData(shuffled);
+    setFilteredRestaurants(shuffled);
+    setBackendData(shuffled);
+    const uniqueTypes = [...new Set(shuffled.map(r => r.cuisineType).filter(Boolean))];
+    setTypes(uniqueTypes);
+    setAllowedTypes(uniqueTypes);
+    console.log("Types: ", uniqueTypes);
+  } catch (error) {
+    console.error("Fetch error:", error);
+  } finally {
+    setIsLoading(false);
+  }
+}
+
+/**
+ * Handles swipe actions (right = favorite, left = trash) on a restaurant.
+ * Updates state, triggers animations, and persists to backend.
+ * @async
+ * @function
+ * @param {'left'|'right'} direction - Swipe direction.
+ * @param {Restaurant} restaurant - The restaurant being swiped.
+ * @returns {Promise&lt;void>}
+ */
+async function handleSwipe(direction, restaurant) {
+  if (backendData.length >= 3) {
+    console.log(`Updating photo for ${backendData[backendData.length - 3].name}`);
+    const photoURL = await fetchGooglePlacePhoto(backendData[backendData.length - 3].photos[0].name);
+    backendData[backendData.length - 3].imageUrl = photoURL;
+  }
+  console.log(`You swiped ${direction} on ${restaurant.name}`);
+  if (direction === 'right') {
+    triggerHeart();
+    setFilteredRestaurants(prev => prev.filter(r => r.id !== restaurant.id));
+    setBackendData(prev => prev.filter(r => r.id !== restaurant.id));
+    await toggleFavorite(restaurant);
+  } else if (direction === 'left') {
+    triggerTrash();
+    setFilteredRestaurants(prev => prev.filter(r => r.id !== restaurant.id));
+    setBackendData(prev => prev.filter(r => r.id !== restaurant.id));
+    await toggleTrashed(restaurant);
+  }
+}
+
+/**
+ * Clears all favorite restaurants both locally and in the backend.
+ * @async
+ * @function
+ * @returns {Promise&lt;void>}
+ */
+async function clearFavorites() {
+  setFavoriteRestaurants([]);
+  if (user == null) return;
+  const userid = await fetchuid();
+  await fetch(`${backendURL}/api/serve/delete-favorite-swipe-with-uid?uid=${userid}`, { method: 'DELETE' })
+    .then(res => {
+      if (!res.ok) throw new Error("Backend error: Could not delete data");
+    });
+}
+
+/**
+ * Clears all trashed restaurants both locally and in the backend.
+ * @async
+ * @function
+ * @returns {Promise&lt;void>}
+ */
+async function clearTrashed() {
+  setTrashedRestaurants([]);
+  if (user == null) return;
+  const userid = await fetchuid();
+  await fetch(`${backendURL}/api/serve/delete-trashed-swipe-with-uid?uid=${userid}`, { method: 'DELETE' })
+    .then(res => {
+      if (!res.ok) throw new Error("Backend error: Could not delete data");
+    });
+}
+
+/**
+ * Deletes a single restaurant from the trash in the backend.
+ * @async
+ * @function
+ * @param {string} restaurantID - The ID of the restaurant to delete.
+ * @returns {Promise&lt;void>}
+ */
+async function deleteRestaurantFromTrash(restaurantID) {
+  await fetch(`${backendURL}/api/serve/delete-trashed-swipe-with-rid-uid?rid=${restaurantID}&amp;uid=${uid}`, {
+    method: 'DELETE',
+  }).then(res => {
+    if (!res.ok) console.error("Backend error: Could not delete data");
+  });
+}
+
+/**
+ * Deletes a single restaurant from favorites in the backend.
+ * @async
+ * @function
+ * @param {string} restaurantID - The ID of the restaurant to delete.
+ * @returns {Promise&lt;void>}
+ */
+async function deleteRestaurantFromFavorites(restaurantID) {
+  await fetch(`${backendURL}/api/serve/delete-favorite-swipe-with-rid-uid?rid=${restaurantID}&amp;uid=${uid}`, {
+    method: 'DELETE',
+  }).then(res => {
+    if (!res.ok) console.error("Backend error: Could not delete data");
+  });
+}
+
+/**
+ * Toggles a restaurant as favorite: adds it to both global and user-specific tables,
+ * triggers increment of swipe count, and removes from trashed if present.
+ * @async
+ * @function
+ * @param {Restaurant} restaurant - The restaurant to favorite.
+ * @returns {Promise&lt;void>}
+ */
+async function toggleFavorite(restaurant) {
+  // ...implementation...
+}
+
+/**
+ * Toggles a restaurant as trashed: adds it to both global and user-specific tables,
+ * triggers increment of swipe count, and removes from favorites if present.
+ * @async
+ * @function
+ * @param {Restaurant} restaurant - The restaurant to trash.
+ * @returns {Promise&lt;void>}
+ */
+async function toggleTrashed(restaurant) {
+  // ...implementation...
+}
+
+/**
+ * Main application component that orchestrates restaurant fetching,
+ * user interactions, and UI rendering.
+ * @component
+ * @returns {JSX.Element}
+ */
+function App() {
+  // hooks, refs, effect, and return JSX...
+}
+
+export default App;
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="module-Express-Backend.html">Express-Backend</a></li><li><a href="module-FavoritesPage-Page.html">FavoritesPage-Page</a></li><li><a href="module-FilterPage.html">FilterPage</a></li><li><a href="module-Google-Button-Page.html">Google-Button-Page</a></li><li><a href="module-LogIn-Page.html">LogIn-Page</a></li><li><a href="module-Main-Component.html">Main-Component</a></li><li><a href="module-Navigation-Component.html">Navigation-Component</a></li><li><a href="module-ProfileEditPopup-Page.html">ProfileEditPopup-Page</a></li><li><a href="module-ProfilePage-Page.html">ProfilePage-Page</a></li><li><a href="module-Restaurant.html">Restaurant</a></li><li><a href="module-RestaurantCard.html">RestaurantCard</a></li><li><a href="module-RestaurantList.html">RestaurantList</a></li><li><a href="module-Review.html">Review</a></li><li><a href="module-StarRating.html">StarRating</a></li><li><a href="module-TrashFlash.html">TrashFlash</a></li><li><a href="module-TrashedPage-Page.html">TrashedPage-Page</a></li><li><a href="module-pool.html">pool</a></li></ul><h3>Classes</h3><ul><li><a href="module-Restaurant-Restaurant.html">Restaurant</a></li><li><a href="module-Review-Review.html">Review</a></li></ul><h3>Global</h3><ul><li><a href="global.html#DEV_MODE">DEV_MODE</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 4.0.4</a> on Sun Apr 27 2025 14:59:25 GMT-0500 (Central Daylight Time)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>

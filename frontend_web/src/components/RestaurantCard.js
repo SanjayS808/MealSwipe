@@ -1,9 +1,34 @@
+/**
+ * @module RestaurantCard
+ * @description A card component that displays restaurant information including image, name, 
+ * distance, rating, price level, and interactive buttons for maps, website, phone, and detailed info.
+ * This component serves as an individual item within the swipeable restaurant list interface.
+ */
+
 import React from "react";
 import "./Card.css";
 import StarRating from "./StarRating";
 import { MapPin, Globe, Phone, Info } from "lucide-react";
 import googlemapsIcon from "./Google_Maps_icon_2020.svg";
 
+/**
+ * Renders a card displaying restaurant information with interactive elements
+ * @function RestaurantCard
+ * @memberof module:RestaurantCard
+ * @param {Object} restaurant - Component props
+ * @param {Object} restaurant - Restaurant data object
+ * @param {string} restaurant.name - Name of the restaurant
+ * @param {string} restaurant.imageUrl - URL of restaurant image
+ * @param {number} restaurant.distanceFromUser - Distance from user in miles
+ * @param {number} restaurant.rating - Rating value (typically 0-5)
+ * @param {number} restaurant.ratingsCount - Number of ratings
+ * @param {string} restaurant.price - Price level (PRICE_LEVEL_INEXPENSIVE, PRICE_LEVEL_MODERATE, etc.)
+ * @param {string} restaurant.googleMapsLink - URL to Google Maps location
+ * @param {string} restaurant.website - Restaurant website URL
+ * @param {string} restaurant.phoneNumber - Restaurant phone number
+ * @param {Function} handleClick - Function to handle clicks for showing more details
+ * @returns {JSX.Element} The rendered restaurant card component
+ */
 function RestaurantCard({ restaurant, handleClick }) {
   return (
     <div
@@ -153,4 +178,7 @@ function RestaurantCard({ restaurant, handleClick }) {
   );
 }
 
+/**
+ * @exports RestaurantCard
+ */
 export default RestaurantCard;
