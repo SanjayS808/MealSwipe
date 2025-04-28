@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: frontend_web/src/components/StarRating.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: frontend_web/src/components/StarRating.js</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>/**
+ * @module StarRating
+ * @description A component that renders star ratings for restaurants using FontAwesome icons.
+ * Displays a combination of full stars, half stars, and empty stars based on the provided rating value.
+ */
+
+import React from 'react';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faStar, faStarHalfAlt } from '@fortawesome/free-solid-svg-icons';
+import { faStar as faRegStar } from '@fortawesome/free-regular-svg-icons';
+
+/**
+ * Displays a star rating visualization
+ * @function StarRating
+ * @memberof module:StarRating
+ * @param {number} rating - The rating value to display (0-5)
+ * @returns {JSX.Element} The rendered star rating component
+ */
+const StarRating = ({ rating }) => {
+  // Round the rating value to the nearest 0.5 to simplify the rendering
+  const fullStars = Math.floor(rating);
+  const halfStars = rating - fullStars >= 0.5 ? 1 : 0;
+  const emptyStars = 5 - (fullStars + halfStars);
+  const starStyle = {
+    color: '#d9413d',
+    textShadow: '0 0 5px black'
+  };
+  
+  /**
+   * Generates an array of star icons based on the rating
+   * @function renderStars
+   * @memberof module:StarRating
+   * @returns {Array&lt;JSX.Element>} Array of FontAwesome star icons
+   */
+  const renderStars = () => {
+    let stars = [];
+
+    // Add full stars
+    for (let i = 0; i &lt; fullStars; i++) {
+      stars.push(&lt;FontAwesomeIcon key={`full-${i}`} icon={faStar} style={starStyle}/>);
+    }
+
+    // Add half star if needed
+    if (halfStars) {
+      stars.push(&lt;FontAwesomeIcon key="half" icon={faStarHalfAlt} style={starStyle}/>);
+    }
+
+    // Add empty stars
+    for (let i = 0; i &lt; emptyStars; i++) {
+      stars.push(&lt;FontAwesomeIcon key={`empty-${i}`} icon={faRegStar} style={starStyle}/>);
+    }
+
+    return stars;
+  };
+
+  return &lt;div>{renderStars()}&lt;/div>;
+};
+
+/**
+ * @exports StarRating
+ */
+export default StarRating;</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="module-Express-Backend.html">Express-Backend</a></li><li><a href="module-FavoritesPage-Page.html">FavoritesPage-Page</a></li><li><a href="module-FilterPage.html">FilterPage</a></li><li><a href="module-Google-Button-Page.html">Google-Button-Page</a></li><li><a href="module-LogIn-Page.html">LogIn-Page</a></li><li><a href="module-Navigation-Component.html">Navigation-Component</a></li><li><a href="module-ProfileEditPopup-Page.html">ProfileEditPopup-Page</a></li><li><a href="module-ProfilePage-Page.html">ProfilePage-Page</a></li><li><a href="module-Restaurant.html">Restaurant</a></li><li><a href="module-RestaurantCard.html">RestaurantCard</a></li><li><a href="module-RestaurantList.html">RestaurantList</a></li><li><a href="module-Review.html">Review</a></li><li><a href="module-StarRating.html">StarRating</a></li><li><a href="module-TrashFlash.html">TrashFlash</a></li><li><a href="module-TrashedPage-Page.html">TrashedPage-Page</a></li><li><a href="module-pool.html">pool</a></li></ul><h3>Classes</h3><ul><li><a href="module-Restaurant-Restaurant.html">Restaurant</a></li><li><a href="module-Review-Review.html">Review</a></li></ul><h3>Global</h3><ul><li><a href="global.html#App">App</a></li><li><a href="global.html#DEV_MODE">DEV_MODE</a></li><li><a href="global.html#clearFavorites">clearFavorites</a></li><li><a href="global.html#clearTrashed">clearTrashed</a></li><li><a href="global.html#deleteRestaurantFromFavorites">deleteRestaurantFromFavorites</a></li><li><a href="global.html#deleteRestaurantFromTrash">deleteRestaurantFromTrash</a></li><li><a href="global.html#fetchGooglePlacePhoto">fetchGooglePlacePhoto</a></li><li><a href="global.html#fetchRestaurantInfo">fetchRestaurantInfo</a></li><li><a href="global.html#fetchRestaurants">fetchRestaurants</a></li><li><a href="global.html#fetchuid">fetchuid</a></li><li><a href="global.html#handleSwipe">handleSwipe</a></li><li><a href="global.html#loadFavorites">loadFavorites</a></li><li><a href="global.html#loadTrashed">loadTrashed</a></li><li><a href="global.html#toggleFavorite">toggleFavorite</a></li><li><a href="global.html#toggleTrashed">toggleTrashed</a></li><li><a href="global.html#triggerHeart">triggerHeart</a></li><li><a href="global.html#triggerTrash">triggerTrash</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 4.0.4</a> on Sun Apr 27 2025 15:30:57 GMT-0500 (Central Daylight Time)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>

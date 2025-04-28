@@ -1,0 +1,682 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Module: Navigation-Component</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Module: Navigation-Component</h1>
+
+    
+
+
+
+
+<section>
+
+<header>
+    
+        
+            
+        
+    
+</header>
+
+<article>
+    <div class="container-overview">
+    
+        
+            <div class="description">MealSwipe navigation component.</div>
+        
+
+        
+            
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="frontend_web_src_Navigation.js.html">frontend_web/src/Navigation.js</a>, <a href="frontend_web_src_Navigation.js.html#line1">line 1</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        
+    
+    </div>
+
+    
+
+    
+        <h3 class="subsection-title">Requires</h3>
+
+        <ul>
+            <li>module:React</li>
+        </ul>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+        <h3 class="subsection-title">Methods</h3>
+
+        
+            
+
+    
+
+    
+    <h4 class="name" id="~Navigation"><span class="type-signature">(inner) </span>Navigation<span class="signature">(props)</span><span class="type-signature"> &rarr; {JSX.Element}</span></h4>
+    
+
+    
+
+
+
+<div class="description">
+    Navigation component for Mealswipe.
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>props</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Object</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">
+                <h6>Properties</h6>
+                
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>backendData</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Array</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">All restaurant data for the home view.</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>likedRestaurants</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Array</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">User's favorite restaurants.</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>trashedRestaurants</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Array</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">User's trashed restaurants.</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>handleSwipe</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">function</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">Handler for swipe actions on restaurants.</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>resetBackendData</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">function</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">Resets restaurant data to initial state.</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>clearFavorites</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">function</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">Clears all favorite restaurants.</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>clearTrashed</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">function</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">Clears all trashed restaurants.</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>loadFavorites</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">function</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">Loads favorites from the backend.</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>loadTrashed</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">function</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">Loads trashed from the backend.</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>loggedIn</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">boolean</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">Whether the user is logged in.</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>isLoading</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">boolean</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">Loading indicator flag.</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>deleteRestaurantFromFavorites</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">function</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">Deletes a single favorite.</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>deleteRestaurantFromTrash</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">function</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">Deletes a single trashed item.</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>setUid</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">function</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">Sets the user ID in parent context.</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+            </td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="frontend_web_src_Navigation.js.html">frontend_web/src/Navigation.js</a>, <a href="frontend_web_src_Navigation.js.html#line49">line 49</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5>Returns:</h5>
+
+        
+<div class="param-desc">
+    The rendered navigation UI.
+</div>
+
+
+
+<dl>
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type">JSX.Element</span>
+
+
+    </dd>
+</dl>
+
+    
+
+
+
+
+
+        
+    
+
+    
+
+    
+</article>
+
+</section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="module-Express-Backend.html">Express-Backend</a></li><li><a href="module-FavoritesPage-Page.html">FavoritesPage-Page</a></li><li><a href="module-FilterPage.html">FilterPage</a></li><li><a href="module-Google-Button-Page.html">Google-Button-Page</a></li><li><a href="module-LogIn-Page.html">LogIn-Page</a></li><li><a href="module-Navigation-Component.html">Navigation-Component</a></li><li><a href="module-ProfileEditPopup-Page.html">ProfileEditPopup-Page</a></li><li><a href="module-ProfilePage-Page.html">ProfilePage-Page</a></li><li><a href="module-Restaurant.html">Restaurant</a></li><li><a href="module-RestaurantCard.html">RestaurantCard</a></li><li><a href="module-RestaurantList.html">RestaurantList</a></li><li><a href="module-Review.html">Review</a></li><li><a href="module-StarRating.html">StarRating</a></li><li><a href="module-TrashFlash.html">TrashFlash</a></li><li><a href="module-TrashedPage-Page.html">TrashedPage-Page</a></li><li><a href="module-pool.html">pool</a></li></ul><h3>Classes</h3><ul><li><a href="module-Restaurant-Restaurant.html">Restaurant</a></li><li><a href="module-Review-Review.html">Review</a></li></ul><h3>Global</h3><ul><li><a href="global.html#App">App</a></li><li><a href="global.html#DEV_MODE">DEV_MODE</a></li><li><a href="global.html#clearFavorites">clearFavorites</a></li><li><a href="global.html#clearTrashed">clearTrashed</a></li><li><a href="global.html#deleteRestaurantFromFavorites">deleteRestaurantFromFavorites</a></li><li><a href="global.html#deleteRestaurantFromTrash">deleteRestaurantFromTrash</a></li><li><a href="global.html#fetchGooglePlacePhoto">fetchGooglePlacePhoto</a></li><li><a href="global.html#fetchRestaurantInfo">fetchRestaurantInfo</a></li><li><a href="global.html#fetchRestaurants">fetchRestaurants</a></li><li><a href="global.html#fetchuid">fetchuid</a></li><li><a href="global.html#handleSwipe">handleSwipe</a></li><li><a href="global.html#loadFavorites">loadFavorites</a></li><li><a href="global.html#loadTrashed">loadTrashed</a></li><li><a href="global.html#toggleFavorite">toggleFavorite</a></li><li><a href="global.html#toggleTrashed">toggleTrashed</a></li><li><a href="global.html#triggerHeart">triggerHeart</a></li><li><a href="global.html#triggerTrash">triggerTrash</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 4.0.4</a> on Sun Apr 27 2025 15:30:57 GMT-0500 (Central Daylight Time)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>

@@ -1,3 +1,9 @@
+/**
+ * @fileoverview Main App component for Mealswipe.
+ * Handles data fetching, filtering, user interactions (swipes, favorites, trash),
+ * and renders the UI (restaurant cards, navigation, filter page, loader).
+*/
+
 import React, { useEffect, useState, useCallback, useRef} from "react";
 import Restaurant from "./Restaurant";
 import Navigation from "./Navigation";
@@ -17,6 +23,13 @@ const backendURL = (DEV_MODE) ? "http://localhost:5001"  : "https://backend.app-
 window.addEventListener("error", (e) => {
   console.log("Global error caught:", e.message, e.filename, e.lineno);
 });
+
+/**
+ * Main application component that orchestrates restaurant fetching,
+ * user interactions, and UI rendering.
+ * @component
+ * @returns {JSX.Element}
+ */
 function App() {
   const [originalBackendData, setOriginalBackendData] = useState([]);
   const [backendData, setBackendData] = useState([]);
@@ -41,16 +54,33 @@ function App() {
   const [isLoading, setIsLoading] = useState(false);
   
   const heartRef = useRef();
+
+   /**
+   * Triggers the heart flash animation.
+   * @function triggerHeart
+   * @returns {void}
+   */
   const triggerHeart = () => {
     heartRef.current?.flash();
   };
 
   const trashRef = useRef();
+  /**
+   * Triggers the trash flash animation.
+   * @function triggerTrash
+   * @returns {void}
+   */
   const triggerTrash = () => {
     console.log("Trash triggered");
     trashRef.current?.flash();
   };
 
+  /**
+   * Fetches the current user's ID from the backend.
+   * @async
+   * @function fetchuid
+   * @returns {Promise<number|null>} The user ID if found, otherwise null.
+   */
   const fetchuid = useCallback( async () => {
     if (user === null || user === undefined) {
       setIsLoading(false);
@@ -101,10 +131,23 @@ function App() {
     };
   }, [user, fetchuid, uid]);
 
+    /**
+   * Constructs the URL to fetch a restaurant's photo from Google Places.
+   * @function fetchGooglePlacePhoto
+   * @param {string} rinfo - The place photo reference.
+   * @returns {string} The full URL to fetch the photo.
+   */
   const fetchGooglePlacePhoto = (rinfo) => {
     return `${backendURL}/api/serve/get-restaurant-photo?rinfo=${rinfo}`;
   };
 
+  /**
+   * Fetches detailed information for a given restaurant ID.
+   * @async
+   * @function fetchRestaurantInfo
+   * @param {string} rid - The restaurant's unique identifier.
+   * @returns {Promise<any>} The restaurant information object.
+   */
   const fetchRestaurantInfo = async (rid) => {
 
      // ✅ always hide loader
@@ -119,6 +162,13 @@ function App() {
     
     return response;
   }
+
+  /**
+   * Loads and sets the user's favorite restaurants.
+   * @async
+   * @function loadFavorites
+   * @returns {Promise<void>}
+   */
   const loadFavorites = async () => {
     setIsLoading(true); 
     console.log("1"); // ✅ always hide loader
@@ -167,6 +217,12 @@ function App() {
     }
   };
   
+  /**
+   * Loads and sets the user's trashed restaurants.
+   * @async
+   * @function loadTrashed
+   * @returns {Promise<void>}
+   */
   const loadTrashed = async () => {
     setIsLoading(true);
     console.log("2");  // ✅ always hide loader
@@ -212,6 +268,11 @@ function App() {
     }
   };
   
+  /**
+   * Resets backend data and pending filters to defaults.
+   * @function
+   * @returns {void}
+   */
   const resetBackendData = () => {
 
     fetchRestaurants();
@@ -220,6 +281,11 @@ function App() {
     setPendingPriceLevels([]);
   };
 
+  /**
+   * Applies the pending filter settings to the restaurant list.
+   * @function
+   * @returns {void}
+   */
   const applyFilters = () => {
     // Update active filter state
     
@@ -262,6 +328,13 @@ function App() {
     setShowFilterPage(false);
   };
 
+  /**
+   * Fetches all restaurants from backend, maps and shuffles them,
+   * and initializes application state (original, filtered, types).
+   * @async
+   * @function fetchRestaurants
+   * @returns {Promise<void>}
+   */
   const fetchRestaurants = async () => {
 
     setIsLoading(true);  // ✅ always hide loader
@@ -339,7 +412,15 @@ function App() {
 
   };
 
-  // Modify handleSwipe to use filteredRestaurants
+  /**
+   * Handles swipe actions (right = favorite, left = trash) on a restaurant.
+   * Updates state, triggers animations, and persists to backend.
+   * @async
+   * @function handleSwipe
+   * @param {'left'|'right'} direction - Swipe direction.
+   * @param {Restaurant} restaurant - The restaurant being swiped.
+   * @returns {Promise<void>}
+   */
   const handleSwipe = async (direction, restaurant) => {
     if(backendData.length >= 3) {
       console.log(`Updating photo for ${backendData[backendData.length - 3].name}`)
@@ -361,6 +442,12 @@ function App() {
     }
   };
 
+  /**
+   * Clears all favorite restaurants both locally and in the backend.
+   * @async
+   * @function clearFavorites
+   * @returns {Promise<void>}
+   */
   const clearFavorites = async () => {
     setFavoriteRestaurants([]);
     if(user === null) {return ;} // We do not want to load API if we have no user.
@@ -377,6 +464,12 @@ function App() {
     })
   };
 
+  /**
+   * Clears all trashed restaurants both locally and in the backend.
+   * @async
+   * @function clearTrashed
+   * @returns {Promise<void>}
+   */
   const clearTrashed = async () => {
     
     setTrashedRestaurants([]);
@@ -393,6 +486,13 @@ function App() {
      })
   };
 
+  /**
+   * Deletes a single restaurant from the trash in the backend.
+   * @async
+   * @function deleteRestaurantFromTrash
+   * @param {string} restaurantID - The ID of the restaurant to delete.
+   * @returns {Promise<void>}
+   */
   const deleteRestaurantFromTrash = async (restaurantID) => {
 
     await fetch(`${backendURL}/api/serve/delete-trashed-swipe-with-rid-uid?rid=${restaurantID}&uid=${uid}`, {
@@ -407,6 +507,13 @@ function App() {
     
   };
 
+  /**
+   * Deletes a single restaurant from favorites in the backend.
+   * @async
+   * @function deleteRestaurantFromFavorites
+   * @param {string} restaurantID - The ID of the restaurant to delete.
+   * @returns {Promise<void>}
+   */
   const deleteRestaurantFromFavorites = async (restaurantID) => {
     
     await fetch(`${backendURL}/api/serve/delete-favorite-swipe-with-rid-uid?rid=${restaurantID}&uid=${uid}`, {
@@ -420,6 +527,15 @@ function App() {
       });
       
   };
+
+  /**
+   * Toggles a restaurant as favorite: adds it to both global and user-specific tables,
+   * triggers increment of swipe count, and removes from trashed if present.
+   * @async
+   * @function toggleFavorite
+   * @param {Restaurant} restaurant - The restaurant to favorite.
+   * @returns {Promise<void>}
+   */
   const toggleFavorite = async (restaurant) => {
     let api_body_data = {
       rid: restaurant.id,
@@ -500,6 +616,14 @@ function App() {
     deleteRestaurantFromTrash(restaurant);
   };
 
+  /**
+   * Toggles a restaurant as trashed: adds it to both global and user-specific tables,
+   * triggers increment of swipe count, and removes from favorites if present.
+   * @async
+   * @function toggleTrashed
+   * @param {Restaurant} restaurant - The restaurant to trash.
+   * @returns {Promise<void>}
+   */
   const toggleTrashed = async (restaurant) => {
     let api_body_data = {
       rid: restaurant.id,
@@ -657,5 +781,6 @@ function App() {
     </div>
   );
 }
+
 
 export default App;

@@ -1,39 +1,68 @@
+/** Handles rendering and editing the user's profile page.
+ * @module ProfilePage-Page
+ * @requires React
+ */
+
+/**
+ * @fileoverview ProfilePage displays the logged-in user's profile,
+ * allows editing basic info, shows swipe statistics, and provides logout functionality.
+ */
+
 import React, { useEffect, useState, useCallback } from "react";
 import ProfileEditPopup from "./ProfileEditPopup";
-import { useUser } from "../context/UserContext"
+import { useUser } from "../context/UserContext";
 import { useNavigate } from "react-router-dom";
-import { DEV_MODE } from "../config"
+import { DEV_MODE } from "../config";
 
-const backendURL = (DEV_MODE) ? "http://localhost:5001"  : "https://backend.app-mealswipe.com";
+const backendURL = DEV_MODE ? "http://localhost:5001" : "https://backend.app-mealswipe.com";
 
-const ProfilePage = ({setUid}) => {
+/**
+ * Renders the Profile Page for the user.
+ * @component
+ * @param {Object} props
+ * @param {Function} props.setUid - Setter function to update the user's UID status
+ * @returns {JSX.Element} Profile page layout
+ */
+const ProfilePage = ({ setUid }) => {
   const [name, setName] = useState("John Doe");
   const [username, setUsername] = useState("johndoe123");
   const [location, setLocation] = useState("New York, USA");
   const [gender, setGender] = useState("Male");
   const [isPopupOpen, setPopupOpen] = useState(false);
-  const { user, setUser} = useUser();  
+  const { user, setUser } = useUser();
   const navigate = useNavigate();
   const [swipe, setSwipe] = useState();
 
   useEffect(() => {
-    console.log(user);  
-    if(user) {
+    console.log(user);
+    if (user) {
       getSwipe();
     }
   }, [user]);
 
+  /**
+   * Fetches the user's UID from the backend based on username.
+   * @async
+   * @function fetchUID
+   * @returns {Promise<string>} The user's unique ID
+   */
   const fetchuid = async () => {
-    let response = await fetch(`${backendURL}/api/serve/get-userid-with-uname?uname=${user.name}`)
-    .then(response => {
-      if(!response.ok) {
-        throw new Error("Backend error. Failed to fetch user information.");
-      }
-      return response.json();
-    });
+    const response = await fetch(`${backendURL}/api/serve/get-userid-with-uname?uname=${user.name}`)
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error("Backend error. Failed to fetch user information.");
+        }
+        return response.json();
+      });
     return response[0].userid;
   };
 
+  /**
+   * Retrieves and sets the user's swipe count.
+   * @async
+   * @function getSwipe
+   * @returns {Promise<void>}
+   */
   const getSwipe = async () => {
     try {
       const uid = await fetchuid();
@@ -55,19 +84,25 @@ const ProfilePage = ({setUid}) => {
     }
   };
 
+  /**
+   * Logs out the user, clears session data, and navigates back to the homepage.
+   * @function handleLogoutClick
+   * @returns {void}
+   */
   const handleLogoutClick = () => {
     setUser(null);
     setUid(false);
     navigate('/');
   };
-  
+
+  // Inline styles for the page layout
   const styles = {
     avatarWrapper: {
       display: "flex",
       flexDirection: "column",
       alignItems: "center",
       position: "relative",
-      marginBottom: "-3rem", // Moves it up to overlap the container
+      marginBottom: "-3rem",
     },
     container: {
       display: "flex",
@@ -99,7 +134,7 @@ const ProfilePage = ({setUid}) => {
     avatar: {
       width: "6rem",
       height: "6rem",
-      backgroundColor: user?.picture ? "transparent" : "grey", // Conditional background color
+      backgroundColor: user?.picture ? "transparent" : "grey",
       color: "white",
       display: "flex",
       alignItems: "center",
@@ -107,7 +142,7 @@ const ProfilePage = ({setUid}) => {
       fontSize: "1.5rem",
       fontWeight: "bold",
       borderRadius: "50%",
-      backgroundImage: user?.picture ? `url(${user.picture})` : "none", // Conditional background image
+      backgroundImage: user?.picture ? `url(${user.picture})` : "none",
       backgroundSize: 'cover',
       backgroundPosition: 'center',
     },
@@ -165,48 +200,36 @@ const ProfilePage = ({setUid}) => {
     }
   };
 
- return (
+  return (
     <div style={styles.container}>
       <div style={styles.avatarWrapper}>
         <div style={styles.avatarContainer}>
           <div style={styles.avatar}></div>
-          <span
-            style={styles.gearIcon}
-            onClick={() => setPopupOpen(true)}
-          >
+          <span style={styles.gearIcon} onClick={() => setPopupOpen(true)}>
             ⚙️
           </span>
         </div>
       </div>
       <div style={styles.editProfileSection}>
-
         <h3 style={styles.sectionTitle}>Username</h3>
-
         <div style={styles.inputContainer}>
+          <h3>{user?.name ? user.name : "TU"}</h3>
 
-        <h3>{user?.name ? user?.name : "TU"}</h3>
+          <h3 style={styles.sectionTitle}>Email</h3>
+          <p>@{user?.email}</p>
 
-        <h3 style={styles.sectionTitle}>Email</h3>
+          <h3 style={styles.sectionTitle}>Location</h3>
+          <p>College Station TX</p>
 
-        <p>@{user?.email}</p>
-
-        <h3 style={styles.sectionTitle}>Location</h3>
-
-        <p>College Station TX</p>
-
-        <h3 style={styles.sectionTitle}>Swipes</h3>
-
-        <p>{swipe}</p>
+          <h3 style={styles.sectionTitle}>Swipes</h3>
+          <p>{swipe}</p>
         </div>
 
-        <button
-        style={styles.logout}
-        onClick={handleLogoutClick} // Call the logout function on click
-      >
-        Logout
-      </button>
-        
+        <button style={styles.logout} onClick={handleLogoutClick}>
+          Logout
+        </button>
       </div>
+
       {isPopupOpen && (
         <ProfileEditPopup
           currentValues={{ name, username, location, gender }}
@@ -222,6 +245,5 @@ const ProfilePage = ({setUid}) => {
     </div>
   );
 };
-
 
 export default ProfilePage;

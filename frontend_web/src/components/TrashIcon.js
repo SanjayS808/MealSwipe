@@ -1,12 +1,35 @@
+/**
+ * @module TrashFlash
+ * @description A component that displays a brief animated trash icon flash effect
+ * to provide visual feedback when an item is removed or deleted.
+ * Uses CSS animations for a pulsing effect.
+ */
+
 import React, { useImperativeHandle, forwardRef, useState, useRef } from 'react';
 import { FaTrash } from 'react-icons/fa';
-import './heart.css'; // Keep using this if it has the pulse keyframes
+import './heart.css'; // Contains the pulse keyframes animation
 
+/**
+ * Animated trash icon that flashes briefly on screen
+ * @function TrashFlash
+ * @memberof module:TrashFlash
+ * @param {React.Ref} ref - Forwarded ref to access the flash method
+ * @returns {JSX.Element|null} The rendered trash icon or null when not visible
+ */
 const TrashFlash = forwardRef((_, ref) => {
   const [visibleT, setVisibleT] = useState(false);
   const trashRef = useRef();
 
+  /**
+   * Exposes the flash method through the forwarded ref
+   * @memberof module:TrashFlash
+   */
   useImperativeHandle(ref, () => ({
+    /**
+     * Triggers the trash icon flash animation
+     * @function flash
+     * @memberof module:TrashFlash
+     */
     flash: () => {
       if (trashRef.current) {
         trashRef.current.style.animation = 'none';
@@ -21,14 +44,20 @@ const TrashFlash = forwardRef((_, ref) => {
   if (!visibleT) return null;
 
   return (
-    
     <div style={styles.overlay}>
-        {console.log("TrashFlash")}
-          <FaTrash ref={trashRef} style={styles.icon} />
-        </div>
+      {console.log("TrashFlash")}
+      <FaTrash ref={trashRef} style={styles.icon} />
+    </div>
   );
 });
 
+/**
+ * Component styles
+ * @constant {Object} styles
+ * @memberof module:TrashFlash
+ * @property {Object} overlay - Styles for the overlay container
+ * @property {Object} icon - Styles for the trash icon
+ */
 const styles = {
   overlay: {
     position: 'fixed',
@@ -39,9 +68,12 @@ const styles = {
   },
   icon: {
     fontSize: '4.5rem',
-    color: 'grey', // bright red
+    color: 'grey',
     animation: 'pulse 0.6s ease-in-out',
   }
 };
 
+/**
+ * @exports TrashFlash
+ */
 export default TrashFlash;
