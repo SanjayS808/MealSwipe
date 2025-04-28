@@ -114,7 +114,7 @@ function RestaurantList({ restaurants, onSwipe, resetBackendData, isLoading }) {
               key={restaurant.id}
               onSwipe={(dir) => onSwipe(dir, restaurant)}
               preventSwipe={["up", "down"]}
-              swipeRequirement={0.4} // Adjust swipe sensitivity
+              swipeRequirement={0.3} // Adjust swipe sensitivity
             >
               <div style={{ height: "70vh", width: "100%" }}>
                 <RestaurantCard

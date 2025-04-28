@@ -17,16 +17,16 @@ import MiniCard from "../components/FavoritesTrashedSharedComponents/MiniCard";
 /**
  * Renders the user's Favorites Page.
  * @component
- * @param {Object} props
- * @param {Array} props.likedRestaurants - Array of liked restaurant objects
- * @param {Function} props.clearFavorites - Function to clear all favorites
- * @param {Function} props.loadFavorites - Function to fetch and load favorites
- * @param {boolean} props.loggedIn - Whether the user is logged in
- * @param {boolean} props.isLoading - Loading state flag
- * @param {Function} props.deleteRestaurantFromFavorites - Function to delete a restaurant by placeid
+ * @param {Array} likedRestaurants - Array of liked restaurant objects
+ * @param {Function} clearFavorites - Function to clear all favorites
+ * @param {Function} loadFavorites - Function to fetch and load favorites
+ * @param {boolean} loggedIn - Whether the user is logged in
+ * @param {boolean} isLoading - Loading state flag
+ * @param {Function} deleteRestaurantFromFavorites - Function to delete a restaurant by placeid
+ * @param {Function} fetchuid - Get the client's user identification from backend.
  * @returns {JSX.Element} Favorites page layout
  */
-function FavoritesPage({ likedRestaurants, clearFavorites, loadFavorites, loggedIn, isLoading, deleteRestaurantFromFavorites }) {
+function FavoritesPage({ likedRestaurants, clearFavorites, loadFavorites, loggedIn, isLoading ,deleteRestaurantFromFavorites,fetchuid}) {
   const navigate = useNavigate();
   const [showConfirmModal, setShowConfirmModal] = useState(false);
   const [isClosing, setIsClosing] = useState(false);
@@ -78,8 +78,14 @@ function FavoritesPage({ likedRestaurants, clearFavorites, loadFavorites, logged
   };
 
   useEffect(() => {
-    console.log("Loading favorites...");
-    loadFavorites();
+    console.log("");
+    const loadData = async () => {
+      console.log("this tan");
+      await fetchuid();
+      loadFavorites();
+    };
+  
+    loadData();
   }, []);
 
   /**
@@ -100,12 +106,24 @@ function FavoritesPage({ likedRestaurants, clearFavorites, loadFavorites, logged
 
   return loggedIn ? (
     <div className="favoritesPage">
-      <h2>Liked Restaurants</h2>
+      <h2
+          style={{
+            fontSize: "clamp(2rem, 5vw, 2.5rem)",
+            fontWeight: "800",
+            textAlign: "center",
+            color: "#ff4d4d",
+            marginBottom: "0.5em",
+            animation: "slideIn 0.3s ease-out",
+          }}
+        >
+          ❤️ Liked Restaurants
+        </h2>
 
       {isLoading ? null : (
         likedRestaurants.length === 0 ? (
           <div className="noRestaurants modal-animateFavorites">
-            <h2>it's lonely in here :(</h2>
+              <h2 style = {{whiteSpace: "nowrap", fontSize: "clamp(1rem, 6vw, 2rem)"}}>it's lonely in here :(</h2>
+
             <Button text="Start Swiping" onClick={swipeClick} />
           </div>
         ) : (

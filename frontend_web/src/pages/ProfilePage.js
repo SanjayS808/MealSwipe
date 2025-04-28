@@ -108,9 +108,9 @@ const ProfilePage = ({ setUid }) => {
       display: "flex",
       flexDirection: "column",
       alignItems: "center",
-      backgroundColor: "#e9e9e9",
+      
       minHeight: "100vh",
-      minWidth: "100vw",
+      minWidth: "80vw",
       justifyContent: "center",
       padding: "1.5rem",
     },

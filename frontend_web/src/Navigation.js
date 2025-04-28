@@ -46,22 +46,7 @@ const navItems = [
  * @param {Function} props.setUid - Sets the user ID in parent context.
  * @returns {JSX.Element} The rendered navigation UI.
  */
-function Navigation({
-  backendData,
-  likedRestaurants,
-  trashedRestaurants,
-  handleSwipe,
-  resetBackendData,
-  clearFavorites,
-  clearTrashed,
-  loadFavorites,
-  loadTrashed,
-  loggedIn,
-  isLoading,
-  deleteRestaurantFromFavorites,
-  deleteRestaurantFromTrash,
-  setUid,
-}) {
+function Navigation({ backendData, likedRestaurants, trashedRestaurants ,handleSwipe, resetBackendData, clearFavorites, clearTrashed,loadFavorites, loadTrashed ,loggedIn,isLoading,deleteRestaurantFromFavorites, deleteRestaurantFromTrash,setUid,fetchuid}) {
   const clickCountRef = useRef(0);
   const lastClickTimeRef = useRef(0);
   const logoRef = useRef(null);
@@ -155,43 +140,9 @@ function Navigation({
 
       <div style={{ flex: 1, overflowY: "auto", paddingBottom: "64px" }}>
         <Routes>
-          <Route
-            path="/favorites"
-            element={
-              <FavoritesPage
-                likedRestaurants={likedRestaurants}
-                clearFavorites={clearFavorites}
-                loadFavorites={loadFavorites}
-                loggedIn={loggedIn}
-                isLoading={isLoading}
-                deleteRestaurantFromFavorites={deleteRestaurantFromFavorites}
-              />
-            }
-          />
-          <Route
-            path="/"
-            element={
-              <RestaurantList
-                restaurants={backendData}
-                onSwipe={handleSwipe}
-                resetBackendData={resetBackendData}
-                isLoading={isLoading}
-              />
-            }
-          />
-          <Route
-            path="/trashed"
-            element={
-              <TrashedPage
-                trashedRestaurants={trashedRestaurants}
-                clearTrashed={clearTrashed}
-                loadTrashed={loadTrashed}
-                loggedIn={loggedIn}
-                isLoading={isLoading}
-                deleteRestaurantFromTrashed={deleteRestaurantFromTrash}
-              />
-            }
-          />
+          <Route path="/favorites" element={<FavoritesPage likedRestaurants={likedRestaurants} clearFavorites={clearFavorites} loadFavorites={loadFavorites} loggedIn={loggedIn} isLoading={isLoading} deleteRestaurantFromFavorites={deleteRestaurantFromFavorites} fetchuid = {fetchuid}/>} />
+          <Route path="/" element={<RestaurantList restaurants={backendData} onSwipe={handleSwipe} resetBackendData={resetBackendData} isLoading={isLoading} />} />
+          <Route path="/trashed" element={<TrashedPage trashedRestaurants={trashedRestaurants} clearTrashed={clearTrashed} loadTrashed={loadTrashed} loggedIn={loggedIn} isLoading={isLoading} deleteRestaurantFromTrashed={deleteRestaurantFromTrash} fetchuid = {fetchuid}/>} />
           <Route path="/login" element={<Login />} />
           <Route path="/profile" element={<ProfilePage setUid={setUid} />} />
         </Routes>

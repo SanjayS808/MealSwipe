@@ -17,16 +17,16 @@ import MiniCard from "../components/FavoritesTrashedSharedComponents/MiniCard";
 /**
  * Renders the user's Trashed Page.
  * @component
- * @param {Object} props
- * @param {Array} props.trashedRestaurants - Array of trashed restaurant objects
- * @param {Function} props.clearTrashed - Function to clear all trashed restaurants
- * @param {Function} props.loadTrashed - Function to fetch and load trashed restaurants
- * @param {boolean} props.loggedIn - Whether the user is logged in
- * @param {boolean} props.isLoading - Loading state flag
- * @param {Function} props.deleteRestaurantFromTrashed - Function to delete a restaurant by placeid
+ * @param {Array} trashedRestaurants - Array of trashed restaurant objects
+ * @param {Function} clearTrashed - Function to clear all trashed restaurants
+ * @param {Function} loadTrashed - Function to fetch and load trashed restaurants
+ * @param {boolean} loggedIn - Whether the user is logged in
+ * @param {boolean} isLoading - Loading state flag
+ * @param {Function} deleteRestaurantFromTrashed - Function to delete a restaurant by placeid
+ * @param {Function} fetchuid - Get the client's user identification from backend.
  * @returns {JSX.Element} Trashed page layout
  */
-function TrashedPage({ trashedRestaurants, clearTrashed, loadTrashed, loggedIn, isLoading, deleteRestaurantFromTrashed }) {
+function TrashedPage({ trashedRestaurants , clearTrashed, loadTrashed , loggedIn, isLoading ,deleteRestaurantFromTrashed,fetchuid}) {
   const navigate = useNavigate();
   const [showConfirmModal, setShowConfirmModal] = useState(false);
   const [isClosing, setIsClosing] = useState(false);
@@ -78,8 +78,13 @@ function TrashedPage({ trashedRestaurants, clearTrashed, loadTrashed, loggedIn, 
   };
 
   useEffect(() => {
-    console.log("Loading trashed...");
-    loadTrashed();
+    const loadData = async () => {
+      console.log("Loading trashed...");
+      await fetchuid();
+      loadTrashed();
+    };
+  
+    loadData();
   }, []);
 
   /**
@@ -100,12 +105,23 @@ function TrashedPage({ trashedRestaurants, clearTrashed, loadTrashed, loggedIn, 
 
   return loggedIn ? (
     <div className="favoritesPage">
-      <h2>Trashed Restaurants</h2>
+      <h2
+        style={{
+          fontSize: "clamp(2rem, 5vw, 2.3rem)",
+          fontWeight: "800",
+          textAlign: "center",
+          color: "#6c6c6c", // a muted gray to reflect the 'trashed' vibe
+          marginBottom: "0.5em",
+          animation: "slideIn 0.3s ease-out",
+        }}
+      >
+        🗑️ Trashed Restaurants
+      </h2>
 
       {isLoading ? null : (
         trashedRestaurants.length === 0 ? (
           <div className="noRestaurants modal-animateFavorites">
-            <h2>props to you for not being picky!</h2>
+             <h2 style = {{whiteSpace: "nowrap", fontSize: "clamp(1rem, 6vw, 2rem)"}}>props to you for not being picky!</h2>
             <Button text="Back to Swiping" onClick={swipeClick} />
           </div>
         ) : (
