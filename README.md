@@ -7,6 +7,41 @@ MealSwipe is a web/mobile application that allows users to choose a variety of l
 
 This `README.md` file functions as a developer guide on how to build and setup MealSwipe for development. For deployment, the GitHub actions pipeline should serve enough.
 
+#### File Structure
+
+Each implemented main service (Backend, Frontend, Infrastructure) is written within different directories named `backend/`, `frontend_web/`, and `infra/` respectively.
+
+For the frontend, it follows a classing React architecture: Note that we only show the main directories and files to fully understand the frontend.
+```
+frontend_web/
+|   |->coverage/ # Coverage report of frontend
+|   |->.cert/    # SSL certification
+|   |->src/
+|   |   |-> context/      # React context variables
+|   |   |-> components/   # React components
+|   |   |-> pages/        # React routed pages.
+|   |   |-> styles/       # CSS styling
+|   |   |-> App.js        # Main App component
+|   |   |-> index.js/     # Main driver code
+|   |   |-> # ...Rest of other source code... #
+|
+|   package.json
+|   package-lock.json
+|   # ... Rest of auxiliary scripts... #
+|
+```
+
+The backend's infrastructure is a little more straight-forward.
+
+```
+backend/
+|   |-> coverage/     # Coverage report of backend
+|   |-> server.js     # Backend main driver code.
+|   |-> db.js         # Registration to pSQL database
+|   |-> # ...Rest of auxiliary scripts... #
+```
+
+Finally we have the CDK-based infrastructure. If this is your first time working with the Cloud Development Kit API by AWS please read this [article](https://docs.aws.amazon.com/cdk/v2/guide/getting-started.html) to have a better grasp on what this code does. Please read the `infra/README.md` file to see useful commands and a short description of what it does. The only noteworthy file to mention here is the `infra/lib/infra-stack.js` which the code used to build MealSwipe's entire infrastructure from the ground up..
 
 #### Backend Setup
 
@@ -48,7 +83,7 @@ npm test -- --coverage # Get coverage report.
 
 Frontend setup is more straight forward compared to the backend. As most services are only connected to the backend. And the frontend is only connected to the backend and Google's OAuth API for logging in and authentication.
 
-If developing mealswipe. Ensure that within `config.js` folder you turn `DEV_MODE` as `DEV_MODE=true`. Finally, one must populate a `.env` file in the frontend as well containing the information below:
+If developing mealswipe. Ensure that within `config.js` folder you turn `DEV_MODE` as `DEV_MODE=true`. In addition, a SSL-certificate is necessary to be able to communicate locally with the backend vis HTTPS. A bash script named `frontend_web/dev-generate-ssl.sh` automatically creates the SSL certificate for local development. There is a `check-cert.sh` in the same directory as `dev-generate-ssl.sh` that helps you verify the certificate was created properly. The certificates reside in the `.cert/` directory found at the same level. Finally, one must populate a `.env` file in the frontend as well containing the information below:
 
 ```
 # .env
