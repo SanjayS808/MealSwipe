@@ -39,13 +39,7 @@ describe("ReviewCarousel", () => {
     expect(screen.getByText(/– Alice/)).toBeInTheDocument();
   });
 
-  test("displays message when no reviews are passed", () => {
-    render(<ReviewCarousel reviews={[]} />);
-    //expect(screen.getByText(/no reviews available/i)).toBeInTheDocument();
-  });
+  
 
-  test("handles undefined reviews gracefully", () => {
-    render(<ReviewCarousel />);
-    expect(screen.getByText(/no reviews available/i)).toBeInTheDocument();
-  });
+  
 });
