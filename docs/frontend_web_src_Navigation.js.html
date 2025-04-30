@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: frontend_web/src/Navigation.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: frontend_web/src/Navigation.js</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>/** MealSwipe navigation component.
+ * @module Navigation-Component
+ * @requires React
+ */
+/**
+ * @fileoverview Navigation bar component for Mealswipe.
+ * Renders the header with logo, page routes, and bottom navigation icons.
+ */
+
+import React, { useRef } from "react";
+import { Routes, Route, Link, useLocation } from "react-router-dom";
+import { motion } from "framer-motion";
+import { Trash2, Home, Heart } from "lucide-react";
+import RestaurantList from "./components/RestaurantList";
+import FavoritesPage from "./pages/FavoritesPage";
+import TrashedPage from "./pages/TrashedPage";
+import Login from "./pages/Login";
+import ProfilePage from "./pages/ProfilePage";
+import "./styles/navbar.css";
+import LoginPic from "./components/LoginPic";
+import logo from "./mealSwipeLogo.png";
+
+const navItems = [
+  { path: "/trashed", icon: Trash2, label: "Trashed" },
+  { path: "/", icon: Home, label: "Home" },
+  { path: "/favorites", icon: Heart, label: "Favorites" },
+];
+
+/**
+ * Navigation component for Mealswipe.
+ * @component
+ * @param {Object} props
+ * @param {Array} props.backendData - All restaurant data for the home view.
+ * @param {Array} props.likedRestaurants - User's favorite restaurants.
+ * @param {Array} props.trashedRestaurants - User's trashed restaurants.
+ * @param {Function} props.handleSwipe - Handler for swipe actions on restaurants.
+ * @param {Function} props.resetBackendData - Resets restaurant data to initial state.
+ * @param {Function} props.clearFavorites - Clears all favorite restaurants.
+ * @param {Function} props.clearTrashed - Clears all trashed restaurants.
+ * @param {Function} props.loadFavorites - Loads favorites from the backend.
+ * @param {Function} props.loadTrashed - Loads trashed from the backend.
+ * @param {boolean} props.loggedIn - Whether the user is logged in.
+ * @param {boolean} props.isLoading - Loading indicator flag.
+ * @param {Function} props.deleteRestaurantFromFavorites - Deletes a single favorite.
+ * @param {Function} props.deleteRestaurantFromTrash - Deletes a single trashed item.
+ * @param {Function} props.setUid - Sets the user ID in parent context.
+ * @returns {JSX.Element} The rendered navigation UI.
+ */
+function Navigation({
+  backendData,
+  likedRestaurants,
+  trashedRestaurants,
+  handleSwipe,
+  resetBackendData,
+  clearFavorites,
+  clearTrashed,
+  loadFavorites,
+  loadTrashed,
+  loggedIn,
+  isLoading,
+  deleteRestaurantFromFavorites,
+  deleteRestaurantFromTrash,
+  setUid,
+}) {
+  const clickCountRef = useRef(0);
+  const lastClickTimeRef = useRef(0);
+  const logoRef = useRef(null);
+  const location = useLocation();
+
+  /**
+   * Handles clicks on the logo: animates jiggle and triggers an easter egg
+   * after 7 rapid clicks (within 600ms intervals).
+   * @returns {void}
+   */
+  const handleLogoClick = () => {
+    const logoEl = logoRef.current;
+    if (logoEl) {
+      logoEl.classList.remove("jiggle");
+      void logoEl.offsetWidth; // force reflow
+      logoEl.classList.add("jiggle");
+    }
+    const now = Date.now();
+    if (now - lastClickTimeRef.current &lt; 600) {
+      clickCountRef.current += 1;
+    } else {
+      clickCountRef.current = 1;
+    }
+    lastClickTimeRef.current = now;
+    if (clickCountRef.current === 7) {
+      alert("leanna was here");
+      clickCountRef.current = 0;
+    }
+  };
+
+  const styles = {
+    navContainer: {
+      position: "fixed",
+      zIndex: "0",
+      bottom: 0,
+      left: 0,
+      width: "100%",
+      backgroundColor: "#333",
+      display: "flex",
+      justifyContent: "space-around",
+      alignItems: "center",
+      padding: "12px 0",
+      borderTopLeftRadius: "16px",
+      borderTopRightRadius: "16px",
+      boxShadow: "0 -2px 6px rgba(0, 0, 0, 0.2)",
+    },
+    link: {
+      textDecoration: "none",
+    },
+    iconWrapper: {
+      position: "relative",
+      display: "flex",
+      flexDirection: "column",
+      alignItems: "center",
+      padding: "8px",
+      transition: "transform 0.3s",
+    },
+    icon: {
+      transition: "color 0.3s",
+    },
+    activeIndicator: {
+      position: "absolute",
+      bottom: -4,
+      height: 4,
+      width: 24,
+      borderRadius: 2,
+      backgroundColor: "#fff",
+    },
+  };
+
+  return (
+    &lt;div>
+      &lt;div style={{ zIndex: 100 }} className="header">
+        &lt;LoginPic />
+        &lt;div
+          className="logodiv"
+          style={{ display: "flex", flexDirection: "row", alignItems: "center", justifyContent: "center" }}
+        >
+          &lt;Link to="/" style={{ textDecoration: "none", color: "inherit" }}>
+            &lt;h1 style={{ marginLeft: "0em", cursor: "pointer" }}>mealswipe&lt;/h1>
+          &lt;/Link>
+          &lt;img
+            src={logo}
+            className="logoimage"
+            style={{ width: "25px", height: "auto", marginLeft: "0em" }}
+            onClick={handleLogoClick}
+            ref={logoRef}
+          />
+        &lt;/div>
+      &lt;/div>
+
+      &lt;div style={{ flex: 1, overflowY: "auto", paddingBottom: "64px" }}>
+        &lt;Routes>
+          &lt;Route
+            path="/favorites"
+            element={
+              &lt;FavoritesPage
+                likedRestaurants={likedRestaurants}
+                clearFavorites={clearFavorites}
+                loadFavorites={loadFavorites}
+                loggedIn={loggedIn}
+                isLoading={isLoading}
+                deleteRestaurantFromFavorites={deleteRestaurantFromFavorites}
+              />
+            }
+          />
+          &lt;Route
+            path="/"
+            element={
+              &lt;RestaurantList
+                restaurants={backendData}
+                onSwipe={handleSwipe}
+                resetBackendData={resetBackendData}
+                isLoading={isLoading}
+              />
+            }
+          />
+          &lt;Route
+            path="/trashed"
+            element={
+              &lt;TrashedPage
+                trashedRestaurants={trashedRestaurants}
+                clearTrashed={clearTrashed}
+                loadTrashed={loadTrashed}
+                loggedIn={loggedIn}
+                isLoading={isLoading}
+                deleteRestaurantFromTrashed={deleteRestaurantFromTrash}
+              />
+            }
+          />
+          &lt;Route path="/login" element={&lt;Login />} />
+          &lt;Route path="/profile" element={&lt;ProfilePage setUid={setUid} />} />
+        &lt;/Routes>
+      &lt;/div>
+
+      &lt;nav style={styles.navContainer}>
+        {navItems.map(({ path, icon: Icon, label }) => {
+          const isActive = location.pathname === path;
+          return (
+            &lt;Link to={path} key={path} aria-label={label} style={styles.link}>
+              &lt;div style={styles.iconWrapper}>
+                &lt;Icon size={24} color={isActive ? "#ffffff" : "#9ca3af"} style={styles.icon} />
+                {isActive &amp;&amp; (
+                  &lt;motion.div layoutId="active-indicator" style={styles.activeIndicator} />
+                )}
+              &lt;/div>
+            &lt;/Link>
+          );
+        })}
+      &lt;/nav>
+    &lt;/div>
+  );
+}
+
+export default Navigation;
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="module-Express-Backend.html">Express-Backend</a></li><li><a href="module-FavoritesPage-Page.html">FavoritesPage-Page</a></li><li><a href="module-FilterPage.html">FilterPage</a></li><li><a href="module-Google-Button-Page.html">Google-Button-Page</a></li><li><a href="module-LogIn-Page.html">LogIn-Page</a></li><li><a href="module-Navigation-Component.html">Navigation-Component</a></li><li><a href="module-ProfileEditPopup-Page.html">ProfileEditPopup-Page</a></li><li><a href="module-ProfilePage-Page.html">ProfilePage-Page</a></li><li><a href="module-Restaurant.html">Restaurant</a></li><li><a href="module-RestaurantCard.html">RestaurantCard</a></li><li><a href="module-RestaurantList.html">RestaurantList</a></li><li><a href="module-Review.html">Review</a></li><li><a href="module-StarRating.html">StarRating</a></li><li><a href="module-TrashFlash.html">TrashFlash</a></li><li><a href="module-TrashedPage-Page.html">TrashedPage-Page</a></li><li><a href="module-pool.html">pool</a></li></ul><h3>Classes</h3><ul><li><a href="module-Restaurant-Restaurant.html">Restaurant</a></li><li><a href="module-Review-Review.html">Review</a></li></ul><h3>Global</h3><ul><li><a href="global.html#App">App</a></li><li><a href="global.html#DEV_MODE">DEV_MODE</a></li><li><a href="global.html#clearFavorites">clearFavorites</a></li><li><a href="global.html#clearTrashed">clearTrashed</a></li><li><a href="global.html#deleteRestaurantFromFavorites">deleteRestaurantFromFavorites</a></li><li><a href="global.html#deleteRestaurantFromTrash">deleteRestaurantFromTrash</a></li><li><a href="global.html#fetchGooglePlacePhoto">fetchGooglePlacePhoto</a></li><li><a href="global.html#fetchRestaurantInfo">fetchRestaurantInfo</a></li><li><a href="global.html#fetchRestaurants">fetchRestaurants</a></li><li><a href="global.html#fetchuid">fetchuid</a></li><li><a href="global.html#handleSwipe">handleSwipe</a></li><li><a href="global.html#loadFavorites">loadFavorites</a></li><li><a href="global.html#loadTrashed">loadTrashed</a></li><li><a href="global.html#toggleFavorite">toggleFavorite</a></li><li><a href="global.html#toggleTrashed">toggleTrashed</a></li><li><a href="global.html#triggerHeart">triggerHeart</a></li><li><a href="global.html#triggerTrash">triggerTrash</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 4.0.4</a> on Sun Apr 27 2025 15:30:57 GMT-0500 (Central Daylight Time)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>

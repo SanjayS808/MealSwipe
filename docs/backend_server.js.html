@@ -1,0 +1,842 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: backend/server.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: backend/server.js</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>/** Express router providing user related routes
+ * @module Express-Backend
+ * @requires express
+ */
+
+/**
+ * @fileoverview Backend main body for MealSwipe. Contains all necessary API calls to get, add, update, and delete operations to create a functional backend. More information can be found in the functional design overview.
+ */
+
+/**
+ * express module
+ * @const
+ */
+const express = require('express');
+const cors = require('cors');  // Import CORS middleware
+const request = require('request');  // To make HTTP requests
+const pool = require('./db'); // Add access to DB
+const DEV_MODE = require('./config');
+
+const CENTER_LAT = 30.627977;  // College Station latitude
+const CENTER_LNG = -96.334404; // College Station longitude
+
+const app = express();
+
+const API_URI = "https://mealswipe-flask-service.75ct69eg04jk6.us-west-2.cs.amazonlightsail.com/v1/places:searchNearby";
+const GOOGLE_API_KEY = process.env.GOOGLE_PLACES_API;
+
+// USED FOR CACHING IMAGING.
+const imageCache = new Map(); // { data: Buffer, timestamp: Date }
+const contentTypeCache = new Map();
+const CACHE_EXPIRATION_TIME = 60 * 60 * 1000;
+
+app.use(cors());  // Enable CORS
+app.use(express.json()); // This enables JSON body parsing
+app.use(express.urlencoded({ extended: true })); // Support for URL-encoded data
+
+/**
+ *  Makes sure usernames or restaurant information can be added to SQL 
+ * @params {String} raw_text - text to sanitize for SQL.
+ * 
+ * @return {String} sanitizedString
+ * */
+const sanitize_text = (raw_text) => {
+    let sanitizedString = raw_text.replace(/'/g, "''");
+    sanitizedString = sanitizedString.replace(/\\/g, '\\\\');
+    return sanitizedString;
+};
+
+/**
+ * Calculates distance based on the latitude and logitude of the user and the restaurant.
+ * @param {*} lat1 - Latitude of point 1.
+ * @param {*} lng1 - Longitude of point 1.
+ * @param {*} lat2 - Latitude of point 2.
+ * @param {*} lng2 - Longitude of point 2.
+ * @returns {Float} Distance in miles between user and restaurant.
+ */
+function calculateDistance(lat1, lng1, lat2, lng2) {
+    const R = 3958.8; // Earth's radius in miles
+    const dLat = (lat2 - lat1) * Math.PI / 180;
+    const dLng = (lng2 - lng1) * Math.PI / 180;
+    const a = 
+        Math.sin(dLat/2) * Math.sin(dLat/2) +
+        Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) * 
+        Math.sin(dLng/2) * Math.sin(dLng/2);
+    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+    return R * c; // Distance in miles
+}
+
+/**
+ * @function GET /api/serve/get-all-restaurants
+ * @summary Get restaurant information.
+ * @description API to get restaurant information from the Google Places API. For development, a mocked version of the API was constructed.
+ * @tags Restaurant
+ * @param {*} req - HTTPS request query from frontend. Query contains the userid fetched from previous API calls.
+ * @param {*} res - HTTPS response from serve, containing restaurant information. We update status, and error messages if applicable.
+ */
+app.get("/api/serve/get-all-restaurants", (req, res) => {
+    // Default maximum distance of 50 miles
+    const maxDistance = parseFloat(req.query.maxDistance) || 50;
+
+    const data = {
+        "includedTypes": ["restaurant"],
+        "maxResultCount": 50, // Increased to allow more results
+        "locationRestriction": {
+            "circle": {
+                "center": {
+                    "latitude": CENTER_LAT,
+                    "longitude": CENTER_LNG
+                },
+                "radius": maxDistance * 1609.34 // Convert miles to meters
+            }
+        }
+    };
+
+    const clientServerOptions = {
+        uri: API_URI,
+        body: JSON.stringify(data),
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        }
+    };
+
+    request(clientServerOptions, function (error, response) {
+        if (error) {
+            console.error("Backend API error:", error);
+            res.status(500).send("Internal Server Error");
+            return;
+        }
+    
+        try {
+            const restaurants = JSON.parse(response.body);
+            
+            // Add distance to each restaurant
+            const restaurantsWithDistance = (restaurants['places'] || []).map(place => {
+                // Check if the restaurant has location data
+                if (place.location &amp;&amp; place.location.latitude &amp;&amp; place.location.longitude) {
+                    const distance = calculateDistance(
+                        CENTER_LAT, 
+                        CENTER_LNG, 
+                        place.location.latitude, 
+                        place.location.longitude
+                    );
+                    
+                    // Add distance to restaurant object
+                    return {
+                        ...place,
+                        distanceFromCenter: parseFloat(distance.toFixed(1)) // Round to 1 decimal place
+                    };
+                }
+                
+                // If no location data, return restaurant with default distance
+                return {
+                    ...place,
+                    distanceFromCenter: null
+                };
+            });
+            
+            res.json(restaurantsWithDistance);
+        } catch (parseError) {
+            console.error("Error parsing JSON:", parseError);
+            res.status(500).send("Error processing data");
+        }
+    });
+});
+
+/**
+ * @function GET /api/serve/get-restaurant-photo
+ * @summary Get restaurant photo.
+ * @description API to get restaurant the specific picture of a restaurant. In addiiton, we temporarily cache the restaurant information.
+ * @tags Restaurant
+ * @async
+ * @param {*} req - HTTPS request query from frontend. Query contains the userid fetched from previous API calls.
+ * @param {*} res - HTTPS response from server, containing restaurant photo. We update status, and error messages if applicable.
+ */
+app.get("/api/serve/get-restaurant-photo", async (req, res) => {
+    const { rinfo } = req.query;
+    if (!rinfo) {
+      console.error("Could not retrieve image. Restaurant info is missing.");
+      return res.status(400).json({ error: "Missing restaurant photo reference (rinfo)." });
+    }
+  
+    // Creating and checking a cache in order to ensure that we do not call the Google API multiple times.
+    if (imageCache.has(rinfo)) {
+      const cachedData = imageCache.get(rinfo);
+      const cachedType = contentTypeCache.get(rinfo);
+  
+      // Check if cache is expired
+      const currentTime = Date.now();
+      const cacheAge = currentTime - cachedData.timestamp;
+  
+      if (cacheAge &lt; CACHE_EXPIRATION_TIME) {
+        console.log("Cache is valid, serving cached image.")
+        res.setHeader("Content-Type", cachedType);
+        return res.send(cachedData.data);
+      } else {
+        // If cache is expired, remove it
+        imageCache.delete(rinfo);
+        contentTypeCache.delete(rinfo);
+        console.log(`Cache expired for ${rinfo}. Fetching a fresh image.`);
+      }
+    }
+    const gplaces_query = `https://places.googleapis.com/v1/${rinfo}/media?maxHeightPx=400&amp;maxWidthPx=400&amp;key=${GOOGLE_API_KEY}`;
+  
+    try {
+      const photoRes = await fetch(gplaces_query, { method: "GET" });
+  
+      if (!photoRes.ok) {
+        throw new Error(`Google API responded with status ${photoRes.status}`);
+      }
+  
+      const contentType = photoRes.headers.get("content-type");
+      const arrayBuffer = await photoRes.arrayBuffer();
+      const buffer = Buffer.from(arrayBuffer);
+      const cacheData = {
+        data: buffer,
+        timestamp: Date.now(),
+      };
+  
+      imageCache.set(rinfo, cacheData);
+      contentTypeCache.set(rinfo, contentType);
+  
+      // Send the newly fetched image
+      res.setHeader("Content-Type", contentType);
+      res.send(buffer);
+    } catch (error) {
+      console.error("Error fetching image:", error.message);
+      res.status(500).send("Failed to fetch image");
+    }
+  });
+
+/**
+ * @function GET /api/serve/get-userid-with-uname:
+ * @summary Get userid from username
+ * @description API to get the user identification number given the user's username. The userid is fetched from the pSQL database.
+ * @tags User
+ * @async
+ * @param {*} req - HTTPS request query from frontend. Query contains the userid fetched from previous API calls.
+ * @param {*} res - HTTPS response from server, containing user identification. We update status, and error messages if applicable.
+ */
+app.get("/api/serve/get-userid-with-uname", async (req, res) => {
+    if(req.query.uname === undefined) {
+        console.error('Could not fetch undefined user.');
+        res.status(400).json({error: 'Could not fetch undefined username.'});
+        return;
+    }
+    const query = `SELECT userid FROM Users WHERE name='${req.query.uname}';`
+    try {
+        const result = await pool.query(query);
+        res.json(result.rows);
+    } catch (err) {
+        console.error('Error fetching users:', err);
+        res.status(500).json({ error: 'Internal Server Error' });
+    }
+});
+
+/**
+ * @function GET /api/serve/get-user-with-id
+ * @summary Get user information from id
+ * @description API to get the user's information given the user's identification number. The user information is fetched from the pSQL database.
+ * @tags User
+ * @async
+ * @param {*} req - HTTPS request query from frontend. Query contains the userid fetched from previous API calls.
+ * @param {*} res - HTTPS response from server, containing user information. We update status, and error messages if applicable.
+ */
+app.get("/api/serve/get-user-with-id", async (req, res) => {
+    if(req.query.uid === undefined) {
+        console.error('Could not fetch undefined user.');
+        res.status(400).json({error: 'Could not fetch undefined user.'});
+        return;
+    }
+    const query = `SELECT * FROM Users WHERE userid='${req.query.uid}';`
+    try {
+        const result = await pool.query(query);
+        res.json(result.rows);
+    } catch (err) {
+        console.error('Error fetching users:', err);
+        res.status(500).json({ error: 'Internal Server Error' });
+    }
+});
+
+/**
+ * @function POST /api/serve/add-user
+ * @summary Add user to database
+ * @description API to create a new user on our pSQL database. This is only called when a new user is registered.
+ * @tags User
+ * @async
+ * @param {*} req - HTTPS request query from frontend. Query contains the userid fetched from previous API calls.
+ * @param {*} res - HTTPS response from server. We update status, and error messages if applicable.
+ */
+app.post("/api/serve/add-user", async (req, res) => {
+    // Check and insert all information needed for creating new user.
+    const hasNullValue = (array) => array.some(element => element === undefined);
+    const uinfo = [req.body.uname, req.body.ubio, req.body.nswipe, req.body.email];
+    if(hasNullValue(uinfo)) {
+        console.error('Could not create user. User information is missing.');
+        res.status(400).json({error: 'Could not create user. User information is missing.'});
+        return;
+    }
+
+    const add_query = `INSERT INTO users (name, bio, numswipes, email)
+    VALUES ('${sanitize_text(req.body.uname)}', '${sanitize_text(req.body.ubio)}', ${req.body.nswipe}, '${req.body.email}');`;
+
+    const get_query = `SELECT * FROM Users WHERE name='${req.body.uname}' OR email='${req.body.email}';`;
+
+    try {
+        // Check if user already exists.
+        const get_result = await pool.query(get_query);
+        if(get_result.rows.length != 0) {
+            console.log(`Username ${req.body.uname} already exists.`);
+            res.status(200).json({error: `User already exists.`})
+            return;
+        }
+
+        // If not add, user.
+        const add_result = await pool.query(add_query);
+        if(add_result.rowCount != 1) {
+            throw Error(`POST function modified unintended columns.`);
+        }
+
+        res.status(200).json("User succesfully added.")
+
+    } catch(err) {
+        console.error('Error creating new user: ', err);
+        res.status(500).json({error: 'Internal Server Error'})
+    } 
+});
+
+/**
+ * @function GET /api/serve/get-rid-with-rname
+ * @summary Get restaurant identification from restaurant name.
+ * @description API to get restaurant identification number given its name. The information is stored and fetched from database.
+ * @tags Restaurant
+ * @async
+ * @param {*} req - HTTPS request query from frontend. Query contains the restaurant name fetched from previous API calls.
+ * @param {*} res - HTTPS response from server, containing the restaurant identification number. We update status, and error messages if applicable.
+ */
+app.get("/api/serve/get-rid-with-rname", async (req, res) => {
+    if(req.query.rname === undefined) {
+        console.error('Could not fetch undefined restuarant.');
+        res.status(400).json({error: 'Could not fetch undefined restuarant.'});
+        return;
+    }
+    const query = `SELECT name FROM restaurants WHERE name='${req.query.rname}';`
+    try {
+        const result = await pool.query(query);
+        res.json(result.rows);
+    } catch (err) {
+        console.error('Error fetching users:', err);
+        res.status(500).json({ error: 'Internal Server Error' });
+    }
+})
+
+/**
+ * @function GET /api/serve/get-rinfo-with-rid
+ * @summary Gets restaurant info via the restaurant's id.
+ * @description API to get restaurant information given its identification number. The information is stored and fetched from database.
+ * @tags Restaurant
+ * @async
+ * @param {*} req - HTTPS request query from frontend. Query contains the restaurant identification number fetched from previous API calls.
+ * @param {*} res - HTTPS response from server, containing the restaurant information. We update status, and error messages if applicable.
+ */
+app.get("/api/serve/get-rinfo-with-rid", async (req, res) => {
+    if(req.query.rid === undefined) {
+        console.error('Could not fetch undefined restuarant.');
+        res.status(400).json({error: 'Could not fetch undefined restuarant.'});
+        return;
+    }
+    const query = `SELECT * FROM restaurants WHERE placeid='${req.query.rid}';`
+    try {
+        const result = await pool.query(query);
+        res.json(result.rows);
+    } catch (err) {
+        console.error('Error fetching users:', err);
+        res.status(500).json({ error: 'Internal Server Error' });
+    }
+})
+
+/**
+ * @function POST /api/serve/add-restaurant
+ * @summary Adds new restaurant.
+ * @description API to add a new restaurant when not found within the database. If found, the call does not do anything.
+ * @tags Restaurant
+ * @async
+ * @param {*} req - HTTPS request query from frontend. Query contains all the information needed to create a new entry for a restaurant within the pSQL database.
+ * @param {*} res - HTTPS response from server. We update status if successful, and error messages if applicable.
+ */
+app.post("/api/serve/add-restaurant", async (req, res) => {
+    // Check and insert all information needed for creating new user.
+    const hasNullValue = (array) => array.some(element => element === undefined);
+    const uinfo = [req.body.rid, req.body.rname, req.body.price, req.body.rating,
+        req.body.weburl, req.body.gmapurl, req.body.address, req.body.photoUrl];
+    if(hasNullValue(uinfo)) {
+        console.error('Could not create user. User information is missing.');
+        res.status(400).json({error: 'Could not create user. User information is missing.'});
+        return;
+    }
+
+    // Map name to value.
+    let num_price_level = -1;
+    switch(req.body.price) {
+        case 'PRICE_LEVEL_UNSPECIFIED':
+            num_price_level = -1
+            break;
+        case 'PRICE_LEVEL_FREE':
+            num_price_level = 0
+            break;
+        case 'PRICE_LEVEL_INEXPENSIVE':
+            num_price_level = 1
+            break;
+        case 'PRICE_LEVEL_MODERATE':
+            num_price_level = 2
+            break;
+        case 'PRICE_LEVEL_EXPENSIVE':
+            num_price_level = 3
+            break;
+        case 'PRICE_LEVEL_VERY_EXPENSIVE':
+            num_price_level = 4
+            break;
+    }
+
+    const add_query = `INSERT INTO Restaurants 
+    VALUES ('${req.body.rid}', '${sanitize_text(req.body.rname)}', ${num_price_level}, ${req.body.rating},
+    '${req.body.weburl}', '${req.body.gmapurl}', '${req.body.address}', '${req.body.photoUrl}');`;
+
+    const get_query = `SELECT * FROM Restaurants WHERE name='${sanitize_text(req.body.rname)}'`;
+
+    try {
+        // Check if user already exists.
+        const get_result = await pool.query(get_query);
+        if(get_result.rows.length != 0) {
+            res.status(200).json({warning: `Username ${req.body.rname} already exists.`});
+            return;
+        }
+
+        console.log("Getting succesful");
+
+        // If not add, restaurant.
+        const add_result = await pool.query(add_query);
+        if(add_result.rowCount != 1) {
+            throw Error(`POST function modified unintended columns.`);
+        }
+
+        console.log("Posting Succesful succesful");
+
+        res.status(200).json("User succesfully added.")
+
+    } catch(err) {
+        console.error('Error creating new user: ', err);
+        res.status(500).json({error: 'Internal Server Error'})
+    } 
+})
+
+/**
+ * @function GET /api/serve/get-user-trashed-restaurant
+ * @summary Get all user's trashed restaurants.
+ * @description API to get all the restaurants a user has trashed so far. This is found via the user's identification number. All information is fetched from database.
+ * @tags Swipes
+ * @async
+ * @param {*} req - HTTPS request query from frontend. Query contains the user identification number to fetch all of its trashed restaurants.
+ * @param {*} res - HTTPS response from server, containing an array of all user's trashed restaurants. We update status if successful, and error messages if applicable.
+ */
+app.get("/api/serve/get-user-trashed-restaurant", async (req, res) => {
+    if(req.query.uid === undefined) {
+        console.error('Could not fetch undefined user.');
+        res.status(400).json({error: 'Could not fetch undefined user.'});
+        return;
+    }
+    const query = `SELECT * FROM trashed_swipes WHERE userid='${req.query.uid}';`
+    try {
+        const result = await pool.query(query);
+        res.json(result.rows);
+    } catch (err) {
+        console.error('Error fetching trashed restaurants:', err);
+        res.status(500).json({ error: 'Internal Server Error' });
+    }
+});
+
+/**
+ * @function POST /api/serve/add-user-trashed-restaurant
+ * @summary Add a new trashed restaurant.
+ * @description API to create a new trashed swipe on our pSQL database. This is only called when a new restaurant swipe is registered. If already in database, we skip.
+ * @tags Swipes
+ * @async
+ * @param {*} req - HTTPS request query from frontend. Query contains the user and restaurant respective ids fetched from previous API calls.
+ * @param {*} res - HTTPS response from server. We assume the restaurant and user are already registered. We update status, and error messages if applicable.
+ */
+app.post("/api/serve/add-user-trashed-restaurant", async (req, res) => {
+    // Check and insert all information needed for creating new user.
+    const hasNullValue = (array) => array.some(element => element === undefined);
+    const uinfo = [req.body.uid, req.body.rid];
+    if(hasNullValue(uinfo)) {
+        console.error('Could not create user. User information is missing.');
+        res.status(400).json({error: 'Could not create user. User information is missing.'});
+        return;
+    }
+
+    const get_query = `SELECT * FROM liked_swipes AS l JOIN trashed_swipes AS t ON l.userid=t.userid
+    WHERE l.userid='${req.body.uid}' AND (l.placeid='${req.body.rid}' OR t.placeid='${req.body.rid}')`;
+
+    const add_query = `INSERT INTO trashed_swipes 
+    VALUES ((SELECT userid FROM Users WHERE userid='${req.body.uid}'), 
+    (SELECT placeid FROM Restaurants WHERE placeid='${req.body.rid}'));`;
+
+    try {
+        // If not add, user.
+        const get_result = await pool.query(get_query);
+        console.log(get_result.rows);
+         if(get_result.rows.length != 0) {
+             res.status(200).json({warning: `Swipe with ${req.body.rname} already exists.`});
+            return;
+        }
+        const add_result = await pool.query(add_query);
+        if(add_result.rowCount != 1) {
+            throw Error(`POST function modified unintended columns.`);
+        }
+
+        res.status(200).json("User succesfully added.")
+
+    } catch(err) {
+        // One of the more common errors will be that either the restaurant or user entity,
+        // does not exist.
+        console.error('Error creating new user: ', err);
+        res.status(500).json({error: 'Internal Server Error'})
+    } 
+});
+
+/**
+ * @function GET /api/serve/get-user-favorite-restaurant
+ * @summary Get all user's trashed restaurants.
+ * @description API to get all the restaurants a user has added to favorites so far. This is found via the user's identification number. All information is fetched from database.
+ * @tags Swipes
+ * @async
+ * @param {*} req - HTTPS request query from frontend. Query contains the user identification number to fetch all of its favorite restaurants.
+ * @param {*} res - HTTPS response from server, containing an array of all user's trashed restaurants. We update status if successful, and error messages if applicable.
+ */
+app.get("/api/serve/get-user-favorite-restaurants", async (req, res) => {
+    if(req.query.uid === undefined) {
+        console.error('Could not fetch undefined user.');
+        res.status(400).json({error: 'Could not fetch undefined user.'});
+        return;
+    }
+    const query = `SELECT * FROM liked_swipes WHERE userid='${req.query.uid}';`
+    try {
+        const result = await pool.query(query);
+        res.json(result.rows);
+    } catch (err) {
+        console.error('Error fetching users:', err);
+        res.status(500).json({ error: 'Internal Server Error' });
+    }
+});
+
+/**
+ * @function POST /api/serve/add-user-favorite-restaurant
+ * @summary Add a new favorite restaurant.
+ * @description API to create a new trashed swipe on our pSQL database. This is only called when a new restaurant swipe is registered. If already in database, we skip.
+ * @tags Swipes
+ * @async
+ * @param {*} req - HTTPS request query from frontend. Query contains the user and restaurant respective ids fetched from previous API calls.
+ * @param {*} res - HTTPS response from server. We assume the restaurant and user are already registered. We update status, and error messages if applicable.
+ */
+app.post("/api/serve/add-user-favorite-restaurant", async (req, res) => {
+     // Check and insert all information needed for creating new user.
+     const hasNullValue = (array) => array.some(element => element === undefined);
+     const uinfo = [req.body.uid, req.body.rid];
+     if(hasNullValue(uinfo)) {
+         console.error('Could not create user. User information is missing.');
+         res.status(400).json({error: 'Could not create user. User information is missing.'});
+         return;
+     }
+
+     // First check that entry does not already exist.
+     const get_query = `SELECT * FROM liked_swipes AS l JOIN trashed_swipes AS t ON l.userid=t.userid
+      WHERE l.userid='${req.body.uid}' AND (l.placeid='${req.body.rid}' OR t.placeid='${req.body.rid}')`;
+
+     const add_query = `INSERT INTO liked_swipes 
+     VALUES ((SELECT userid FROM Users WHERE userid='${req.body.uid}'), 
+     (SELECT placeid FROM Restaurants WHERE placeid='${req.body.rid}'));`;
+
+     console.log(add_query)
+ 
+     try {
+         // If not add, user.
+         const get_result = await pool.query(get_query);
+         if(get_result.rows.length != 0) {
+            res.status(200).json({warning: `Username ${req.body.rname} already exists.`});
+            return;
+        }
+
+         const add_result = await pool.query(add_query);
+         if(add_result.rowCount != 1) {
+             throw Error(`POST function modified unintended columns.`);
+         }
+ 
+         res.status(200).json("User succesfully added.")
+ 
+     } catch(err) {
+         // One of the more common errors will be that either the restaurant or user entity,
+         // does not exist.
+         console.error('Error creating new user: ', err);
+         res.status(500).json({error: 'Internal Server Error'})
+     } 
+});
+
+/**
+ * @function DELETE /api/serve/delete-trashed-swipe-with-rid-uid
+ * @summary Delete specific trashed swipe.
+ * @description API to delete a single trashed swipe with a specific rid and uid. It is guaranteed that at most one swipe like this exist within db. If no swipe was found, we simply skip.
+ * @async
+ * @param {*} req - HTTP request query from frontend. Query contains user and restaurant respective ids fetched from previous API calls.
+ * @param {*} res - HTTP response from server. We assume the restaurant and user are already registered. We update status and error messages if applicable.
+ */
+app.delete("/api/serve/delete-trashed-swipe-with-rid-uid", async (req, res) => {
+    if(req.query.rid === undefined &amp;&amp; req.query.uid === undefined) {
+        console.error('Could not fetch undefined user or restaurant id.');
+        res.status(400).json({error: 'Could not fetch with undefined user and restaurant id.'});
+        return;
+    }
+    const delete_query = `DELETE FROM trashed_swipes WHERE placeid='${sanitize_text(req.query.rid)}' AND userid='${req.query.uid}'`;
+
+    try {
+        const result = await pool.query(delete_query);
+        res.status(200).json({transactionComplete: "Deleted trashed swipes of placeidown by user"});
+    } catch(err) {
+        console.error(`Error deleting user's trashed swipes: ${err}`);
+        res.status(500).json({error: 'Internal Server Error'});
+    }
+})
+
+/**
+ * @function DELETE /api/serve/delete-favorite-swipe-with-rid-uid
+ * @summary Delete specific trashed swipe.
+ * @description API to delete a single favorite swipe with a specific rid and uid. It is guaranteed that at most one swipe like this exist within db. If no swipe was found, we simply skip.
+ * @async
+ * @param {*} req - HTTP request query from frontend. Query contains user and restaurant respective ids fetched from previous API calls.
+ * @param {*} res - HTTP response from server. We assume the restaurant and user are already registered. We update status and error messages if applicable.
+ */
+app.delete("/api/serve/delete-favorite-swipe-with-rid-uid", async (req, res) => {
+    if(req.query.rid === undefined &amp;&amp; req.query.uid === undefined) {
+        console.error('Could not fetch undefined user or restaurant id.');
+        res.status(400).json({error: 'Could not fetch with undefined user and restaurant id.'});
+        return;
+    }
+    const delete_query = `DELETE FROM liked_swipes WHERE placeid='${sanitize_text(req.query.rid)}' AND userid='${req.query.uid}'`;
+
+    try {
+        const result = await pool.query(delete_query);
+        res.status(200).json({transactionComplete: "Deleted favorite_swipe of placeidown by user"});
+    } catch(err) {
+        console.error(`Error deleting user's favorite swipes: ${err}`);
+        res.status(500).json({error: 'Internal Server Error'});
+    }
+});
+
+/**
+ * @function DELETE /api/serve/delete-trashed-swipe-with-uid
+ * @summary Delete all trashed restaurant swipes.
+ * @description API to delete all trashed swipes from a user given its uid. If no swipes were found, we simply skip.
+ * @async
+ * @param {*} req - HTTP request query from frontend. Query contains user identifications fetched from previous API calls.
+ * @param {*} res - HTTP response from server. We assume the restaurant and user are already registered. We update status and error messages if applicable.
+ */
+app.delete("/api/serve/delete-trashed-swipe-with-uid", async (req, res) => {
+    if(req.query.uid === undefined) {
+        console.error('Could not fetch undefined user.');
+        res.status(400).json({error: 'Could not fetch with undefined user.'});
+        return;
+    }
+    const delete_query = `DELETE FROM trashed_swipes WHERE userid='${req.query.uid}';`
+
+    try {
+        const result = await pool.query(delete_query);
+        res.status(200).json({transactionComplete: "Deleted all trashed_swipes own by user"});
+    } catch(err) {
+        console.error(`Error deleting user's trashed swipes: ${err}`);
+        res.status(500).json({error: 'Internal Server Error'});
+    }
+});
+
+/**
+ * @function DELETE /api/serve/delete-trashed-swipe-with-uid
+ * @summary Delete all favorite restaurant swipes.
+ * @description API to delete all favorite swipes from a user given its uid. If no swipes were found, we simply skip.
+ * @async
+ * @param {*} req - HTTP request query from frontend. Query contains user identification fetched from previous API calls.
+ * @param {*} res - HTTP response from server. We assume the restaurant and user are already registered. We update status and error messages if applicable.
+ */
+app.delete("/api/serve/delete-favorite-swipe-with-uid", async (req, res) => {
+    if(req.query.uid === undefined) {
+        console.error('Could not fetch undefined user.');
+        res.status(400).json({error: 'Could not fetch with undefined user.'});
+        return;
+    }
+    const delete_query = `DELETE FROM liked_swipes WHERE userid='${req.query.uid}';`
+
+    try {
+        const result = await pool.query(delete_query);
+        res.status(200).json({transactionComplete: "Deleted all trashed_swipes own by user"});
+    } catch(err) {
+        console.error(`Error deleting user's favorite swipes: ${err}`);
+        res.status(500).json({error: 'Internal Server Error'});
+    }
+});
+
+/**
+ * @funciton GET /api/serve/get-swipes
+ * @summary Get swipe from user.
+ * @description API to get the numebr of swipes from a user given its user identification. It is defaulted from 0 swipes.
+ * @async
+ * @param {*} req - HTTP request query from frontend. Query contains user identification fetched from previous API calls.
+ * @param {*} res - HTTP response from server, containing the number of swipes from the given user. We assume the user is already registered. We update status and error messages if applicable.
+ */
+app.get("/api/serve/get-swipes", async (req, res) => {
+    if(req.query.uid === undefined) {
+        console.error('Could not fetch invalid userid.');
+        res.status(400).json({error: 'Could not fetch undefined username.'});
+        return;
+    }
+
+    console.log(req.query.uid)
+
+    const get_query = `SELECT numswipes FROM Users WHERE userid=${req.query.uid};`
+    try {
+        const result = await pool.query(get_query);
+        if(!result.rows) {
+            res.status(400).json({error: `Could not find information with uid ${req.query.uid}`})
+        }
+        res.json(result.rows);
+    } catch (err) {
+        console.error('Error fetching users:', err);
+        res.status(500).json({ error: 'Internal Server Error' });
+    }
+});
+
+/**
+ * @function POST /api/serve/increment-swipes
+ * @summary Increment swipe by one.
+ * @async
+ * @param {*} req - HTTP request query from frontend. Query contains user identification fetched from previous API calls.
+ * @param {*} res - HTTP response from server, containing only HTTP status to certify whether the swipe was registed. We assume the user is already registered.
+ */
+app.post("/api/serve/increment-swipes", async (req, res) => {
+    // Check and insert all information needed for creating new user.
+    const hasNullValue = (array) => array.some(element => element === undefined);
+    const uinfo = [req.body.uid, req.body.rid];
+    if(hasNullValue(uinfo)) {
+        console.error('Could not create user. User information is missing.');
+        res.status(400).json({error: 'Could not create user. User information is missing.'});
+        return;
+    }
+
+    const update_query = `UPDATE users SET numswipes = numswipes +1 WHERE userid=${req.body.uid};`;
+    try {
+        const result = await pool.query(update_query);
+        res.status(200).json({transactionComplete: "Added number of swipes to 1."});
+    } catch(err) {
+        console.error(`Error deleting user's favorite swipes: ${err}`);
+        res.status(500).json({error: 'Internal Server Error'});
+    }
+
+});
+
+/**
+ * @function GET /api
+ * @summary Index api request
+ * @description Expressjs requires us to have some function that starts with api. This is just a placeholder function and it is not used for anything.
+ * @param {*} req - HTTP request query from frontend. Empty.
+ * @param {*} res - HTTP response. Guaranteed to always return 200 OK status.
+ */
+app.get("/api", (req, res) => {
+    res.json({"restaurants": ["resOne", "resTwo"]});
+});
+
+/**
+ * @function GET /
+ * @summary Index api request
+ * @description Expressjs requires us to have some function that starts with root path. This is just a placeholder function and it is not used for anything.
+ * @param {*} req - HTTP request query from frontend. Empty.
+ * @param {*} res - HTTP response. Guaranteed to always return 200 OK status.
+ */
+app.get("/", (req, res) => {
+    res.json({"connection-status" : "valid"});
+});
+
+/**
+ * @function GET /health
+ * @summary Health status API check.
+ * @description For our CI/CD pipeline we implement a health check so all of our infrastructure is able to verify whether the backend is functioning. If connection is possible, request is guaranteed to return status 200.
+ * @param {*} req - HTTP request query from frontend. Empty.
+ * @param {*} res - HTTP response. Guaranteed to always return 200 OK status.
+ */
+app.get("/health", (req, res) => {
+    res.json({"health-check-status": "working"});
+    res.status(200).send('OK');
+})
+
+if (!DEV_MODE) {
+    app.use(cors({
+        origin: '*', // Limit this in production
+        methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
+        credentials: true,
+        optionsSuccessStatus: 204,
+        exposedHeaders: ['Content-Length', 'X-Requested-With']
+    }));
+}
+
+let server;
+server = app.listen(5001, () => console.log("Server started on port 5001"));
+
+// Export both, regardless of DEV_MODE
+module.exports = { app, server };
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="module-Express-Backend.html">Express-Backend</a></li><li><a href="module-FavoritesPage-Page.html">FavoritesPage-Page</a></li><li><a href="module-FilterPage.html">FilterPage</a></li><li><a href="module-Google-Button-Page.html">Google-Button-Page</a></li><li><a href="module-LogIn-Page.html">LogIn-Page</a></li><li><a href="module-Navigation-Component.html">Navigation-Component</a></li><li><a href="module-ProfileEditPopup-Page.html">ProfileEditPopup-Page</a></li><li><a href="module-ProfilePage-Page.html">ProfilePage-Page</a></li><li><a href="module-Restaurant.html">Restaurant</a></li><li><a href="module-RestaurantCard.html">RestaurantCard</a></li><li><a href="module-RestaurantList.html">RestaurantList</a></li><li><a href="module-Review.html">Review</a></li><li><a href="module-StarRating.html">StarRating</a></li><li><a href="module-TrashFlash.html">TrashFlash</a></li><li><a href="module-TrashedPage-Page.html">TrashedPage-Page</a></li><li><a href="module-pool.html">pool</a></li></ul><h3>Classes</h3><ul><li><a href="module-Restaurant-Restaurant.html">Restaurant</a></li><li><a href="module-Review-Review.html">Review</a></li></ul><h3>Global</h3><ul><li><a href="global.html#App">App</a></li><li><a href="global.html#DEV_MODE">DEV_MODE</a></li><li><a href="global.html#clearFavorites">clearFavorites</a></li><li><a href="global.html#clearTrashed">clearTrashed</a></li><li><a href="global.html#deleteRestaurantFromFavorites">deleteRestaurantFromFavorites</a></li><li><a href="global.html#deleteRestaurantFromTrash">deleteRestaurantFromTrash</a></li><li><a href="global.html#fetchGooglePlacePhoto">fetchGooglePlacePhoto</a></li><li><a href="global.html#fetchRestaurantInfo">fetchRestaurantInfo</a></li><li><a href="global.html#fetchRestaurants">fetchRestaurants</a></li><li><a href="global.html#fetchuid">fetchuid</a></li><li><a href="global.html#handleSwipe">handleSwipe</a></li><li><a href="global.html#loadFavorites">loadFavorites</a></li><li><a href="global.html#loadTrashed">loadTrashed</a></li><li><a href="global.html#toggleFavorite">toggleFavorite</a></li><li><a href="global.html#toggleTrashed">toggleTrashed</a></li><li><a href="global.html#triggerHeart">triggerHeart</a></li><li><a href="global.html#triggerTrash">triggerTrash</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 4.0.4</a> on Sun Apr 27 2025 15:30:57 GMT-0500 (Central Daylight Time)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>
