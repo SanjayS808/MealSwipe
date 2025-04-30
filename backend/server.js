@@ -15,6 +15,8 @@ const express = require('express');
 const cors = require('cors');  // Import CORS middleware
 const request = require('request');  // To make HTTP requests
 const pool = require('./db'); // Add access to DB
+const compression = require('compression'); // Helps with image serving.
+
 const DEV_MODE = require('./config');
 
 const CENTER_LAT = 30.627977;  // College Station latitude
@@ -33,6 +35,7 @@ const CACHE_EXPIRATION_TIME = 60 * 60 * 1000;
 app.use(cors());  // Enable CORS
 app.use(express.json()); // This enables JSON body parsing
 app.use(express.urlencoded({ extended: true })); // Support for URL-encoded data
+app.use(compression()); 
 
 /**
  *  Makes sure usernames or restaurant information can be added to SQL 
@@ -774,15 +777,14 @@ app.get("/health", (req, res) => {
     res.status(200).send('OK');
 })
 
-if (!DEV_MODE) {
-    app.use(cors({
-        origin: '*', // Limit this in production
-        methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
-        credentials: true,
-        optionsSuccessStatus: 204,
-        exposedHeaders: ['Content-Length', 'X-Requested-With']
-    }));
-}
+// Proper CORS handling for Safari and Firefox.
+app.use(cors({
+    origin: '*', // Limit this in production
+    methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
+    credentials: true,
+    optionsSuccessStatus: 204,
+    exposedHeaders: ['Content-Length', 'X-Requested-With']
+}));
 
 let server;
 server = app.listen(5001, () => console.log("Server started on port 5001"));
