@@ -787,5 +787,6 @@ if (!DEV_MODE) {
 let server;
 server = app.listen(5001, () => console.log("Server started on port 5001"));
 
-// Export both, regardless of DEV_MODE
-module.exports = { app, server };
+// Exporting app for testing. Export all, regardless of DEV_MODE
+module.exports = { app, server,
+     imageCache, contentTypeCache, CACHE_EXPIRATION_TIME}; // Exporting for testing only!
